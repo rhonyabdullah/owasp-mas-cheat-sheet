@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWASP MASTG Techniques — Android</title>
+  <style>
+:root {
+  --owasp-blue: #1b7a8c;
+  --owasp-dark: #0d3b44;
+  --owasp-accent: #f2a900;
+  --owasp-light: #e8f4f6;
+  --bg-page: #f4f7f9;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5e6c84;
+  --border-subtle: #e1e4e8;
+  --L1-color: #36B37E;
+  --L2-color: #0052CC;
+  --R-color: #6554C0;
+  --P-color: #FF5630;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 24px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.page-header { text-align: center; margin-bottom: 2rem; animation: fadeInDown 0.6s ease-out; }
+.page-header h1 { font-size: 2rem; color: var(--owasp-dark); margin-bottom: 0.5rem; }
+.page-header .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+.search-input { flex: 1; min-width: 260px; padding: 0.6rem 1rem; border: 1px solid var(--border-subtle); border-radius: 6px; font-size: 0.95rem; background: var(--bg-card); }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-btn { padding: 0.4rem 0.9rem; border: 1px solid var(--border-subtle); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+.filter-btn:hover { border-color: var(--owasp-blue); }
+.filter-btn.active { background: var(--owasp-blue); color: #fff; border-color: var(--owasp-blue); }
+.group { margin-bottom: 1rem; animation: fadeInUp 0.5s ease both; }
+.group-header { width: 100%; display: flex; align-items: center; justify-content: space-between; background: var(--owasp-blue); color: #fff; border: none; padding: 0.875rem 1.25rem; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: 700; transition: background 0.3s; }
+.group-header:hover { background: var(--owasp-dark); }
+.group-header .group-title { display: flex; align-items: center; gap: 0.5rem; }
+.group-header .group-meta { font-size: 0.85rem; opacity: 0.85; font-weight: 500; }
+.group-header .group-toggle { transition: transform 0.3s ease; font-size: 0.9rem; }
+.group-header[aria-expanded="false"] .group-toggle { transform: rotate(-90deg); }
+.group-content { max-height: 5000px; opacity: 1; overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; padding: 0 0.5rem; }
+.group-content.collapsed { max-height: 0; opacity: 0; }
+.group-description { padding: 1rem 0.5rem 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+.item-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+.item-card:hover { border-color: var(--owasp-blue); box-shadow: 0 4px 12px rgba(27,122,140,0.08); transform: translateY(-1px); }
+.item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.item-id { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.8rem; font-weight: 700; color: var(--owasp-blue); background: var(--owasp-light); padding: 0.25rem 0.5rem; border-radius: 6px; }
+.item-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+.item-description { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.5; }
+.badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.badge-l1 { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-l2 { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-r { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-p { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-android { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-ios { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-generic { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-network { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-current { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-placeholder { background: rgba(255,171,0,0.12); color: #b37600; }
+.badge-deprecated { background: rgba(255,86,48,0.12); color: #FF5630; }
+.item-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.prompt-toggle { display: inline-flex; align-items: center; gap: 0.4rem; background: #fffbea; border: 1px solid var(--owasp-accent); color: var(--owasp-accent); padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; }
+.prompt-toggle:hover { background: var(--owasp-accent); color: #fff; }
+.prompt-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s ease, opacity 0.2s ease; }
+.prompt-content.open { max-height: 500px; opacity: 1; }
+.prompt-box { margin-top: 0.75rem; background: #f8f9fa; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem; position: relative; }
+.prompt-box pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.85rem; color: #2d3748; line-height: 1.5; }
+.copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--owasp-accent); color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.copy-btn:hover { opacity: 0.85; }
+.copy-btn.copied { background: #36B37E; }
+.page-footer { background: var(--owasp-dark); color: rgba(255,255,255,0.8); text-align: center; padding: 2rem 1.5rem; margin-top: 2rem; border-radius: 8px; }
+.page-footer a { color: var(--owasp-accent); text-decoration: none; }
+.page-footer .disclaimer { font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem; }
+.no-results { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 1rem; display: none; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>OWASP MASTG Techniques — Android</h1>
+    <p class="subtitle">Android · 78 techniques · Generated 2026-07-08 03:44 UTC</p>
+  </header>
+  <main class="container">
+    <div class="filter-bar">
+      <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button><button class="filter-btn" data-filter="STORAGE">Storage</button><button class="filter-btn" data-filter="CRYPTO">Crypto</button><button class="filter-btn" data-filter="AUTH">Auth</button><button class="filter-btn" data-filter="NETWORK">Network</button><button class="filter-btn" data-filter="PLATFORM">Platform</button><button class="filter-btn" data-filter="CODE">Code</button><button class="filter-btn" data-filter="RESILIENCE">Resilience</button><button class="filter-btn" data-filter="GENERAL">General</button>
+      </div>
+    </div>
+    <div class="no-results">No results found.</div>
+
+    <section class="group" data-category="STORAGE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-STORAGE</span>
+        <span class="group-meta">18 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Host-Device Data Transfer</h3>
+        <p class="item-description">You can copy files to and from a device by using the @MASTG-TOOL-0004 commands adb pull &lt;remote&gt; &lt;local&gt; and adb push &lt;local&gt; &lt;remote&gt; commands. Their usage is very straightforward. For example, the f</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Host-Device Data Transfer) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Obtaining and Extracting Apps</h3>
+        <p class="item-description">There are several ways of extracting APK files from a device. You will need to decide which one is the easiest method, depending on whether the app is public or private.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Obtaining and Extracting Apps) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Disassembling Code to Smali</h3>
+        <p class="item-description">If you want to inspect the app's smali code (instead of Java), you can open your APK in Android Studio by clicking Profile or debug APK from the &quot;Welcome screen&quot; (even if you don't intend to debug it </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Disassembling Code to Smali) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Retrieving Strings</h3>
+        <p class="item-description">While performing any kind of binary analysis, strings can be considered as one of the most valuable starting points, as they provide context. For example, an error log string like &quot;Data encryption fai</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Retrieving Strings) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Get Open Files</h3>
+        <p class="item-description">You can use lsof with the flag -p &lt;pid&gt; to return the list of open files for the specified process. See the man page for more options.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Get Open Files) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Obtaining Information from the AndroidManifest</h3>
+        <p class="item-description">The AndroidManifest.xml file is a critical component of any Android application, providing essential information about the app's structure, permissions, components, and configurations. During a securi</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Obtaining Information from the AndroidManifest) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Obtaining App Permissions</h3>
+        <p class="item-description">Android permissions are declared in the AndroidManifest.xml file using the &lt;uses-permission&gt; tag. You can use multiple tools to view them.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Obtaining App Permissions) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Performing a Backup and Restore of App Data</h3>
+        <p class="item-description">Run Backup Manager (adb shell bmgr)</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Performing a Backup and Restore of App Data) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Software Composition Analysis (SCA) of Android Dependencies at Build Time</h3>
+        <p class="item-description">Modern Android applications rely heavily on third-party libraries, making dependency security a critical concern. Software Composition Analysis (SCA) tools inspect dependency metadata, such as package</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Software Composition Analysis (SCA) of Android Dependencies at Build Time) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Inspecting the Merged AndroidManifest</h3>
+        <p class="item-description">During the build process, the Android build tools merge multiple manifest files from different sources (main app, flavors, and libraries) into a single merged manifest file. This merged manifest file </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Inspecting the Merged AndroidManifest) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Inspecting WebView Storage</h3>
+        <p class="item-description">To inspect WebView Storage, first follow the steps in official &quot;Remote debugging WebViews&quot; documentation to connect Chrome DevTools to the WebView of your app.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Inspecting WebView Storage) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Monitor File System Operations in WebViews</h3>
+        <p class="item-description">You can monitor any file system operations in the WebView storage directory using various techniques:</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Monitor File System Operations in WebViews) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Bypassing Root Detection</h3>
+        <p class="item-description">Root detection mechanisms attempt to identify whether an Android device has been rooted, typically by checking for specific files, processes, or system properties. Bypassing these checks is a common s</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Bypassing Root Detection) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Working with XAPK Files</h3>
+        <p class="item-description">When downloading apps from alternative stores such as APKPure or APKMirror, you may receive XAPK files instead of a single APK. XAPK is not an Android standard format. It is simply a ZIP archive used </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Working with XAPK Files) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Analyzing the Network Security Configuration</h3>
+        <p class="item-description">Once the app has been reverse engineered (see @MASTG-TECH-0013), the Network Security Configuration (NSC) file is available in the output directory. Its location is derived from the android:networkSec</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Analyzing the Network Security Configuration) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Extracting Bundled Native Libraries</h3>
+        <p class="item-description">This technique describes how to identify native libraries (.so files) that are packaged inside an Android app's APK using static analysis (without running the app). Native libraries are stored in the </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Extracting Bundled Native Libraries) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="MASTG-TECH-0159" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id">MASTG-TECH-0159</span>
+        </div>
+        <h3 class="item-title">Verify Usage of File-Based Content Providers</h3>
+        <p class="item-description">See @MASTG-KNOW-0117 for an overview of Android ContentProviders, including URI structure, access control, and query handling.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TECH-0159 (Verify Usage of File-Based Content Providers) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Monitoring Deep Link Handlers at Runtime with Frida</h3>
+        <p class="item-description">Here you will use the list of deep links from the static analysis (see @MASTG-TECH-0172) to iterate and determine each handler method and the processed data, if any. You will first start a @MASTG-TOOL</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Monitoring Deep Link Handlers at Runtime with Frida) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="CRYPTO">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-CRYPTO</span>
+        <span class="group-meta">2 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
+
+      <div class="item-card" data-id="" data-category="CRYPTO" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Obtaining Compiler-Provided Security Features</h3>
+        <p class="item-description">Run @MASTG-TOOL-0129 on the target binary, for example a shared library and grep for the keywords you'd like to check for.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Obtaining Compiler-Provided Security Features) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CRYPTO" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Reverse Engineering Flutter Applications</h3>
+        <p class="item-description">Flutter is an open source UI SDK from Google for building natively compiled applications for mobile, web, and desktop from a single codebase. Dart, the programming language used in Flutter, is key to </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Reverse Engineering Flutter Applications) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="AUTH">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-AUTH</span>
+        <span class="group-meta">1 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations.</p>
+
+      <div class="item-card" data-id="" data-category="AUTH" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Bypassing Certificate Pinning</h3>
+        <p class="item-description">Some applications will implement SSL Pinning, which prevents the application from accepting your intercepting certificate as a valid certificate. This means that you will not be able to monitor the tr</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Bypassing Certificate Pinning) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="NETWORK">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-NETWORK</span>
+        <span class="group-meta">4 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Basic Network Monitoring/Sniffing</h3>
+        <p class="item-description">Remotely sniffing all Android traffic in real-time is possible with @MASTG-TOOL-0080, netcat (nc), and @MASTG-TOOL-0081. First, make sure that you have the latest version of Android tcpdump on your ph</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Basic Network Monitoring/Sniffing) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Setting Up an Interception Proxy</h3>
+        <p class="item-description">Several tools support the network analysis of applications that rely on the HTTP(S) protocol. The most important tools are the so-called interception proxies; @MASTG-TOOL-0079 and @MASTG-TOOL-0077 are</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Setting Up an Interception Proxy) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Information Gathering - Network Communication</h3>
+        <p class="item-description">Most of the apps you might encounter connect to remote endpoints. Even before you perform any dynamic analysis (e.g. traffic capture and analysis), you can obtain some initial inputs or entry points b</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Information Gathering - Network Communication) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Intercepting Flutter HTTPS Traffic</h3>
+        <p class="item-description">Flutter is an open-source UI software development kit (SDK) created by Google. It is used to build natively compiled applications for mobile, web, and desktop from a single codebase. Flutter uses Dart</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Intercepting Flutter HTTPS Traffic) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="PLATFORM">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-PLATFORM</span>
+        <span class="group-meta">4 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Enumerating Content Providers</h3>
+        <p class="item-description">You can enumerate the content providers an app declares, and determine which of them are exported, by inspecting the app's AndroidManifest.xml or by querying the running system. See @MASTG-KNOW-0117 f</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Enumerating Content Providers) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Sniffing Implicit Intents and Broadcasts</h3>
+        <p class="item-description">When an app sends an implicit intent or broadcast without restricting the recipient (for example, without an explicit target package or a required permission), any app on the device can register to re</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Sniffing Implicit Intents and Broadcasts) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Listing Deep Links</h3>
+        <p class="item-description">Extract the AndroidManifest.xml (@MASTG-TECH-0117) and analyze it (@MASTG-TECH-0150), looking for &lt;intent-filter&gt; elements that determine whether deep links (with or without custom URL schemes) are de</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Listing Deep Links) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Verifying App Link Website Association</h3>
+        <p class="item-description">Even when a deep link &lt;intent-filter&gt; declares android:autoVerify=&quot;true&quot;, the link is only treated as an App Link once Android confirms the website association against the domain's Digital Asset Links</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Verifying App Link Website Association) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="CODE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-CODE</span>
+        <span class="group-meta">12 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Reverse Engineering Android Apps</h3>
+        <p class="item-description">Android's openness makes it a favorable environment for reverse engineers, offering significant advantages not available on iOS. Because Android is open-source, you can study its source code at the An</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Reverse Engineering Android Apps) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Decompiling Java Code</h3>
+        <p class="item-description">When reverse-engineering an Android application, make sure to always identify all locations of interest regarding application logic and use the correct techniques to reverse-engineer them. In this tec</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Decompiling Java Code) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Disassembling Native Code</h3>
+        <p class="item-description">Dalvik and ART both support the Java Native Interface (JNI), which defines a way for Java code to interact with native code written in C/C++. As on other Linux-based operating systems, native code is </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Disassembling Native Code) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Reviewing Decompiled Java Code</h3>
+        <p class="item-description">Following the example from @MASTG-TECH-0017, we assume that you've successfully decompiled and opened the @MASTG-APP-0003 app in @MASTG-TOOL-0018. Once jadx has finished decompiling, you can browse th</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Reviewing Decompiled Java Code) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Automated Static Analysis</h3>
+        <p class="item-description">You should use tools for efficient static analysis. They allow the tester to focus on the more complicated business logic. A plethora of static code analyzers are available, ranging from open source s</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Automated Static Analysis) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Execution Tracing</h3>
+        <p class="item-description">Performing execution tracing during Android reverse engineering allows you to observe control flow and runtime behavior across the entire stack, from managed Java code down to the Linux kernel. This i</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Execution Tracing) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">JNI Tracing</h3>
+        <p class="item-description">As detailed in @MASTG-TECH-0024, the first argument passed to every JNI function is a JNI interface pointer. This pointer contains a table of functions that allows native code to access the Android Ru</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (JNI Tracing) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Symbolic Execution</h3>
+        <p class="item-description">Symbolic execution is a very useful technique to have in your toolbox, especially while dealing with problems where you need to find a correct input for reaching a certain block of code. In this secti</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Symbolic Execution) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Patching</h3>
+        <p class="item-description">Making small changes to the Android Manifest or bytecode is often the quickest way to fix small annoyances that prevent you from testing or reverse engineering an app. On Android, two issues in partic</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Patching) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Library Injection</h3>
+        <p class="item-description">In the previous section, we learned about patching application code to assist in our analysis, but this approach has several limitations. For instance, you'd like to log everything that's being sent o</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Library Injection) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Getting Loaded Classes and Methods Dynamically</h3>
+        <p class="item-description">You can use the command Java in the Frida CLI to access the Java runtime and retrieve information from the running app. Remember that, unlike Frida for iOS, in Android, you need to wrap your code insi</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Getting Loaded Classes and Methods Dynamically) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Verifying Android Dependencies at Runtime</h3>
+        <p class="item-description">When analyzing an application, it's important to analyze its dependencies, which are usually in the form of libraries, and ensure that they don't contain any known vulnerabilities. If the source code </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Verifying Android Dependencies at Runtime) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="RESILIENCE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-RESILIENCE</span>
+        <span class="group-meta">7 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Installing Apps</h3>
+        <p class="item-description">Use adb install (@MASTG-TOOL-0004) to install an APK on an emulator or connected device. The given path is the path of the APK on the host.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Installing Apps) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Debugging</h3>
+        <p class="item-description">So far, you've been using static analysis techniques without running the target apps. In the real world, especially when reversing malware or more complex apps, pure static analysis is very difficult.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Debugging) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Emulation-based Analysis</h3>
+        <p class="item-description">The Android emulator is based on QEMU, a generic and open-source machine emulator. QEMU emulates a guest CPU by translating the guest instructions on-the-fly into instructions the host processor can u</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Emulation-based Analysis) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Waiting for the Debugger</h3>
+        <p class="item-description">The @MASTG-APP-0003 is not stupid: it notices that it has been run in debuggable mode and reacts by shutting down. A modal dialog is shown immediately, and the crackme terminates once you tap &quot;OK&quot;.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Waiting for the Debugger) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Process Exploration</h3>
+        <p class="item-description">When testing an app, process exploration can provide the tester with deep insights into the app's process memory. It can be achieved via runtime instrumentation and allows performing tasks such as:</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Process Exploration) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Software Composition Analysis (SCA) of Android Dependencies by Creating a SBOM</h3>
+        <p class="item-description">@MASTG-TOOL-0134 can be used to create a so-called Software Bill of Materials (SBOM) in the CycloneDX format. Navigate to the root directory of the Android Studio project you want to scan and execute </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Software Composition Analysis (SCA) of Android Dependencies by Creating a SBOM) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Obtaining Debugging Information and Symbols</h3>
+        <p class="item-description">If a binary is not stripped, you can extract debugging symbols using standard ELF inspection tools. These symbols can provide insights into the functions and variables used in the binary, which is use</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Obtaining Debugging Information and Symbols) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="GENERAL">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-GENERAL</span>
+        <span class="group-meta">30 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Accessing the Device Shell</h3>
+        <p class="item-description">One of the most common things you do when testing an app is accessing the device shell. In this section, we'll see how to access the Android shell both remotely from your host computer with/without a </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Accessing the Device Shell) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Repackaging Apps</h3>
+        <p class="item-description">If you need to test on a non-jailbroken device, you should learn how to repackage an app to enable dynamic testing on it.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Repackaging Apps) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Listing Installed Apps</h3>
+        <p class="item-description">When targeting apps that are installed on the device, you'll first have to figure out the correct package name of the application you want to analyze. You can retrieve the installed apps either by usi</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Listing Installed Apps) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Exploring the App Package</h3>
+        <p class="item-description">Once you have collected the package name of the application you want to target, you'll want to start gathering information about it. First, retrieve the APK as explained in @MASTG-TECH-0003.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Exploring the App Package) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Monitoring System Logs</h3>
+        <p class="item-description">On Android, you can easily inspect the log of system messages by using Logcat. There are two ways to execute Logcat:</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Monitoring System Logs) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Dynamic Analysis on Android</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Dynamic Analysis on Android) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Obtaining Information about the APK Signature</h3>
+        <p class="item-description">@MASTG-TOOL-0123 can be used to verify APK signatures:</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Obtaining Information about the APK Signature) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Untitled) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Interacting with Android ContentProviders</h3>
+        <p class="item-description">See @MASTG-KNOW-0117 for an overview of Android ContentProviders, including URI structure, access control, and query handling.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Interacting with Android ContentProviders) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Analyzing the AndroidManifest</h3>
+        <p class="item-description">Once you've extracted the AndroidManifest.xml as described in @MASTG-TECH-0117, you can analyze its content to look for specific attributes, flags, permissions, or component declarations.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Analyzing the AndroidManifest) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Enumerating Activities</h3>
+        <p class="item-description">You can enumerate the activities an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by querying</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Enumerating Activities) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Enumerating Services</h3>
+        <p class="item-description">You can enumerate the services an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by querying t</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Enumerating Services) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Enumerating Broadcast Receivers</h3>
+        <p class="item-description">You can enumerate the broadcast receivers an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Enumerating Broadcast Receivers) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Identifying Compilers, Obfuscators, and Packers in Android Apps</h3>
+        <p class="item-description">Use @MASTG-TOOL-0009 to scan the APK and identify the compilers, obfuscators, and packers applied to it.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain  (Identifying Compilers, Obfuscators, and Packers in Android Apps) for android. When is this technique used in mobile security testing? Provide step-by-step instructions and tooling recommendations. Reference related MASTG tests that use this technique.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+  </main>
+  <footer class="page-footer">    <p>Source: <a href="https://mas.owasp.org/MASTG">https://mas.owasp.org/MASTG</a> · MASTG v2.0.0</p>
+    <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
+  </footer>
+  <script>
+// Group toggle
+document.querySelectorAll('.group-header').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    btn.nextElementSibling.classList.toggle('collapsed', expanded);
+  });
+});
+
+// Prompt toggle
+document.querySelectorAll('.prompt-toggle').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const content = btn.nextElementSibling;
+    content.classList.toggle('open');
+    btn.textContent = content.classList.contains('open') ? 'Hide Prompt' : 'Show Prompt';
+  });
+});
+
+// Copy to clipboard
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const pre = btn.parentElement.querySelector('pre');
+    await navigator.clipboard.writeText(pre.innerText);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+});
+
+// Search & Filter
+const searchInput = document.querySelector('.search-input');
+const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+
+function applyFilters() {
+  const term = searchInput.value.toLowerCase().trim();
+  const cat = document.querySelector('.filter-btn[data-filter].active')?.dataset.filter || 'all';
+  
+  let totalVisible = 0;
+  document.querySelectorAll('.group').forEach(group => {
+    const groupCat = group.dataset.category;
+    let groupVisible = (cat === 'all' || groupCat === cat);
+    let itemsVisible = 0;
+    
+    group.querySelectorAll('.item-card').forEach(card => {
+      const text = card.innerText.toLowerCase();
+      const profiles = card.dataset.profiles || '';
+      const matchesSearch = !term || text.includes(term);
+      
+      const visible = matchesSearch;
+    
+      card.style.display = visible ? '' : 'none';
+      if (visible) itemsVisible++;
+    });
+    
+    group.style.display = (groupVisible && itemsVisible > 0) ? '' : 'none';
+    if (groupVisible && itemsVisible > 0) totalVisible++;
+  });
+  
+  document.querySelector('.no-results').style.display = totalVisible === 0 ? 'block' : 'none';
+}
+
+searchInput.addEventListener('input', applyFilters);
+filterBtns.forEach(b => b.addEventListener('click', () => {
+  filterBtns.forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  applyFilters();
+}));
+
+</script>
+</body>
+</html>

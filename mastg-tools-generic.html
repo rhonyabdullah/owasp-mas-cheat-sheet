@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWASP MASTG Tools — Generic &amp; Network</title>
+  <style>
+:root {
+  --owasp-blue: #1b7a8c;
+  --owasp-dark: #0d3b44;
+  --owasp-accent: #f2a900;
+  --owasp-light: #e8f4f6;
+  --bg-page: #f4f7f9;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5e6c84;
+  --border-subtle: #e1e4e8;
+  --L1-color: #36B37E;
+  --L2-color: #0052CC;
+  --R-color: #6554C0;
+  --P-color: #FF5630;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 24px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.page-header { text-align: center; margin-bottom: 2rem; animation: fadeInDown 0.6s ease-out; }
+.page-header h1 { font-size: 2rem; color: var(--owasp-dark); margin-bottom: 0.5rem; }
+.page-header .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+.search-input { flex: 1; min-width: 260px; padding: 0.6rem 1rem; border: 1px solid var(--border-subtle); border-radius: 6px; font-size: 0.95rem; background: var(--bg-card); }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-btn { padding: 0.4rem 0.9rem; border: 1px solid var(--border-subtle); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+.filter-btn:hover { border-color: var(--owasp-blue); }
+.filter-btn.active { background: var(--owasp-blue); color: #fff; border-color: var(--owasp-blue); }
+.group { margin-bottom: 1rem; animation: fadeInUp 0.5s ease both; }
+.group-header { width: 100%; display: flex; align-items: center; justify-content: space-between; background: var(--owasp-blue); color: #fff; border: none; padding: 0.875rem 1.25rem; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: 700; transition: background 0.3s; }
+.group-header:hover { background: var(--owasp-dark); }
+.group-header .group-title { display: flex; align-items: center; gap: 0.5rem; }
+.group-header .group-meta { font-size: 0.85rem; opacity: 0.85; font-weight: 500; }
+.group-header .group-toggle { transition: transform 0.3s ease; font-size: 0.9rem; }
+.group-header[aria-expanded="false"] .group-toggle { transform: rotate(-90deg); }
+.group-content { max-height: 5000px; opacity: 1; overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; padding: 0 0.5rem; }
+.group-content.collapsed { max-height: 0; opacity: 0; }
+.group-description { padding: 1rem 0.5rem 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+.item-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+.item-card:hover { border-color: var(--owasp-blue); box-shadow: 0 4px 12px rgba(27,122,140,0.08); transform: translateY(-1px); }
+.item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.item-id { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.8rem; font-weight: 700; color: var(--owasp-blue); background: var(--owasp-light); padding: 0.25rem 0.5rem; border-radius: 6px; }
+.item-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+.item-description { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.5; }
+.badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.badge-l1 { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-l2 { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-r { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-p { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-android { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-ios { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-generic { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-network { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-current { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-placeholder { background: rgba(255,171,0,0.12); color: #b37600; }
+.badge-deprecated { background: rgba(255,86,48,0.12); color: #FF5630; }
+.item-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.prompt-toggle { display: inline-flex; align-items: center; gap: 0.4rem; background: #fffbea; border: 1px solid var(--owasp-accent); color: var(--owasp-accent); padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; }
+.prompt-toggle:hover { background: var(--owasp-accent); color: #fff; }
+.prompt-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s ease, opacity 0.2s ease; }
+.prompt-content.open { max-height: 500px; opacity: 1; }
+.prompt-box { margin-top: 0.75rem; background: #f8f9fa; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem; position: relative; }
+.prompt-box pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.85rem; color: #2d3748; line-height: 1.5; }
+.copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--owasp-accent); color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.copy-btn:hover { opacity: 0.85; }
+.copy-btn.copied { background: #36B37E; }
+.page-footer { background: var(--owasp-dark); color: rgba(255,255,255,0.8); text-align: center; padding: 2rem 1.5rem; margin-top: 2rem; border-radius: 8px; }
+.page-footer a { color: var(--owasp-accent); text-decoration: none; }
+.page-footer .disclaimer { font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem; }
+.no-results { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 1rem; display: none; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>OWASP MASTG Tools — Generic &amp; Network</h1>
+    <p class="subtitle">Generic + Network · 33 tools · Generated 2026-07-08 03:38 UTC</p>
+  </header>
+  <main class="container">
+    <div class="filter-bar">
+      <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button><button class="filter-btn" data-filter="STORAGE">Storage</button><button class="filter-btn" data-filter="NETWORK">Network</button><button class="filter-btn" data-filter="PLATFORM">Platform</button><button class="filter-btn" data-filter="CODE">Code</button><button class="filter-btn" data-filter="RESILIENCE">Resilience</button><button class="filter-btn" data-filter="GENERAL">General</button>
+      </div>
+    </div>
+    <div class="no-results">No results found.</div>
+
+    <section class="group" data-category="STORAGE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-STORAGE</span>
+        <span class="group-meta">2 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">rabin2</h3>
+        <p class="item-description">rabin2 is a command-line utility within the Radare2 framework (@MASTG-TOOL-0073, @MASTG-TOOL-0028) designed for extracting and presenting detailed information from binary files. It supports various fi</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (rabin2) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">tcpdump</h3>
+        <p class="item-description">tcpdump is a command-line tool to capture and analyze network traffic in real time or from saved capture files.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (tcpdump) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="NETWORK">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-NETWORK</span>
+        <span class="group-meta">6 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">disable-flutter-tls-verification</h3>
+        <p class="item-description">disable-flutter-tls-verification is a Frida script that disables Flutter's TLS verification and works on (ARM32, ARM64 and x64) and iOS (ARM64). It uses pattern matching to find sslverifypeercert in h</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (disable-flutter-tls-verification) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">MITM Relay</h3>
+        <p class="item-description">MITM Relay is a script to intercept and modify non-HTTP protocols through Burp and others with support for SSL and STARTTLS interception.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (MITM Relay) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ZAP (Zed Attack Proxy)</h3>
+        <p class="item-description">ZAP (Zed Attack Proxy) is a free security tool which helps to automatically find security vulnerabilities in web applications and web services.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ZAP (Zed Attack Proxy)) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Nope-Proxy</h3>
+        <p class="item-description">Nope-Proxy is an extension for Burp that operates as a Non-HTTP Machine-in-the-Middle (MITM) tool, allowing you to intercept both TCP and UDP traffic. Additionally, it allows DNS spoofing on mobile de</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Nope-Proxy) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">HTTP Toolkit</h3>
+        <p class="item-description">HTTP Toolkit is an open-source tool designed to intercept, analyze, and debug HTTPS traffic. The tool captures HTTP traffic from Android, iOS, web or desktop applications.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (HTTP Toolkit) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">badssl</h3>
+        <p class="item-description">badssl is a website maintained by the Chromium project that provides various SSL/TLS certificate configurations for testing security implementations. It offers a comprehensive collection of test subdo</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (badssl) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="PLATFORM">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-PLATFORM</span>
+        <span class="group-meta">5 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">LIEF</h3>
+        <p class="item-description">The purpose of LIEF is to provide a cross platform library to parse, modify and abstract ELF, PE and MachO formats. With it you can, for instance, inject a certain library as a dependency of a native </p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (LIEF) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Fridump</h3>
+        <p class="item-description">Fridump is an open source memory dumping tool, primarily aimed to penetration testers and developers. Fridump is using the Frida framework to dump accessible memory addresses from any platform support</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Fridump) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Corellium</h3>
+        <p class="item-description">Corellium is an iOS and Android device virtualization platform that allows users to create and manage virtual devices, perform dynamic analysis, and test applications in a controlled environment.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Corellium) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">dependency-track</h3>
+        <p class="item-description">Dependency-Track is a Component Analysis platform that allows organizations to identify and reduce risk in the software supply chain.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (dependency-track) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Burp Suite</h3>
+        <p class="item-description">Burp Suite is an integrated platform for performing security testing mobile and web applications.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Burp Suite) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="CODE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-CODE</span>
+        <span class="group-meta">5 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Frida</h3>
+        <p class="item-description">Frida is a free and open source dynamic code instrumentation toolkit written by Ole André Vadla Ravnås that works by injecting the QuickJS JavaScript engine (previously Duktape and V8) into the instru</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Frida) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Frida CodeShare</h3>
+        <p class="item-description">Frida CodeShare is a repository containing a collection of ready-to-run Frida scripts which can enormously help when performing concrete tasks both on Android as on iOS as well as also serve as inspir</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Frida CodeShare) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">semgrep</h3>
+        <p class="item-description">semgrep is a static code scanner that is able to scan Java, Kotlin and Swift.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (semgrep) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">dependency-check</h3>
+        <p class="item-description">Dependency-Check is a Software Composition Analysis (SCA) tool that attempts to detect publicly disclosed vulnerabilities contained within a project's dependencies.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (dependency-check) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Visual Studio Code (vscode)</h3>
+        <p class="item-description">Visual Studio Code (vscode) is a code editor that offers various plugins useful for development and security testing. For example:</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Visual Studio Code (vscode)) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="RESILIENCE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-RESILIENCE</span>
+        <span class="group-meta">5 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Ghidra</h3>
+        <p class="item-description">Ghidra is an open source software reverse engineering (SRE) suite of tools developed by the United State of America's National Security Agency's (NSA) Research Directorate. Ghidra is a versatile tool </p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Ghidra) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">r2frida</h3>
+        <p class="item-description">r2frida is a project that allows radare2 to connect to Frida, effectively merging the powerful reverse engineering capabilities of radare2 with the dynamic instrumentation toolkit of Frida. r2frida ca</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (r2frida) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">objection</h3>
+        <p class="item-description">Objection is a &quot;runtime mobile exploration toolkit, powered by Frida&quot;. Its main goal is to allow security testing on non-rooted devices through an intuitive interface. You can find the full list of fe</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (objection) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">iaito</h3>
+        <p class="item-description">Iaito is the official graphical user interface for radare2, an open-source reverse engineering framework. This user-friendly tool simplifies the reverse engineering process by providing a graphical in</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (iaito) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Frooky</h3>
+        <p class="item-description">Frooky is a Frida-based dynamic analysis tool for Android and iOS applications. It enables security researchers to instrument mobile apps using JSON-based hook configurations, providing a declarative </p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Frooky) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="GENERAL">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-GENERAL</span>
+        <span class="group-meta">10 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">MobSF</h3>
+        <p class="item-description">MobSF (Mobile Security Framework) is an automated, all-in-one mobile application pentesting framework capable of performing static and dynamic analysis. The easiest way of getting MobSF started is via</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (MobSF) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">cdxgen</h3>
+        <p class="item-description">cdxgen can generate Software Bill of Materials (SBOM) for most applications and container images with a single command. It supports SwiftPM for iOS and Maven for Android. The generated SBOM can then b</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (cdxgen) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">tcpdump (Android)</h3>
+        <p class="item-description">tcpdump (Android) is an Android-specific build of @MASTG-TOOL-0080.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (tcpdump (Android)) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Wireshark</h3>
+        <p class="item-description">Wireshark is an open-source packet analyzer.</p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Wireshark) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="generic">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-generic">generic</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for generic mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+  </main>
+  <footer class="page-footer">    <p>Source: <a href="https://mas.owasp.org/MASTG">https://mas.owasp.org/MASTG</a> · MASTG v2.0.0</p>
+    <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
+  </footer>
+  <script>
+// Group toggle
+document.querySelectorAll('.group-header').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    btn.nextElementSibling.classList.toggle('collapsed', expanded);
+  });
+});
+
+// Prompt toggle
+document.querySelectorAll('.prompt-toggle').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const content = btn.nextElementSibling;
+    content.classList.toggle('open');
+    btn.textContent = content.classList.contains('open') ? 'Hide Prompt' : 'Show Prompt';
+  });
+});
+
+// Copy to clipboard
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const pre = btn.parentElement.querySelector('pre');
+    await navigator.clipboard.writeText(pre.innerText);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+});
+
+// Search & Filter
+const searchInput = document.querySelector('.search-input');
+const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+
+function applyFilters() {
+  const term = searchInput.value.toLowerCase().trim();
+  const cat = document.querySelector('.filter-btn[data-filter].active')?.dataset.filter || 'all';
+  
+  let totalVisible = 0;
+  document.querySelectorAll('.group').forEach(group => {
+    const groupCat = group.dataset.category;
+    let groupVisible = (cat === 'all' || groupCat === cat);
+    let itemsVisible = 0;
+    
+    group.querySelectorAll('.item-card').forEach(card => {
+      const text = card.innerText.toLowerCase();
+      const profiles = card.dataset.profiles || '';
+      const matchesSearch = !term || text.includes(term);
+      
+      const visible = matchesSearch;
+    
+      card.style.display = visible ? '' : 'none';
+      if (visible) itemsVisible++;
+    });
+    
+    group.style.display = (groupVisible && itemsVisible > 0) ? '' : 'none';
+    if (groupVisible && itemsVisible > 0) totalVisible++;
+  });
+  
+  document.querySelector('.no-results').style.display = totalVisible === 0 ? 'block' : 'none';
+}
+
+searchInput.addEventListener('input', applyFilters);
+filterBtns.forEach(b => b.addEventListener('click', () => {
+  filterBtns.forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  applyFilters();
+}));
+
+</script>
+</body>
+</html>

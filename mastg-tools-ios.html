@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWASP MASTG Tools — iOS</title>
+  <style>
+:root {
+  --owasp-blue: #1b7a8c;
+  --owasp-dark: #0d3b44;
+  --owasp-accent: #f2a900;
+  --owasp-light: #e8f4f6;
+  --bg-page: #f4f7f9;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5e6c84;
+  --border-subtle: #e1e4e8;
+  --L1-color: #36B37E;
+  --L2-color: #0052CC;
+  --R-color: #6554C0;
+  --P-color: #FF5630;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 24px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.page-header { text-align: center; margin-bottom: 2rem; animation: fadeInDown 0.6s ease-out; }
+.page-header h1 { font-size: 2rem; color: var(--owasp-dark); margin-bottom: 0.5rem; }
+.page-header .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+.search-input { flex: 1; min-width: 260px; padding: 0.6rem 1rem; border: 1px solid var(--border-subtle); border-radius: 6px; font-size: 0.95rem; background: var(--bg-card); }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-btn { padding: 0.4rem 0.9rem; border: 1px solid var(--border-subtle); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+.filter-btn:hover { border-color: var(--owasp-blue); }
+.filter-btn.active { background: var(--owasp-blue); color: #fff; border-color: var(--owasp-blue); }
+.group { margin-bottom: 1rem; animation: fadeInUp 0.5s ease both; }
+.group-header { width: 100%; display: flex; align-items: center; justify-content: space-between; background: var(--owasp-blue); color: #fff; border: none; padding: 0.875rem 1.25rem; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: 700; transition: background 0.3s; }
+.group-header:hover { background: var(--owasp-dark); }
+.group-header .group-title { display: flex; align-items: center; gap: 0.5rem; }
+.group-header .group-meta { font-size: 0.85rem; opacity: 0.85; font-weight: 500; }
+.group-header .group-toggle { transition: transform 0.3s ease; font-size: 0.9rem; }
+.group-header[aria-expanded="false"] .group-toggle { transform: rotate(-90deg); }
+.group-content { max-height: 5000px; opacity: 1; overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; padding: 0 0.5rem; }
+.group-content.collapsed { max-height: 0; opacity: 0; }
+.group-description { padding: 1rem 0.5rem 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+.item-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+.item-card:hover { border-color: var(--owasp-blue); box-shadow: 0 4px 12px rgba(27,122,140,0.08); transform: translateY(-1px); }
+.item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.item-id { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.8rem; font-weight: 700; color: var(--owasp-blue); background: var(--owasp-light); padding: 0.25rem 0.5rem; border-radius: 6px; }
+.item-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+.item-description { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.5; }
+.badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.badge-l1 { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-l2 { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-r { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-p { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-android { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-ios { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-generic { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-network { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-current { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-placeholder { background: rgba(255,171,0,0.12); color: #b37600; }
+.badge-deprecated { background: rgba(255,86,48,0.12); color: #FF5630; }
+.item-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.prompt-toggle { display: inline-flex; align-items: center; gap: 0.4rem; background: #fffbea; border: 1px solid var(--owasp-accent); color: var(--owasp-accent); padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; }
+.prompt-toggle:hover { background: var(--owasp-accent); color: #fff; }
+.prompt-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s ease, opacity 0.2s ease; }
+.prompt-content.open { max-height: 500px; opacity: 1; }
+.prompt-box { margin-top: 0.75rem; background: #f8f9fa; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem; position: relative; }
+.prompt-box pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.85rem; color: #2d3748; line-height: 1.5; }
+.copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--owasp-accent); color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.copy-btn:hover { opacity: 0.85; }
+.copy-btn.copied { background: #36B37E; }
+.page-footer { background: var(--owasp-dark); color: rgba(255,255,255,0.8); text-align: center; padding: 2rem 1.5rem; margin-top: 2rem; border-radius: 8px; }
+.page-footer a { color: var(--owasp-accent); text-decoration: none; }
+.page-footer .disclaimer { font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem; }
+.no-results { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 1rem; display: none; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>OWASP MASTG Tools — iOS</h1>
+    <p class="subtitle">iOS · 54 tools · Generated 2026-07-08 03:42 UTC</p>
+  </header>
+  <main class="container">
+    <div class="filter-bar">
+      <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button><button class="filter-btn" data-filter="STORAGE">Storage</button><button class="filter-btn" data-filter="CRYPTO">Crypto</button><button class="filter-btn" data-filter="NETWORK">Network</button><button class="filter-btn" data-filter="PLATFORM">Platform</button><button class="filter-btn" data-filter="CODE">Code</button><button class="filter-btn" data-filter="RESILIENCE">Resilience</button><button class="filter-btn" data-filter="GENERAL">General</button>
+      </div>
+    </div>
+    <div class="no-results">No results found.</div>
+
+    <section class="group" data-category="STORAGE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-STORAGE</span>
+        <span class="group-meta">15 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">BinaryCookieReader</h3>
+        <p class="item-description">BinaryCookieReader is a tool to dump all the cookies from the binary Cookies.binarycookies file - &lt;https://github.com/as0ler/BinaryCookieReader/blob/master/BinaryCookieReader.py&gt;</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (BinaryCookieReader) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">class-dump</h3>
+        <p class="item-description">class-dump is a command line utility for examining the Objective-C runtime information stored in Mach-O (Mach object) files. It generates declarations for the classes, categories, and protocols.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (class-dump) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">class-dump-dyld</h3>
+        <p class="item-description">class-dump-dyld allows symbols to be dumped and retrieved directly from the shared cache, eliminating the necessity of extracting the files first. It can generate header files from app binaries, libra</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (class-dump-dyld) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">iOSbackup</h3>
+        <p class="item-description">iOSbackup is a Python 3 class that reads and extracts files from a password-encrypted iOS backup created by iTunes on Mac and Windows.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (iOSbackup) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">MachoOView</h3>
+        <p class="item-description">MachoOView is a useful visual Mach-O file browser that also allows in-file editing of ARM binaries.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (MachoOView) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">otool</h3>
+        <p class="item-description">otool is a tool for displaying specific parts of object files or libraries. It works with Mach-O files and universal file formats.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (otool) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Plutil</h3>
+        <p class="item-description">Plutil is a program that can convert .plist files between a binary version and an XML version.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Plutil) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ios-app-signer</h3>
+        <p class="item-description">ios-app-signer is a GUI-based tool for macOS that allows you to re-sign iOS apps and bundle them into IPA files ready to be installed on an iOS device. It can be installed using the .app file from the</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ios-app-signer) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ipsw</h3>
+        <p class="item-description">IPSW calls itself an &quot;iOS/macOS Research Swiss Army Knife&quot;. In general, IPSW allows you to obtain iOS specific files (IPSW, OTA, ...) and also statically analyze them. For application analysis, the mo</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ipsw) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Sideloadly</h3>
+        <p class="item-description">Sideloadly allows you to obtain a valid signature for a given IPA file and then install it to a connected iOS device. In addition to signing and installing an IPA file, Sideloadly also allows you to i</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Sideloadly) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">objdump (iOS)</h3>
+        <p class="item-description">objdump is a tool to inspect object files, executables and libraries. It can disassemble instructions or show symbol tables, headers and sections. There are implementations in GNU Binutils and in LLVM</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (objdump (iOS)) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">AppSync Unified</h3>
+        <p class="item-description">AppSync Unified disables various IPA signature verifications on jailbroken iOS devices, allowing you to install IPA files with missing or incorrect signatures. AppSync Unified does not require any con</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (AppSync Unified) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">PlistBuddy</h3>
+        <p class="item-description">PlistBuddy is available on macOS and allows you to print and modify .plist files. It is not on the default PATH, but it can be run via /usr/libexec/PlistBuddy. PlistBuddy uses a custom syntax to execu</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (PlistBuddy) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">plistlib</h3>
+        <p class="item-description">The plistlib is part of the Python standard library and allows you to programmatically read, modify, and write .plist (Property List) files. It supports both XML and binary plist formats and provides </p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (plistlib) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ipainstaller</h3>
+        <p class="item-description">ipainstaller allows you to install IPA files from an SSH session on a jailbroken iOS device.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ipainstaller) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="CRYPTO">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-CRYPTO</span>
+        <span class="group-meta">4 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
+
+      <div class="item-card" data-id="" data-category="CRYPTO" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Frida-ios-dump</h3>
+        <p class="item-description">Frida-ios-dump is a Python script that helps you retrieve the decrypted version of an iOS app (IPA) from an iOS device. It supports both Python 2 and Python 3 and requires Frida running on your iOS de</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Frida-ios-dump) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CRYPTO" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Keychain-Dumper</h3>
+        <p class="item-description">Keychain-dumper is an iOS tool to check which keychain items are available to an attacker once an iOS device has been jailbroken. In order to use the tool on modern versions of iOS, you need to follow</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Keychain-Dumper) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CRYPTO" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">security</h3>
+        <p class="item-description">security is a macOS command to administer Keychains, keys, certificates and the Security framework.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (security) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CRYPTO" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">SwiftShield</h3>
+        <p class="item-description">SwiftShield is a tool that generates irreversible, encrypted names for your iOS project's objects (including your Pods and Storyboards). This raises the bar for reverse engineers and will produce less</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (SwiftShield) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="NETWORK">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-NETWORK</span>
+        <span class="group-meta">2 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">iproxy</h3>
+        <p class="item-description">iproxy allows you to forward a port from a connected iOS device to a port on the host machine. This can be useful for interacting with jailbroken devices, as some jailbreaks do not expose the SSH port</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (iproxy) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">SSL Kill Switch 3</h3>
+        <p class="item-description">SSL Kill Switch 3 is a jailbreak tweak to disable SSL certificate validation - including certificate pinning - within iOS and macOS Apps</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (SSL Kill Switch 3) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="PLATFORM">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-PLATFORM</span>
+        <span class="group-meta">1 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">libimobiledevice suite</h3>
+        <p class="item-description">The libimobiledevice suite is cross-platform protocol library for interacting with iOS devices. The different libraries can be compiled into binaries for direct interaction with iOS devices from the c</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (libimobiledevice suite) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="CODE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-CODE</span>
+        <span class="group-meta">9 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ios-deploy</h3>
+        <p class="item-description">With ios-deploy you can install and debug iOS apps from the command line, without using Xcode. It can be installed via brew on macOS:</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ios-deploy) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">lldb (iOS)</h3>
+        <p class="item-description">lldb is a debugger bundled with Apple's Xcode used for debugging iOS applications</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (lldb (iOS)) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">optool</h3>
+        <p class="item-description">optool is a tool which interfaces with MachO binaries in order to insert/remove load commands, strip code signatures, resign, and remove aslr.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (optool) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">simctl</h3>
+        <p class="item-description">simctl is an Xcode tool that allows you to interact with iOS simulators via the command line to e.g. manage simulators, launch apps, take screenshots or collect their logs.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (simctl) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">swift-demangle</h3>
+        <p class="item-description">swift-demangle is an Xcode tool that demangles Swift symbols. For more information run xcrun swift-demangle -help once installed.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (swift-demangle) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Xcode</h3>
+        <p class="item-description">Xcode is an Integrated Development Environment (IDE) for macOS that contains a suite of tools for developing software for macOS, iOS, watchOS, and tvOS. You can download Xcode for free from the offici</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Xcode) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Xcode Command Line Tools</h3>
+        <p class="item-description">The Xcode Command Line Tools are bundled with @MASTG-TOOL-0070. After installing @MASTG-TOOL-0070, run xcode-select --install to install the Xcode Command Line Tools package. This will be handy during</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Xcode Command Line Tools) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">xcrun</h3>
+        <p class="item-description">xcrun can be used invoke Xcode developer tools from the command-line, without having them in the path. For example you may want to use it to locate and run swift-demangle or simctl.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (xcrun) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">codesign</h3>
+        <p class="item-description">The codesign tool is primarily used to create, verify, and display code signatures, and to query the dynamic status of signed code in the system. Although Xcode typically automates the process of sign</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (codesign) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="RESILIENCE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-RESILIENCE</span>
+        <span class="group-meta">5 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Frida (iOS)</h3>
+        <p class="item-description">Frida supports interaction with the Objective-C runtime through the ObjC API. You'll be able to hook and call both Objective-C and native functions inside the process and its native libraries. Your Ja</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Frida (iOS)) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Grapefruit</h3>
+        <p class="item-description">Grapefruit is an iOS app assessment tool that is using the Frida server on the iOS device and is abstracting many penetration testing tasks into a Web UI. It can be installed via npm.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Grapefruit) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Sileo</h3>
+        <p class="item-description">Sileo is a third-party app store available for both rooted and rootless jailbreaks on iOS 12+. It provides a graphical user interface for apt/dpkg and lets you install apps, binaries, and tweaks. Sile</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Sileo) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">radare2 (iOS)</h3>
+        <p class="item-description">Radare2 is a complete framework for reverse-engineering and analyzing binaries. The installation instructions can be found in the GitHub repository. To learn more on radare2 you may want to read the o</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (radare2 (iOS)) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">xpcspy</h3>
+        <p class="item-description">xpcspy is a Frida-based tool designed for bidirectional XPC message interception on iOS and macOS targets. It hooks into the XPC runtime to capture messages as they are sent and received, printing the</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (xpcspy) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="GENERAL">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-GENERAL</span>
+        <span class="group-meta">18 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">MobSF (iOS)</h3>
+        <p class="item-description">By running MobSF locally on a macOS host you'll benefit from a slightly better class-dump output.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (MobSF (iOS)) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">nm (iOS)</h3>
+        <p class="item-description">nm is a tool that displays the name list (symbol table) of the given binary.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (nm (iOS)) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">class-dump-z</h3>
+        <p class="item-description">class-dump-z is class-dump re-written from scratch in C++, avoiding the use of dynamic calls. Removing these unnecessary calls makes class-dump-z nearly 10 times faster than its predecessor.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (class-dump-z) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Cycript</h3>
+        <p class="item-description">Cycript is a scripting language developed by Jay Freeman (aka Saurik). It injects a JavaScriptCore virtual machine into a running process. Using the Cycript interactive console, users can manipulate t</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Cycript) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Cydia</h3>
+        <p class="item-description">Cydia is an alternative app store developed by Jay Freeman (aka &quot;saurik&quot;) for jailbroken devices. It provides a graphical user interface and a version of the Advanced Packaging Tool (APT). You can eas</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Cydia) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">dsdump</h3>
+        <p class="item-description">dsdump is a tool to dump Objective-C classes and Swift type descriptors (classes, structs, enums). It only supports Swift version 5 or higher and does not support ARM 32-bit binaries.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (dsdump) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">gdb</h3>
+        <p class="item-description">A tool to perform runtime analysis of iOS applications.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (gdb) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Usbmuxd</h3>
+        <p class="item-description">usbmuxd is a socket daemon that monitors USB iPhone connections. You can use it to map the mobile device's localhost listening sockets to TCP ports on your host computer. This allows you to convenient</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Usbmuxd) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">objection (iOS)</h3>
+        <p class="item-description">Objection offers several features specific to iOS. You can find the full list of features on the project's page, but here are a few interesting ones:</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (objection (iOS)) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ldid</h3>
+        <p class="item-description">ldid is a Link Identity Editor created by Saurik. It allows you to view and update the entitlements of a MachO binary.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ldid) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">c++filt</h3>
+        <p class="item-description">c++filt is a demangling tool that converts mangled C++ symbols into human readable strings by calling c++filt &lt;symbol&gt;. See the man page for more information on its usage.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (c++filt) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">GlobalWebInspect</h3>
+        <p class="item-description">This tool may or may not work depending on your macOS / iOS combination.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (GlobalWebInspect) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ElleKit</h3>
+        <p class="item-description">ElleKit is a function-hooking framework used by the popular jailbreaks Dopamine and palera1n. It provides an API for both Substrate and libhooker.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ElleKit) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">IOSSecuritySuite</h3>
+        <p class="item-description">IOSSecuritySuite is a library used to detect if a device is jailbroken.</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (IOSSecuritySuite) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Choicy</h3>
+        <p class="item-description">Choicy is an advanced tweak configurator for jailbroken iOS devices. It allows you to prevent injection of tweaks into specific applications, which can help with hiding the jailbroken nature of the de</p>
+        <div class="item-badges">
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Choicy) for ios mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+  </main>
+  <footer class="page-footer">    <p>Source: <a href="https://mas.owasp.org/MASTG">https://mas.owasp.org/MASTG</a> · MASTG v2.0.0</p>
+    <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
+  </footer>
+  <script>
+// Group toggle
+document.querySelectorAll('.group-header').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    btn.nextElementSibling.classList.toggle('collapsed', expanded);
+  });
+});
+
+// Prompt toggle
+document.querySelectorAll('.prompt-toggle').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const content = btn.nextElementSibling;
+    content.classList.toggle('open');
+    btn.textContent = content.classList.contains('open') ? 'Hide Prompt' : 'Show Prompt';
+  });
+});
+
+// Copy to clipboard
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const pre = btn.parentElement.querySelector('pre');
+    await navigator.clipboard.writeText(pre.innerText);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+});
+
+// Search & Filter
+const searchInput = document.querySelector('.search-input');
+const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+
+function applyFilters() {
+  const term = searchInput.value.toLowerCase().trim();
+  const cat = document.querySelector('.filter-btn[data-filter].active')?.dataset.filter || 'all';
+  
+  let totalVisible = 0;
+  document.querySelectorAll('.group').forEach(group => {
+    const groupCat = group.dataset.category;
+    let groupVisible = (cat === 'all' || groupCat === cat);
+    let itemsVisible = 0;
+    
+    group.querySelectorAll('.item-card').forEach(card => {
+      const text = card.innerText.toLowerCase();
+      const profiles = card.dataset.profiles || '';
+      const matchesSearch = !term || text.includes(term);
+      
+      const visible = matchesSearch;
+    
+      card.style.display = visible ? '' : 'none';
+      if (visible) itemsVisible++;
+    });
+    
+    group.style.display = (groupVisible && itemsVisible > 0) ? '' : 'none';
+    if (groupVisible && itemsVisible > 0) totalVisible++;
+  });
+  
+  document.querySelector('.no-results').style.display = totalVisible === 0 ? 'block' : 'none';
+}
+
+searchInput.addEventListener('input', applyFilters);
+filterBtns.forEach(b => b.addEventListener('click', () => {
+  filterBtns.forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  applyFilters();
+}));
+
+</script>
+</body>
+</html>

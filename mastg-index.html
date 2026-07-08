@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWASP MASTG Cheat Sheets</title>
+  <style>
+:root {
+  --owasp-blue: #1b7a8c;
+  --owasp-dark: #0d3b44;
+  --owasp-accent: #f2a900;
+  --owasp-light: #e8f4f6;
+  --bg-page: #f4f7f9;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5e6c84;
+  --border-subtle: #e1e4e8;
+  --L1-color: #36B37E;
+  --L2-color: #0052CC;
+  --R-color: #6554C0;
+  --P-color: #FF5630;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 24px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.page-header { text-align: center; margin-bottom: 2rem; animation: fadeInDown 0.6s ease-out; }
+.page-header h1 { font-size: 2rem; color: var(--owasp-dark); margin-bottom: 0.5rem; }
+.page-header .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+.search-input { flex: 1; min-width: 260px; padding: 0.6rem 1rem; border: 1px solid var(--border-subtle); border-radius: 6px; font-size: 0.95rem; background: var(--bg-card); }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-btn { padding: 0.4rem 0.9rem; border: 1px solid var(--border-subtle); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+.filter-btn:hover { border-color: var(--owasp-blue); }
+.filter-btn.active { background: var(--owasp-blue); color: #fff; border-color: var(--owasp-blue); }
+.group { margin-bottom: 1rem; animation: fadeInUp 0.5s ease both; }
+.group-header { width: 100%; display: flex; align-items: center; justify-content: space-between; background: var(--owasp-blue); color: #fff; border: none; padding: 0.875rem 1.25rem; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: 700; transition: background 0.3s; }
+.group-header:hover { background: var(--owasp-dark); }
+.group-header .group-title { display: flex; align-items: center; gap: 0.5rem; }
+.group-header .group-meta { font-size: 0.85rem; opacity: 0.85; font-weight: 500; }
+.group-header .group-toggle { transition: transform 0.3s ease; font-size: 0.9rem; }
+.group-header[aria-expanded="false"] .group-toggle { transform: rotate(-90deg); }
+.group-content { max-height: 5000px; opacity: 1; overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; padding: 0 0.5rem; }
+.group-content.collapsed { max-height: 0; opacity: 0; }
+.group-description { padding: 1rem 0.5rem 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+.item-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+.item-card:hover { border-color: var(--owasp-blue); box-shadow: 0 4px 12px rgba(27,122,140,0.08); transform: translateY(-1px); }
+.item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.item-id { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.8rem; font-weight: 700; color: var(--owasp-blue); background: var(--owasp-light); padding: 0.25rem 0.5rem; border-radius: 6px; }
+.item-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+.item-description { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.5; }
+.badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.badge-l1 { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-l2 { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-r { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-p { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-android { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-ios { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-generic { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-network { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-current { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-placeholder { background: rgba(255,171,0,0.12); color: #b37600; }
+.badge-deprecated { background: rgba(255,86,48,0.12); color: #FF5630; }
+.item-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.prompt-toggle { display: inline-flex; align-items: center; gap: 0.4rem; background: #fffbea; border: 1px solid var(--owasp-accent); color: var(--owasp-accent); padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; }
+.prompt-toggle:hover { background: var(--owasp-accent); color: #fff; }
+.prompt-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s ease, opacity 0.2s ease; }
+.prompt-content.open { max-height: 500px; opacity: 1; }
+.prompt-box { margin-top: 0.75rem; background: #f8f9fa; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem; position: relative; }
+.prompt-box pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.85rem; color: #2d3748; line-height: 1.5; }
+.copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--owasp-accent); color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.copy-btn:hover { opacity: 0.85; }
+.copy-btn.copied { background: #36B37E; }
+.page-footer { background: var(--owasp-dark); color: rgba(255,255,255,0.8); text-align: center; padding: 2rem 1.5rem; margin-top: 2rem; border-radius: 8px; }
+.page-footer a { color: var(--owasp-accent); text-decoration: none; }
+.page-footer .disclaimer { font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem; }
+.no-results { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 1rem; display: none; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>OWASP MASTG Cheat Sheets</h1>
+    <p class="subtitle">Mobile Application Security Testing Guide · Interactive Reference</p>
+  </header>
+  <main class="container">
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; margin-top: 2rem;">
+      <a href="mastg-tests-android.html" style="text-decoration: none;">
+        <div class="item-card" style="cursor: pointer;">
+          <div class="item-header"><span class="item-id">TESTS</span><span class="badge badge-android">Android</span></div>
+          <h3 class="item-title">MASTG Tests — Android</h3>
+          <p class="item-description">All Android V2 test cases across 8 MASVS categories. Includes orphan V1 tests without V2 replacement.</p>
+        </div>
+      </a>
+      <a href="mastg-tools-android.html" style="text-decoration: none;">
+        <div class="item-card" style="cursor: pointer;">
+          <div class="item-header"><span class="item-id">TOOLS</span><span class="badge badge-android">Android</span></div>
+          <h3 class="item-title">MASTG Tools — Android</h3>
+          <p class="item-description">Android-specific security testing tools from the MASTG tools registry.</p>
+        </div>
+      </a>
+      <a href="mastg-tools-generic.html" style="text-decoration: none;">
+        <div class="item-card" style="cursor: pointer;">
+          <div class="item-header"><span class="item-id">TOOLS</span><span class="badge badge-generic">Generic</span></div>
+          <h3 class="item-title">MASTG Tools — Generic & Network</h3>
+          <p class="item-description">Cross-platform tools (Frida, MobSF, Burp Suite, etc.) and network testing tools.</p>
+        </div>
+      </a>
+      <a href="mastg-tests-ios.html" style="text-decoration: none;">
+        <div class="item-card" style="cursor: pointer;">
+          <div class="item-header"><span class="item-id">TESTS</span><span class="badge badge-ios">iOS</span></div>
+          <h3 class="item-title">MASTG Tests — iOS</h3>
+          <p class="item-description">All iOS V2 test cases across 8 MASVS categories. Includes orphan V1 tests without V2 replacement.</p>
+        </div>
+      </a>
+      <a href="mastg-tools-ios.html" style="text-decoration: none;">
+        <div class="item-card" style="cursor: pointer;">
+          <div class="item-header"><span class="item-id">TOOLS</span><span class="badge badge-ios">iOS</span></div>
+          <h3 class="item-title">MASTG Tools — iOS</h3>
+          <p class="item-description">iOS-specific security testing tools from the MASTG tools registry.</p>
+        </div>
+      </a>
+      <a href="mastg-techniques-android.html" style="text-decoration: none;">
+        <div class="item-card" style="cursor: pointer;">
+          <div class="item-header"><span class="item-id">TECH</span><span class="badge badge-android">Android</span></div>
+          <h3 class="item-title">MASTG Techniques — Android</h3>
+          <p class="item-description">Android security testing techniques with step-by-step instructions and tooling references.</p>
+        </div>
+      </a>
+    </div>
+    <div style="margin-top: 2rem;">
+      <a href="masvs.html" style="text-decoration: none;">
+        <div class="item-card" style="cursor: pointer;">
+          <div class="item-header"><span class="item-id">MASVS</span></div>
+          <h3 class="item-title">OWASP MASVS v2.1.0 — Summary & Prompts</h3>
+          <p class="item-description">8 control groups, 24 controls. Interactive cheat sheet with copy-prompt buttons.</p>
+        </div>
+      </a>
+      <a href="maswe.html" style="text-decoration: none;">
+        <div class="item-card" style="cursor: pointer;">
+          <div class="item-header"><span class="item-id">MASWE</span></div>
+          <h3 class="item-title">OWASP MASWE — Summary & Prompts</h3>
+          <p class="item-description">119 weaknesses across 8 MASVS categories. Interactive cheat sheet with search and filter.</p>
+        </div>
+      </a>
+    </div>
+  </main>
+  <footer class="page-footer">    <p>Source: <a href="https://mas.owasp.org/MASTG">https://mas.owasp.org/MASTG</a> · MASTG v2.0.0</p>
+    <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
+  </footer>
+  <script>
+    // Card click navigation
+    document.querySelectorAll('.item-card[style*="cursor: pointer"]').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const link = card.closest('a');
+        if (link) window.location.href = link.href;
+      });
+    });
+  </script>
+</body>
+</html>

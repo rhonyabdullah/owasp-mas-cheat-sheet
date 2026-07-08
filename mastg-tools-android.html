@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWASP MASTG Tools — Android</title>
+  <style>
+:root {
+  --owasp-blue: #1b7a8c;
+  --owasp-dark: #0d3b44;
+  --owasp-accent: #f2a900;
+  --owasp-light: #e8f4f6;
+  --bg-page: #f4f7f9;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5e6c84;
+  --border-subtle: #e1e4e8;
+  --L1-color: #36B37E;
+  --L2-color: #0052CC;
+  --R-color: #6554C0;
+  --P-color: #FF5630;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 24px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.page-header { text-align: center; margin-bottom: 2rem; animation: fadeInDown 0.6s ease-out; }
+.page-header h1 { font-size: 2rem; color: var(--owasp-dark); margin-bottom: 0.5rem; }
+.page-header .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+.search-input { flex: 1; min-width: 260px; padding: 0.6rem 1rem; border: 1px solid var(--border-subtle); border-radius: 6px; font-size: 0.95rem; background: var(--bg-card); }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-btn { padding: 0.4rem 0.9rem; border: 1px solid var(--border-subtle); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+.filter-btn:hover { border-color: var(--owasp-blue); }
+.filter-btn.active { background: var(--owasp-blue); color: #fff; border-color: var(--owasp-blue); }
+.group { margin-bottom: 1rem; animation: fadeInUp 0.5s ease both; }
+.group-header { width: 100%; display: flex; align-items: center; justify-content: space-between; background: var(--owasp-blue); color: #fff; border: none; padding: 0.875rem 1.25rem; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: 700; transition: background 0.3s; }
+.group-header:hover { background: var(--owasp-dark); }
+.group-header .group-title { display: flex; align-items: center; gap: 0.5rem; }
+.group-header .group-meta { font-size: 0.85rem; opacity: 0.85; font-weight: 500; }
+.group-header .group-toggle { transition: transform 0.3s ease; font-size: 0.9rem; }
+.group-header[aria-expanded="false"] .group-toggle { transform: rotate(-90deg); }
+.group-content { max-height: 5000px; opacity: 1; overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; padding: 0 0.5rem; }
+.group-content.collapsed { max-height: 0; opacity: 0; }
+.group-description { padding: 1rem 0.5rem 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+.item-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+.item-card:hover { border-color: var(--owasp-blue); box-shadow: 0 4px 12px rgba(27,122,140,0.08); transform: translateY(-1px); }
+.item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.item-id { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.8rem; font-weight: 700; color: var(--owasp-blue); background: var(--owasp-light); padding: 0.25rem 0.5rem; border-radius: 6px; }
+.item-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+.item-description { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.5; }
+.badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.badge-l1 { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-l2 { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-r { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-p { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-android { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-ios { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-generic { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-network { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-current { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-placeholder { background: rgba(255,171,0,0.12); color: #b37600; }
+.badge-deprecated { background: rgba(255,86,48,0.12); color: #FF5630; }
+.item-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.prompt-toggle { display: inline-flex; align-items: center; gap: 0.4rem; background: #fffbea; border: 1px solid var(--owasp-accent); color: var(--owasp-accent); padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; }
+.prompt-toggle:hover { background: var(--owasp-accent); color: #fff; }
+.prompt-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s ease, opacity 0.2s ease; }
+.prompt-content.open { max-height: 500px; opacity: 1; }
+.prompt-box { margin-top: 0.75rem; background: #f8f9fa; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem; position: relative; }
+.prompt-box pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.85rem; color: #2d3748; line-height: 1.5; }
+.copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--owasp-accent); color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.copy-btn:hover { opacity: 0.85; }
+.copy-btn.copied { background: #36B37E; }
+.page-footer { background: var(--owasp-dark); color: rgba(255,255,255,0.8); text-align: center; padding: 2rem 1.5rem; margin-top: 2rem; border-radius: 8px; }
+.page-footer a { color: var(--owasp-accent); text-decoration: none; }
+.page-footer .disclaimer { font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem; }
+.no-results { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 1rem; display: none; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>OWASP MASTG Tools — Android</h1>
+    <p class="subtitle">Android · 48 tools · Generated 2026-07-08 03:37 UTC</p>
+  </header>
+  <main class="container">
+    <div class="filter-bar">
+      <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button><button class="filter-btn" data-filter="STORAGE">Storage</button><button class="filter-btn" data-filter="NETWORK">Network</button><button class="filter-btn" data-filter="PLATFORM">Platform</button><button class="filter-btn" data-filter="CODE">Code</button><button class="filter-btn" data-filter="RESILIENCE">Resilience</button><button class="filter-btn" data-filter="GENERAL">General</button>
+      </div>
+    </div>
+    <div class="no-results">No results found.</div>
+
+    <section class="group" data-category="STORAGE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-STORAGE</span>
+        <span class="group-meta">7 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Apktool</h3>
+        <p class="item-description">Apktool is used to unpack Android app packages (APKs). Simply unzipping APKs with the standard unzip utility leaves some files unreadable. AndroidManifest.xml is encoded into binary XML format, which </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Apktool) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Magisk</h3>
+        <p class="item-description">Magisk (&quot;Magic Mask&quot;) is one way to root your Android device. It's specialty lies in the way the modifications on the system are performed. While other rooting tools alter the actual data on the syste</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Magisk) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ProGuard</h3>
+        <p class="item-description">ProGuard is a free Java class file shrinker, optimizer, obfuscator, and preverifier. It detects and removes unused classes, fields, methods, and attributes and can also be used to delete logging-relat</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ProGuard) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">radare2 for Android</h3>
+        <p class="item-description">radare2 (r2) is a popular open source reverse engineering framework for disassembling, debugging, patching, and analyzing binaries that is scriptable and supports many architectures and file formats, </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (radare2 for Android) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">blutter</h3>
+        <p class="item-description">Blutter is an open-source tool created to support the reverse engineering of Flutter applications. Unlike other Flutter tools, blutter parses the libapp.so file statically, without requiring you to ru</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (blutter) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Apkleaks</h3>
+        <p class="item-description">Apkleaks is an open-source utility designed for static analysis of Android APK files, with a primary focus on identifying sensitive data such as API keys, URLs, AWS S3 buckets, and Firebase URLs. This</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Apkleaks) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">apkeep</h3>
+        <p class="item-description">apkeep is a command-line tool written in Rust for downloading APK files from various sources including Google Play Store. It's designed to make downloading and archiving Android APKs simple and reliab</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (apkeep) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="NETWORK">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-NETWORK</span>
+        <span class="group-meta">6 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Android-SSL-TrustKiller</h3>
+        <p class="item-description">Android-SSL-TrustKiller is a Cydia Substrate Module acting as a blackbox tool to bypass SSL certificate pinning for most applications running on a device.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Android-SSL-TrustKiller) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">APKLab</h3>
+        <p class="item-description">APKLab is a Visual Studio Code extension leveraging tools such as @MASTG-TOOL-0011 and @MASTG-TOOL-0018 to enable features including app unpacking, decompilation, code patching (e.g. for MITM), and re</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (APKLab) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">JustTrustMe</h3>
+        <p class="item-description">JustTrustMe is an @MASTG-TOOL-0149 module to bypass SSL certificate pinning.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (JustTrustMe) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">SSLUnpinning</h3>
+        <p class="item-description">SSLUnpinning is an @MASTG-TOOL-0149 module to bypass SSL certificate pinning.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (SSLUnpinning) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">ProxyDroid</h3>
+        <p class="item-description">ProxyDroid is an open source app available in Google Play that configures your device to send HTTP(S) traffic to a proxy. It is especially useful for apps that ignore the system's proxy settings, as i</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (ProxyDroid) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">frida-multiple-unpinning</h3>
+        <p class="item-description">Frida-multiple unpinning is a Frida CodeShare script to bypass various forms of TLS pinning. This is one of the most extensive TLS pinning bypass scripts available on CodeShare. One of its main streng</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (frida-multiple-unpinning) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="PLATFORM">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-PLATFORM</span>
+        <span class="group-meta">1 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+
+      <div class="item-card" data-id="" data-category="PLATFORM" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Android SDK</h3>
+        <p class="item-description">Local Android SDK installations are managed via Android Studio. Create an empty project in Android Studio and select Tools -&gt; SDK Manager to open the SDK Manager GUI. The SDK Platforms tab is where yo</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Android SDK) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="CODE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-CODE</span>
+        <span class="group-meta">8 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Bytecode Viewer</h3>
+        <p class="item-description">Bytecode Viewer (BCV) is a free and open source Java decompiler framework running on all operating systems. It is a versatile tool which can be used to decompile Android apps, view APK resources (via </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Bytecode Viewer) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">jdb</h3>
+        <p class="item-description">jdb is a Java Debugger which allows to set breakpoints and print application variables. jdb uses the JDWP protocol.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (jdb) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">uber-apk-signer</h3>
+        <p class="item-description">Uber-apk-signer is a tool that helps to sign, zip align and verify one or more Android application packages (APKs) with either debug or provided release certificates. It supports v1, v2, v3 and v4 And</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (uber-apk-signer) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">RootBeer</h3>
+        <p class="item-description">RootBeer is an Android library for detecting root access on devices. It implements multiple detection techniques using both Java and native code (JNI) to make bypassing more difficult. The library che</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (RootBeer) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Android RASP</h3>
+        <p class="item-description">Android RASP (Runtime Application Self-Protection) is a library written in Kotlin and Rust that provides runtime security checks for Android applications. It detects emulators, debuggers, and root acc</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Android RASP) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">debugmepLS</h3>
+        <p class="item-description">debugmepLS is an @MASTG-TOOL-0149 module and companion app that makes selected Android apps appear debuggable at runtime. It hooks framework services in systemserver to modify ApplicationInfo and proc</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (debugmepLS) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">lldb (Android)</h3>
+        <p class="item-description">lldb is the LLVM debugger. On Android, it can be used to debug native code in apps, including JNI libraries, native crashes, memory, registers, system calls, and compiled control flow.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (lldb (Android)) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="CODE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">dProtect</h3>
+        <p class="item-description">dProtect is an extension of Proguard with enhanced code obfuscation features. While Proguard is known for obfuscating symbols (package names, class names, ...) and optimizing Java/Kotlin code, dProtec</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (dProtect) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="RESILIENCE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-RESILIENCE</span>
+        <span class="group-meta">5 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Frida (Android)</h3>
+        <p class="item-description">Frida supports interaction with the Android Java runtime through the Java API. You'll be able to hook and call both Java and native functions inside the process and its native libraries. Your JavaScri</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Frida (Android)) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">adb</h3>
+        <p class="item-description">adb, shipped with the Android SDK, bridges the gap between your local development environment and a connected Android device. You'll usually leverage it to test apps on the emulator or a connected dev</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (adb) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">RootCloak Plus</h3>
+        <p class="item-description">RootCloak Plus is a Cydia Substrate Module used to check for commonly known indications of root</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (RootCloak Plus) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Scrcpy</h3>
+        <p class="item-description">Scrcpy provides display and control of Android devices connected over USB (or TCP/IP). It does not require any root access and it works on GNU/Linux, Windows and macOS.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Scrcpy) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Termux</h3>
+        <p class="item-description">Termux is a terminal emulator for Android that provides a Linux environment that works directly with or without rooting and with no setup required. The installation of additional packages is a trivial</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Termux) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="group" data-category="GENERAL">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-GENERAL</span>
+        <span class="group-meta">21 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">MobSF (Android)</h3>
+        <p class="item-description">After MobSF is done with its analysis, you will receive a one-page overview of all the tests that were executed. The page is split up into multiple sections, giving some first hints on the attack surf</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (MobSF (Android)) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">nm (Android)</h3>
+        <p class="item-description">nm is a tool that displays the name list (symbol table) of the given binary. More information for the Android (GNU) version.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (nm (Android)) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Android NDK</h3>
+        <p class="item-description">The Android NDK contains prebuilt versions of the native compiler and toolchain. Both the GCC and Clang compilers have traditionally been supported, but active support for GCC ended with NDK revision </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Android NDK) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Android Studio</h3>
+        <p class="item-description">Android Studio is the official IDE for Google's Android operating system, built on JetBrains' IntelliJ IDEA software and designed specifically for Android development.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Android Studio) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">APKiD</h3>
+        <p class="item-description">APKiD gives you information about how an APK was made. It identifies many compilers, packers, obfuscators, and other weird stuff.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (APKiD) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">apkx</h3>
+        <p class="item-description">apkx is a Python wrapper to popular free DEX converters and Java decompilers. It automates the extraction, conversion, and decompilation of APKs. Install it as follows:</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (apkx) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Busybox</h3>
+        <p class="item-description">Busybox combines multiple common Unix utilities into a small single executable. The utilities included generally have fewer options than their full-featured GNU counterparts, but are sufficient enough</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Busybox) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">drozer</h3>
+        <p class="item-description">drozer is a security testing framework for Android that allows you to search for security vulnerabilities in apps and devices by assuming the role of an app interacting with the Android runtime, other</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (drozer) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">gplaycli</h3>
+        <p class="item-description">gplaycli is a Python-based CLI tool to search, install, and update Android applications from the Google Play Store. Follow the installation steps and you're ready to run it. gplaycli offers several op</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (gplaycli) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">House</h3>
+        <p class="item-description">House is a runtime mobile application analysis toolkit for Android apps, developed and maintained by the NCC Group and is written in Python.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (House) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">jadx</h3>
+        <p class="item-description">Jadx is an open-source Dex and Java decompiler available both in a CLI (jadx) and GUI (jadx-gui) form. It's actively developed and offers an extensive range of features to help you analyze Android app</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (jadx) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Xposed</h3>
+        <p class="item-description">Xposed is a framework that allows modifying the system or application aspect and behavior at runtime, without modifying any Android application package (APK) or re-flashing. Technically, it is an exte</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Xposed) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">objection (Android)</h3>
+        <p class="item-description">Objection offers several features specific to Android. You can find the full list of features on the project's page, but here are a few interesting ones:</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (objection (Android)) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">Untitled</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (Untitled) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">pidcat</h3>
+        <p class="item-description">The pidcat tool acts as a wrapper for adb logcat that allows you to view Android log entries for specific application packages in a visually distinct color format.</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (pidcat) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">apksigner</h3>
+        <p class="item-description">apksigner, available in revision 24.0.3 and higher of the Android SDK Build Tools, is contained in the @MASTG-TOOL-0006 at [SDK-Path]/build-tools/[version]/apksigner and can be used to verify APK sign</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (apksigner) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">aapt2</h3>
+        <p class="item-description">aapt2, available in Android SDK Build Tools since revision 26.0.2, is contained in the @MASTG-TOOL-0006 at [SDK-Path]/build-tools/[version]/aapt2 and can be used, for example, to examine the contents </p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (aapt2) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">blint</h3>
+        <p class="item-description">Blint is a Binary Linter that checks the security properties and capabilities of an executable. Since version 2, blint can generate Software Bill-of-Materials (SBOM) for supported binaries, which incl</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (blint) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
+        <div class="item-header">
+          <span class="item-id"></span>
+        </div>
+        <h3 class="item-title">LSPosed</h3>
+        <p class="item-description">LSPosed is a Zygisk module that allows modifying the system or application aspect and behavior at runtime, without modifying any Android application package (APK) or re-flashing. Technically, it is an</p>
+        <div class="item-badges">
+          <span class="badge badge-android">android</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain how to use  (LSPosed) for android mobile security testing. Include installation steps, common use cases, and example commands. Reference related MASTG tests and techniques where this tool is used.</pre>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+  </main>
+  <footer class="page-footer">    <p>Source: <a href="https://mas.owasp.org/MASTG">https://mas.owasp.org/MASTG</a> · MASTG v2.0.0</p>
+    <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
+  </footer>
+  <script>
+// Group toggle
+document.querySelectorAll('.group-header').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    btn.nextElementSibling.classList.toggle('collapsed', expanded);
+  });
+});
+
+// Prompt toggle
+document.querySelectorAll('.prompt-toggle').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const content = btn.nextElementSibling;
+    content.classList.toggle('open');
+    btn.textContent = content.classList.contains('open') ? 'Hide Prompt' : 'Show Prompt';
+  });
+});
+
+// Copy to clipboard
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const pre = btn.parentElement.querySelector('pre');
+    await navigator.clipboard.writeText(pre.innerText);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+});
+
+// Search & Filter
+const searchInput = document.querySelector('.search-input');
+const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+
+function applyFilters() {
+  const term = searchInput.value.toLowerCase().trim();
+  const cat = document.querySelector('.filter-btn[data-filter].active')?.dataset.filter || 'all';
+  
+  let totalVisible = 0;
+  document.querySelectorAll('.group').forEach(group => {
+    const groupCat = group.dataset.category;
+    let groupVisible = (cat === 'all' || groupCat === cat);
+    let itemsVisible = 0;
+    
+    group.querySelectorAll('.item-card').forEach(card => {
+      const text = card.innerText.toLowerCase();
+      const profiles = card.dataset.profiles || '';
+      const matchesSearch = !term || text.includes(term);
+      
+      const visible = matchesSearch;
+    
+      card.style.display = visible ? '' : 'none';
+      if (visible) itemsVisible++;
+    });
+    
+    group.style.display = (groupVisible && itemsVisible > 0) ? '' : 'none';
+    if (groupVisible && itemsVisible > 0) totalVisible++;
+  });
+  
+  document.querySelector('.no-results').style.display = totalVisible === 0 ? 'block' : 'none';
+}
+
+searchInput.addEventListener('input', applyFilters);
+filterBtns.forEach(b => b.addEventListener('click', () => {
+  filterBtns.forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  applyFilters();
+}));
+
+</script>
+</body>
+</html>
