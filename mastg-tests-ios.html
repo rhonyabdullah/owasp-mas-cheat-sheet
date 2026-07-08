@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWASP MASTG Tests — iOS</title>
+  <style>
+:root {
+  --owasp-blue: #1b7a8c;
+  --owasp-dark: #0d3b44;
+  --owasp-accent: #f2a900;
+  --owasp-light: #e8f4f6;
+  --bg-page: #f4f7f9;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5e6c84;
+  --border-subtle: #e1e4e8;
+  --L1-color: #36B37E;
+  --L2-color: #0052CC;
+  --R-color: #6554C0;
+  --P-color: #FF5630;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 24px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.page-header { text-align: center; margin-bottom: 2rem; animation: fadeInDown 0.6s ease-out; }
+.page-header h1 { font-size: 2rem; color: var(--owasp-dark); margin-bottom: 0.5rem; }
+.page-header .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+.search-input { flex: 1; min-width: 260px; padding: 0.6rem 1rem; border: 1px solid var(--border-subtle); border-radius: 6px; font-size: 0.95rem; background: var(--bg-card); }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-btn { padding: 0.4rem 0.9rem; border: 1px solid var(--border-subtle); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+.filter-btn:hover { border-color: var(--owasp-blue); }
+.filter-btn.active { background: var(--owasp-blue); color: #fff; border-color: var(--owasp-blue); }
+.group { margin-bottom: 1rem; animation: fadeInUp 0.5s ease both; }
+.group-header { width: 100%; display: flex; align-items: center; justify-content: space-between; background: var(--owasp-blue); color: #fff; border: none; padding: 0.875rem 1.25rem; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: 700; transition: background 0.3s; }
+.group-header:hover { background: var(--owasp-dark); }
+.group-header .group-title { display: flex; align-items: center; gap: 0.5rem; }
+.group-header .group-meta { font-size: 0.85rem; opacity: 0.85; font-weight: 500; }
+.group-header .group-toggle { transition: transform 0.3s ease; font-size: 0.9rem; }
+.group-header[aria-expanded="false"] .group-toggle { transform: rotate(-90deg); }
+.group-content { max-height: 5000px; opacity: 1; overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; padding: 0 0.5rem; }
+.group-content.collapsed { max-height: 0; opacity: 0; }
+.group-description { padding: 1rem 0.5rem 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+.item-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+.item-card:hover { border-color: var(--owasp-blue); box-shadow: 0 4px 12px rgba(27,122,140,0.08); transform: translateY(-1px); }
+.item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.item-id { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.8rem; font-weight: 700; color: var(--owasp-blue); background: var(--owasp-light); padding: 0.25rem 0.5rem; border-radius: 6px; }
+.item-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+.item-description { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.5; }
+.badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.badge-l1 { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-l2 { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-r { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-p { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-android { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-ios { background: rgba(0,82,204,0.12); color: #0052CC; }
+.badge-generic { background: rgba(101,84,192,0.12); color: #6554C0; }
+.badge-network { background: rgba(255,86,48,0.12); color: #FF5630; }
+.badge-current { background: rgba(54,179,126,0.12); color: #36B37E; }
+.badge-placeholder { background: rgba(255,171,0,0.12); color: #b37600; }
+.badge-deprecated { background: rgba(255,86,48,0.12); color: #FF5630; }
+.item-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.prompt-toggle { display: inline-flex; align-items: center; gap: 0.4rem; background: #fffbea; border: 1px solid var(--owasp-accent); color: var(--owasp-accent); padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; }
+.prompt-toggle:hover { background: var(--owasp-accent); color: #fff; }
+.prompt-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s ease, opacity 0.2s ease; }
+.prompt-content.open { max-height: 500px; opacity: 1; }
+.prompt-box { margin-top: 0.75rem; background: #f8f9fa; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem; position: relative; }
+.prompt-box pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.85rem; color: #2d3748; line-height: 1.5; }
+.copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--owasp-accent); color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.copy-btn:hover { opacity: 0.85; }
+.copy-btn.copied { background: #36B37E; }
+.page-footer { background: var(--owasp-dark); color: rgba(255,255,255,0.8); text-align: center; padding: 2rem 1.5rem; margin-top: 2rem; border-radius: 8px; }
+.page-footer a { color: var(--owasp-accent); text-decoration: none; }
+.page-footer .disclaimer { font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem; }
+.no-results { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 1rem; display: none; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>OWASP MASTG Tests — iOS</h1>
+    <p class="subtitle">iOS · 102 tests · All profiles · Generated 2026-07-08 03:41 UTC</p>
+  </header>
+  <main class="container">
+    <div class="filter-bar">
+      <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button><button class="filter-btn" data-filter="STORAGE">Storage</button><button class="filter-btn" data-filter="CRYPTO">Crypto</button><button class="filter-btn" data-filter="AUTH">Auth</button><button class="filter-btn" data-filter="NETWORK">Network</button><button class="filter-btn" data-filter="PLATFORM">Platform</button><button class="filter-btn" data-filter="CODE">Code</button><button class="filter-btn" data-filter="RESILIENCE">Resilience</button><button class="filter-btn" data-filter="PRIVACY">Privacy</button>
+      </div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-profile="all">All Profiles</button>
+        <button class="filter-btn" data-profile="L1">L1</button>
+        <button class="filter-btn" data-profile="L2">L2</button>
+        <button class="filter-btn" data-profile="R">R</button>
+        <button class="filter-btn" data-profile="P">P</button>
+      </div>
+    </div>
+    <div class="no-results">No results found.</div>
+
+    <section class="group" data-category="STORAGE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-STORAGE</span>
+        <span class="group-meta">15 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+
+      
+      <div class="item-card" data-id="MASTG-TEST-0215" data-category="STORAGE" data-profiles="L1 L2 P" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0215</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Sensitive\ Data\ Not\ Marked\ For\ Backup\ Exclusion</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0215 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0296" data-category="STORAGE" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0296</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Sensitive\ Data\ Exposure\ in\ Logs</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0296 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0297" data-category="STORAGE" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0297</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Sensitive\ Data\ Exposure\ Through\ Logging\ APIs</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0297 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0298" data-category="STORAGE" data-profiles="L1 L2 P" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0298</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime\ Monitoring\ of\ Files\ Eligible\ for\ Backup</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span> <span class="badge badge-P">P</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0298 Runtime Monitoring of Files Eligible for Backup for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0299" data-category="STORAGE" data-profiles="L1" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0299</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Data\ Protection\ Classes\ for\ Files\ in\ Private\ Storage</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0299 Data Protection Classes for Files in Private Storage for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0300" data-category="STORAGE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0300</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ APIs\ for\ Storing\ Unencrypted\ Data\ in\ Private\ Storage</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0300 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0301" data-category="STORAGE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0301</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime\ Use\ of\ APIs\ for\ Storing\ Unencrypted\ Data\ in\ Private\ Storage</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0301 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0302" data-category="STORAGE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0302</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Sensitive\ Data\ Unencrypted\ in\ Private\ Storage\ Files</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0302 Sensitive Data Unencrypted in Private Storage Files for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0303" data-category="STORAGE" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0303</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ APIs\ for\ Storing\ Unencrypted\ Data\ in\ Shared\ Storage</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0303 References to APIs for Storing Unencrypted Data in Shared Storage for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0313" data-category="STORAGE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0313</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ APIs\ for\ Preventing\ Keyboard\ Caching\ of\ Text\ Fields</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0313 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0314" data-category="STORAGE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0314</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime\ Monitoring\ of\ Text\ Fields\ Eligible\ for\ Keyboard\ Caching</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0314 Runtime Monitoring of Text Fields Eligible for Keyboard Caching for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0388" data-category="STORAGE" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0388</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ Sensitive\ Data\ Stored\ Unprotected\ in\ Shared\ App\ Group\ Containers</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0388 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0209" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0209</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Insufficient\ Key\ Sizes</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0209 Insufficient Key Sizes for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0210" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0210</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Broken\ Symmetric\ Encryption\ Algorithms</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0210 Broken Symmetric Encryption Algorithms for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0211" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0211</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Broken\ Hashing\ Algorithms</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0211 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0213" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0213</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Use\ of\ Hardcoded\ Cryptographic\ Keys\ in\ Code</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0213 Use of Hardcoded Cryptographic Keys in Code for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0214" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0214</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Hardcoded\ Cryptographic\ Keys\ in\ Files</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0214 Hardcoded Cryptographic Keys in Files for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0311" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0311</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Insecure Random API Usage</h3>
+        <p class="item-description">The output should contain a list of locations where insecure random APIs are used, including the function names and code locations where they are called.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0311 Insecure Random API Usage for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0317" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0317</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Broken Symmetric Encryption Modes</h3>
+        <p class="item-description">This test focuses on broken symmetric encryption modes such as [ECB (Electronic Codebook)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB)).</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0317 Broken Symmetric Encryption Modes for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0349" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0349</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use of Insecure Random APIs</h3>
+        <p class="item-description">The output should contain runtime calls to insecure random APIs, including function names and backtraces.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0349 Runtime Use of Insecure Random APIs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0266" data-category="AUTH" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0266</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ APIs\ for\ Event\-Bound\ Biometric\ Authentication</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0266 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0267" data-category="AUTH" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0267</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use Of Event-Bound Biometric Authentication</h3>
+        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0266.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0267 Runtime Use Of Event-Bound Biometric Authentication for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0268" data-category="AUTH" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0268</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ APIs\ Allowing\ Fallback\ to\ Non\-Biometric\ Authentication</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0268 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0269" data-category="AUTH" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0269</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use Of APIs Allowing Fallback to Non-Biometric Authentication</h3>
+        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0268.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0269 Runtime Use Of APIs Allowing Fallback to Non-Biometric Authentication for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0270" data-category="AUTH" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0270</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to APIs Detecting Biometric Enrollment Changes</h3>
+        <p class="item-description">This test checks whether the app fails to protect sensitive operations against unauthorized access following biometric enrollment changes. An attacker who obtains the device passcode could add a new fingerprint or facial representation via system settings and use it to authenticate in the app.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0270 References to APIs Detecting Biometric Enrollment Changes for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0271" data-category="AUTH" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0271</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use Of APIs Detecting Biometric Enrollment Changes</h3>
+        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0270.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0271 Runtime Use Of APIs Detecting Biometric Enrollment Changes for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0321" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0321</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Hardcoded HTTP URLs</h3>
+        <p class="item-description">An iOS app may have hardcoded HTTP URLs embedded in the app binary, library binaries, or other resources within the IPA. These URLs may indicate potential locations where the app communicates with servers over an unencrypted connection.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0321 Hardcoded HTTP URLs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0322" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0322</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">App Transport Security Configurations Allowing Cleartext Traffic</h3>
+        <p class="item-description">The following configurations allow cleartext traffic:</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0322 App Transport Security Configurations Allowing Cleartext Traffic for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0323" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0323</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Uses\ of\ Low\-Level\ Networking\ APIs\ for\ Cleartext\ Traffic</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0323 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0342" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0342</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to Weak ATS TLS Policy Exceptions in Info.plist</h3>
+        <p class="item-description">Apps can weaken ATS TLS enforcement through `NSAppTransportSecurity` exceptions in `Info.plist`. In particular:</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0342 References to Weak ATS TLS Policy Exceptions in Info.plist for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0343" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0343</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">URLSession\ TLS\ Protocol\ Configuration</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0343 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0344" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0344</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Network.framework TLS Protocol Configuration</h3>
+        <p class="item-description">For more information on iOS network APIs and when ATS applies, see @MASTG-KNOW-0071 and @MASTG-KNOW-0073.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0344 Network.framework TLS Protocol Configuration for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0345" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0345</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Embedded\ or\ Third\-party\ TLS\ Stack\ Configuration</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0345 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0348" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0348</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Insecure TLS Protocols in Network Traffic</h3>
+        <p class="item-description">By capturing and analyzing real network traffic, you can observe the TLS version actually negotiated and in use. This approach provides an accurate view of the protocol's security, accounting for the server's configuration, which may enforce or limit specific TLS versions.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0348 Insecure TLS Protocols in Network Traffic for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0385" data-category="NETWORK" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0385</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Missing Certificate Pinning in ATS</h3>
+        <p class="item-description">The test case fails if the app uses URL Loading System connections to relevant first-party domains, but the app's `Info.plist` does not contain an `NSAppTransportSecurity` dictionary with a `NSPinnedDomains` key, or if `NSPinnedDomains` is defined but does not include entries for those domains.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0385 Missing Certificate Pinning in ATS for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0396" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0396</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to URLSessionDelegate Bypassing Certificate Validation</h3>
+        <p class="item-description">This test checks whether the app implements `URLSessionDelegate` in a way that accepts server certificates without calling `SecTrustEvaluateWithError`.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0396 References to URLSessionDelegate Bypassing Certificate Validation for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0397" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0397</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to WKNavigationDelegate Bypassing Certificate Validation</h3>
+        <p class="item-description">This test checks whether the app implements `WKNavigationDelegate` in a way that accepts server certificates without calling `SecTrustEvaluateWithError`.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0397 References to WKNavigationDelegate Bypassing Certificate Validation for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0276" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0276</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Use of the iOS General Pasteboard</h3>
+        <p class="item-description">This test checks whether the app uses the systemwide general @MASTG-KNOW-0083, which is persistent across device restarts and app uninstalls and is accessible by all foreground apps and, in some cases, other devices. Placing sensitive data here may pose a privacy risk.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0276 Use of the iOS General Pasteboard for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0277" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0277</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Sensitive Data in the iOS General Pasteboard at Runtime</h3>
+        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0276.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0277 Sensitive Data in the iOS General Pasteboard at Runtime for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0278" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0278</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Pasteboard Contents Not Cleared After Use</h3>
+        <p class="item-description">This test checks if the app clears the contents of the general @MASTG-KNOW-0083 when it moves to the background or terminates. If sensitive data is left in the pasteboard, it can be accessed by other apps, leading to potential data leaks.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0278 Pasteboard Contents Not Cleared After Use for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0279" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0279</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Pasteboard Contents Not Expiring</h3>
+        <p class="item-description">The output should contain a list of locations where relevant APIs are used.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0279 Pasteboard Contents Not Expiring for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0280" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0280</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Pasteboard Contents Not Restricted to Local Device</h3>
+        <p class="item-description">The output should contain a list of locations where relevant APIs are used.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0280 Pasteboard Contents Not Restricted to Local Device for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0290" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0290</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Verification of Sensitive Content Exposure in Screenshots During App Backgrounding</h3>
+        <p class="item-description">The output should include a collection of snapshots cached when the app entered the background state.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0290 Runtime Verification of Sensitive Content Exposure in Screenshots During App Backgrounding for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0331" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0331</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Use of Deprecated WebView APIs</h3>
+        <p class="item-description">The output should contain a list of locations where `UIWebView`s are used.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0331 Use of Deprecated WebView APIs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0332" data-category="PLATFORM" data-profiles="L1 L2 P" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0332</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Attacker\-Controlled\ URI\ in\ WebViews</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0332 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0333" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0333</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Overly Broad File Read Access in WebViews</h3>
+        <p class="item-description">This test checks whether the app uses `loadFileURL(_:allowingReadAccessTo:)` with an overly broad `readAccessURL`. If attacker-controlled input influences the loaded file URL and the read access scope is too broad, the WebView may gain access to sensitive files within the app container.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0333 Overly Broad File Read Access in WebViews for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0335" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0335</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">WebView File Origin Access Relaxed by Configuration</h3>
+        <p class="item-description">The output should identify locations in the binary where the app references or enables the relevant configuration values.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0335 WebView File Origin Access Relaxed by Configuration for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0336" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0336</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Setting of Relaxed WebView File Origin Policies</h3>
+        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0335.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0336 Runtime Setting of Relaxed WebView File Origin Policies for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0346" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0346</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ APIs\ Hiding\ Sensitive\ Data\ in\ Text\ Input\ Fields</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0346 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0347" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0347</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use of APIs Hiding Sensitive Data in Text Input Fields</h3>
+        <p class="item-description">This test complements @MASTG-TEST-0346. It monitors text input fields in the app at runtime to check if the app masks the text entry when the user enters sensitive data.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0347 Runtime Use of APIs Hiding Sensitive Data in Text Input Fields for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0370" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0370</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Missing Input Validation in Custom URL Scheme Handlers</h3>
+        <p class="item-description">Since any app on the device can open a custom URL scheme, an attacker could craft URLs with malicious parameters and send them to the app by following @MASTG-TECH-0169. For example:</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0370 Missing Input Validation in Custom URL Scheme Handlers for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0371" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0371</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Missing\ Source\ Validation\ in\ Custom\ URL\ Scheme\ Handlers</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0371 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0376" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0376</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to Native Bridge APIs in WebViews</h3>
+        <p class="item-description">This test checks whether the app registers native bridge handlers that expose sensitive functionality or data to JavaScript in a `WKWebView`.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0376 References to Native Bridge APIs in WebViews for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0377" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0377</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ `evaluateJavaScript`\ Used\ as\ Bridge\ Reply\ in\ `WKScriptMessageHandler`</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0377 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0378" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0378</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to Password Fields in WebView-Loaded HTML</h3>
+        <p class="item-description">When an iOS app renders HTML containing `<input type="password">` elements inside a `WKWebView`, any JavaScript running on the page, including injected XSS payloads and third-party scripts loaded by the page, can read the typed value via `element.value`.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0378 References to Password Fields in WebView-Loaded HTML for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0379" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0379</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to `evaluateJavaScript` Without Content World Isolation</h3>
+        <p class="item-description">The content-world-aware variant [`evaluateJavaScript(_:in:in:completionHandler:)`](https://developer.apple.com/documentation/webkit/wkwebview/evaluatejavascript(_:in:in:completionhandler:)) runs the script in an isolated world with an independent prototype chain that page JavaScript cannot modify.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0379 References to `evaluateJavaScript` Without Content World Isolation for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0380" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0380</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ `evaluateJavaScript`\ Writing\ Sensitive\ Data\ into\ WebView\ DOM</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0380 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0389" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0389</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ the\ App\-Wide\ Restriction\ of\ Custom\ Keyboards</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0389 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0390" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0390</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Full\ Access\ Requested\ by\ a\ Custom\ Keyboard\ Extension</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0390 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0395" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0395</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Missing\ Input\ Validation\ in\ Universal\ Link\ Handlers</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0395 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0228" data-category="CODE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0228</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Position Independent Code (PIC) not Enabled</h3>
+        <p class="item-description">In the context Mach-O file format of iOS applications:</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0228 Position Independent Code (PIC) not Enabled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0229" data-category="CODE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0229</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Stack Canaries Not enabled</h3>
+        <p class="item-description">This test case checks if the native libraries of the app are compiled without common binary protection mechanisms (@MASTG-KNOW-0061) such as stack smashing protection, a mitigation technique against buffer overflow attacks.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0229 Stack Canaries Not enabled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0230" data-category="CODE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0230</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Automatic Reference Counting (ARC) not enabled</h3>
+        <p class="item-description">When ARC is enabled, binaries will include symbols such as `objc_autorelease` or `objc_retainAutorelease`.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0230 Automatic Reference Counting (ARC) not enabled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0273" data-category="CODE" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0273</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Identify Dependencies with Known Vulnerabilities by Scanning Dependency Managers Artifacts</h3>
+        <p class="item-description">In this test case we are identifying dependencies with known vulnerabilities in iOS. Dependencies are integrated through dependency managers, and there might be one or more of them being used. We therefore need all of the relevant artifacts created by them to analyse them with a SCA scanning tool.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0273 Identify Dependencies with Known Vulnerabilities by Scanning Dependency Managers Artifacts for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0275" data-category="CODE" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0275</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Dependencies with Known Vulnerabilities in the App's SBOM</h3>
+        <p class="item-description">This test case checks for dependencies with known vulnerabilities in iOS applications by using a Software Bill of Materials (SBOM). The SBOM should be in CycloneDX format, which is a standard for describing the components and dependencies of software.</p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0275 Dependencies with Known Vulnerabilities in the App's SBOM for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0383" data-category="CODE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0383</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to Enforced Updating APIs</h3>
+        <p class="item-description">This test checks whether the app contains code that implements update enforcement, either through App Store lookup or through a custom version-based gating mechanism (@MASTG-KNOW-0074).</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0383 References to Enforced Updating APIs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0384" data-category="CODE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0384</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use of Enforced Updating APIs</h3>
+        <p class="item-description">This test checks whether the app triggers the expected update enforcement behavior at runtime by capturing version-related network traffic where applicable and hooking update-related API calls (@MASTG-KNOW-0074).</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0384 Runtime Use of Enforced Updating APIs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0386" data-category="CODE" data-profiles="L1 L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0386</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ Object\ Deserialization\ of\ Untrusted\ Data</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0386 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0219" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0219</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Testing for Debugging Symbols</h3>
+        <p class="item-description">This test case checks for [debugging symbols](https://mas.owasp.org/MASWE/MASVS-RESILIENCE/MASWE-0093/) in all binaries contained in the app.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0219 Testing for Debugging Symbols for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0220" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0220</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Usage of Outdated Code Signature Format</h3>
+        <p class="item-description">The output should contain the version of the code signature format.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0220 Usage of Outdated Code Signature Format for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0240" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0240</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Jailbreak Detection in Code</h3>
+        <p class="item-description">The output should include any instances of common jailbreak detection checks in the app binary.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0240 Jailbreak Detection in Code for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0241" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0241</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use of Jailbreak Detection Techniques</h3>
+        <p class="item-description">The output should include any instances of common jailbreak detection checks in the app binary and the results of the automated jailbreak detection bypass commands.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0241 Runtime Use of Jailbreak Detection Techniques for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0246" data-category="RESILIENCE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0246</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use of Secure Screen Lock Detection APIs</h3>
+        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0248.</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0246 Runtime Use of Secure Screen Lock Detection APIs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0248" data-category="RESILIENCE" data-profiles="L2" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0248</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to APIs for Detecting Secure Screen Lock</h3>
+        <p class="item-description">This test verifies that an app is running on a device with a secure [screen lock (e.g. a passcode)](https://support.apple.com/en-us/guide/iphone/iph14a867ae/ios).</p>
+        <div class="item-badges">
+          <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0248 References to APIs for Detecting Secure Screen Lock for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0261" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0261</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Debuggable Entitlement Enabled in the entitlements.plist</h3>
+        <p class="item-description">The test evaluates whether an iOS application is configured to allow debugging. If an app is debuggable, attackers can leverage debugging tools (see @MASTG-TECH-0084) to analyse the runtime behaviour of the app, and potentially compromise sensitive data or functionality.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0261 Debuggable Entitlement Enabled in the entitlements.plist for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0354" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0354</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use of Hook Detection Techniques</h3>
+        <p class="item-description">This test verifies whether the app detects and responds to instrumentation and hooking attempts at runtime. For example, if the app does not terminate immediately when the following APIs or functions are hooked:</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0354 Runtime Use of Hook Detection Techniques for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0358" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0358</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Implementation Details Exposure Through Logging APIs</h3>
+        <p class="item-description">Common logging APIs on iOS include `NSLog`, `print`, `dump`, `debugPrint`, and `os_log`. If debug-level logging remains enabled in production builds, or if logged error messages are overly detailed, they can reveal implementation details that increase the app's attack surface.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0358 Implementation Details Exposure Through Logging APIs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0359" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0359</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Implementation Details Exposure in Logs</h3>
+        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0358.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0359 Implementation Details Exposure in Logs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0367" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0367</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use of Virtual Device Detection Techniques</h3>
+        <p class="item-description">This test verifies if the app implements checks to detect the presence of an iOS virtual device (like @MASTG-TOOL-0108) by attempting to hook into common virtual device detection mechanisms.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0367 Runtime Use of Virtual Device Detection Techniques for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0387" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0387</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References\ to\ Storage\ Integrity\ Check\ APIs</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0387 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0391" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0391</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Insufficient Obfuscation of Security-Relevant Native Code</h3>
+        <p class="item-description">Refer to @MASTG-KNOW-0089 for common iOS obfuscation mechanisms and indicators to look for.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0391 Insufficient Obfuscation of Security-Relevant Native Code for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0401" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0401</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">References to Debugging Detection APIs</h3>
+        <p class="item-description">See @MASTG-KNOW-0085 for more information on iOS debugging detection techniques and specific APIs and artifacts to look for.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0401 References to Debugging Detection APIs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0402" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0402</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime Use of Debugging Detection APIs</h3>
+        <p class="item-description">See @MASTG-KNOW-0085 for more information on iOS debugging detection techniques and specific APIs and artifacts to look for.</p>
+        <div class="item-badges">
+          <span class="badge badge-R">R</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0402 Runtime Use of Debugging Detection APIs for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0281" data-category="PRIVACY" data-profiles="P" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0281</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Undeclared Known Tracking Domains</h3>
+        <p class="item-description">These references can be used to match hardcoded or dynamically accessed domains within your app and verify whether appropriate declarations exist in the Privacy Manifest.</p>
+        <div class="item-badges">
+          <span class="badge badge-P">P</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0281 Undeclared Known Tracking Domains for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0360" data-category="PRIVACY" data-profiles="P" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0360</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Purpose String Accuracy for Reachable Protected Resource Access</h3>
+        <p class="item-description">Usage description keys and runtime APIs are separate parts of the iOS permission model. Usage description keys provide the explanation in `Info.plist`, while framework APIs request, check, or access the protected resource.</p>
+        <div class="item-badges">
+          <span class="badge badge-P">P</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0360 Purpose String Accuracy for Reachable Protected Resource Access for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0361" data-category="PRIVACY" data-profiles="P" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0361</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime\ Use\ of\ Protected\ Resource\ APIs\ Without\ Accurate\ Purpose\ Strings</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0361 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0362" data-category="PRIVACY" data-profiles="P" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0362</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Entitlements\ for\ Unjustified\ Capability\ Exposure</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0362 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+      <div class="item-card" data-id="MASTG-TEST-0363" data-category="PRIVACY" data-profiles="P" data-status="current" data-platform="ios">
+        <div class="item-header">
+          <span class="item-id">MASTG-TEST-0363</span>
+          <span class="badge badge-current">current</span>
+        </div>
+        <h3 class="item-title">Runtime\ Use\ of\ Entitlement\-Backed\ APIs\ for\ Unjustified\ Capability\ Exposure</h3>
+        <p class="item-description"></p>
+        <div class="item-badges">
+          <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
+          <span class="badge badge-ios">ios</span>
+        </div>
+        <button class="prompt-toggle">Show Prompt</button>
+        <div class="prompt-content">
+          <div class="prompt-box">
+            <button class="copy-btn">Copy</button>
+            <pre>Explain MASTG-TEST-0363 Untitled for ios. What vulnerability does this test detect and how to mitigate it in Swift? Include code examples and reference the related MASWE weakness and MASTG techniques/tools.</pre>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+  <footer class="page-footer">    <p>Source: <a href="https://mas.owasp.org/MASTG">https://mas.owasp.org/MASTG</a> · MASTG v2.0.0</p>
+    <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
+  </footer>
+  <script>
+// Group toggle
+document.querySelectorAll('.group-header').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    btn.nextElementSibling.classList.toggle('collapsed', expanded);
+  });
+});
+
+// Prompt toggle
+document.querySelectorAll('.prompt-toggle').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const content = btn.nextElementSibling;
+    content.classList.toggle('open');
+    btn.textContent = content.classList.contains('open') ? 'Hide Prompt' : 'Show Prompt';
+  });
+});
+
+// Copy to clipboard
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const pre = btn.parentElement.querySelector('pre');
+    await navigator.clipboard.writeText(pre.innerText);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+});
+
+// Search & Filter
+const searchInput = document.querySelector('.search-input');
+const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+
+function applyFilters() {
+  const term = searchInput.value.toLowerCase().trim();
+  const cat = document.querySelector('.filter-btn[data-filter].active')?.dataset.filter || 'all';
+  
+  let totalVisible = 0;
+  document.querySelectorAll('.group').forEach(group => {
+    const groupCat = group.dataset.category;
+    let groupVisible = (cat === 'all' || groupCat === cat);
+    let itemsVisible = 0;
+    
+    group.querySelectorAll('.item-card').forEach(card => {
+      const text = card.innerText.toLowerCase();
+      const profiles = card.dataset.profiles || '';
+      const matchesSearch = !term || text.includes(term);
+      
+      const prof = document.querySelector('.filter-btn[data-profile].active')?.dataset.profile || 'all';
+      const matchesProfile = prof === 'all' || profiles.includes(prof);
+      const visible = matchesSearch && matchesProfile;
+    
+      card.style.display = visible ? '' : 'none';
+      if (visible) itemsVisible++;
+    });
+    
+    group.style.display = (groupVisible && itemsVisible > 0) ? '' : 'none';
+    if (groupVisible && itemsVisible > 0) totalVisible++;
+  });
+  
+  document.querySelector('.no-results').style.display = totalVisible === 0 ? 'block' : 'none';
+}
+
+searchInput.addEventListener('input', applyFilters);
+filterBtns.forEach(b => b.addEventListener('click', () => {
+  filterBtns.forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  applyFilters();
+}));
+
+    const profileBtns = document.querySelectorAll('.filter-btn[data-profile]');
+    profileBtns.forEach(b => b.addEventListener('click', () => {
+      profileBtns.forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      applyFilters();
+    }));
+    
+</script>
+</body>
+</html>
