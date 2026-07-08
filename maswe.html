@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OWASP MASWE — Summary & Prompts</title>
+<style>
+  :root {
+    --owasp-blue: #1b7a8c;
+    --owasp-dark: #0d3b44;
+    --owasp-accent: #f2a900;
+    --bg: #f0f4f5;
+    --card-bg: #ffffff;
+    --text: #1a2a2e;
+    --text-muted: #5a6b70;
+    --border: #d4dde0;
+    --code-bg: #eef3f4;
+    --prompt-bg: #fffbea;
+    --prompt-border: #f2a900;
+    --L1-color: #36B37E;
+    --L2-color: #0052CC;
+    --R-color: #6554C0;
+    --P-color: #FF5630;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6; padding: 24px;
+  }
+  .container { max-width: 1000px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 24px; animation: fadeInDown 0.6s ease-out; }
+  .header h1 { font-size: 1.8em; color: var(--owasp-dark); margin-bottom: 8px; }
+  .header .subtitle { color: var(--text-muted); font-size: 0.95em; }
+  .header .badge {
+    display: inline-block; background: var(--owasp-blue); color: #fff;
+    padding: 4px 14px; border-radius: 20px; font-size: 0.8em; font-weight: 600; margin-top: 10px;
+  }
+  .header .beta-note {
+    display: inline-block; background: #fff3e0; color: #FF8F00; border: 1px solid #FFE0B2;
+    padding: 3px 10px; border-radius: 6px; font-size: 0.72em; margin-top: 8px;
+  }
+  .overview {
+    background: var(--card-bg); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); animation: fadeInUp 0.6s ease-out 0.1s both;
+  }
+  .overview h2 {
+    font-size: 1.15em; color: var(--owasp-dark); margin-bottom: 10px;
+    border-left: 4px solid var(--owasp-accent); padding-left: 10px;
+  }
+  .overview p { font-size: 0.92em; color: var(--text-muted); }
+  .overview ul { margin-top: 8px; padding-left: 20px; }
+  .overview li { font-size: 0.9em; color: var(--text-muted); margin-bottom: 4px; }
+  .filter-bar {
+    background: var(--card-bg); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); position: sticky; top: 12px; z-index: 100;
+  }
+  .search-input {
+    width: 100%; padding: 10px 14px; border: 2px solid var(--border); border-radius: 8px;
+    font-size: 0.9em; margin-bottom: 12px; transition: border-color 0.2s;
+  }
+  .search-input:focus { outline: none; border-color: var(--owasp-blue); }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .filter-label { font-size: 0.78em; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; }
+  .filter-btn {
+    padding: 4px 12px; border: 1px solid var(--border); background: #fff; border-radius: 16px;
+    font-size: 0.78em; cursor: pointer; transition: all 0.2s; color: var(--text-muted);
+  }
+  .filter-btn:hover { border-color: var(--owasp-blue); color: var(--owasp-blue); }
+  .filter-btn.active { background: var(--owasp-blue); color: #fff; border-color: var(--owasp-blue); }
+  .filter-btn.profile-L1.active { background: var(--L1-color); border-color: var(--L1-color); }
+  .filter-btn.profile-L2.active { background: var(--L2-color); border-color: var(--L2-color); }
+  .filter-btn.profile-R.active { background: var(--R-color); border-color: var(--R-color); }
+  .filter-btn.profile-P.active { background: var(--P-color); border-color: var(--P-color); }
+  .result-count { font-size: 0.8em; color: var(--text-muted); margin-left: auto; }
+  .control-group {
+    background: var(--card-bg); border-radius: 12px; margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden; animation: fadeInUp 0.5s ease-out both;
+  }
+  .group-header {
+    background: linear-gradient(135deg, var(--owasp-dark), var(--owasp-blue));
+    color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; transition: background 0.3s;
+  }
+  .group-header:hover { background: linear-gradient(135deg, var(--owasp-blue), var(--owasp-dark)); }
+  .group-header .group-title { font-size: 1.05em; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .group-header .group-id {
+    background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 6px;
+    font-size: 0.75em; font-family: monospace;
+  }
+  .group-header .group-count { font-size: 0.8em; opacity: 0.8; }
+  .group-header .chevron { font-size: 1.2em; transition: transform 0.3s; }
+  .control-group.open .chevron { transform: rotate(90deg); }
+  .group-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+  .control-group.open .group-body { max-height: 30000px; }
+  .group-description {
+    padding: 14px 20px 10px; font-size: 0.88em; color: var(--text-muted);
+    border-bottom: 1px solid var(--border); background: #fafbfc;
+  }
+  .weakness-item { padding: 12px 20px; border-bottom: 1px solid var(--border); }
+  .weakness-item:last-child { border-bottom: none; }
+  .weakness-item.hidden { display: none; }
+  .weakness-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  .weakness-id {
+    font-family: monospace; font-size: 0.78em; font-weight: 700; color: var(--owasp-blue);
+    background: var(--code-bg); padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0;
+  }
+  .weakness-title { font-size: 0.9em; font-weight: 600; color: var(--text); flex-grow: 1; }
+  .weakness-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .meta-tag { font-size: 0.7em; padding: 2px 8px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+  .meta-cwe { background: #e3ecef; color: var(--text-muted); }
+  .meta-masvs { background: #d4e7ea; color: var(--owasp-dark); }
+  .meta-L1 { background: #e3f6e9; color: var(--L1-color); }
+  .meta-L2 { background: #d4e4ff; color: var(--L2-color); }
+  .meta-R { background: #e6e1f9; color: var(--R-color); }
+  .meta-P { background: #ffe6dc; color: var(--P-color); }
+  .meta-status-current { background: #e3f6e9; color: #36B37E; }
+  .meta-status-placeholder { background: #fff3e0; color: #FF8F00; }
+  .meta-status-deprecated { background: #ffe0e0; color: #DE350B; }
+  .weakness-description {
+    font-size: 0.85em; color: var(--text-muted); margin-bottom: 10px; line-height: 1.5;
+  }
+  .prompt-toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--prompt-bg); border: 1px solid var(--prompt-border);
+    color: var(--prompt-border); padding: 4px 10px; border-radius: 8px;
+    font-size: 0.75em; font-weight: 600; cursor: pointer; transition: background 0.2s, color 0.2s; user-select: none;
+  }
+  .prompt-toggle:hover { background: var(--prompt-border); color: #fff; }
+  .prompt-toggle .toggle-chevron { font-size: 0.85em; transition: transform 0.3s; }
+  .prompt-section.open .toggle-chevron { transform: rotate(90deg); }
+  .prompt-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease-out; }
+  .prompt-section.open .prompt-content { max-height: 600px; }
+  .prompt-box {
+    margin-top: 8px; background: var(--prompt-bg); border: 1px solid var(--prompt-border);
+    border-radius: 8px; padding: 12px 14px; position: relative;
+  }
+  .prompt-box .prompt-label {
+    font-size: 0.7em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--prompt-border); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
+  .prompt-box .prompt-label::before { content: "▶"; font-size: 0.8em; }
+  .prompt-box code {
+    display: block; font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.8em; color: var(--text); white-space: pre-wrap; word-break: break-word; line-height: 1.5;
+  }
+  .prompt-box .copy-btn {
+    position: absolute; top: 8px; right: 8px; background: var(--prompt-border); color: #fff;
+    border: none; border-radius: 6px; padding: 3px 8px; font-size: 0.7em; cursor: pointer;
+    transition: opacity 0.2s; opacity: 0.7;
+  }
+  .prompt-box .copy-btn:hover { opacity: 1; }
+  .prompt-box .copy-btn.copied { background: #36B37E; opacity: 1; }
+  .footer { text-align: center; margin-top: 32px; padding: 16px; font-size: 0.8em; color: var(--text-muted); }
+  .footer a { color: var(--owasp-blue); text-decoration: none; }
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>OWASP MASWE</h1>
+    <div class="subtitle">Mobile Application Security Weakness Enumeration</div>
+    <div class="badge">8 Categories · 99 Weaknesses · CWE-Mapped</div>
+    <div class="beta-note">⚠ Content in BETA — subject to change (mas.owasp.org)</div>
+  </div>
+
+  <div class="overview">
+    <h2>Overview</h2>
+    <p>MASWE adalah daftar security & privacy weaknesses yang umum ditemukan di mobile apps. Berfungsi sebagai <strong>bridge</strong> antara MASVS (requirements) dan MASTG (tests). Setiap weakness dipetakan ke CWE (MITRE) dan MASVS control.</p>
+    <ul>
+      <li><strong>Flow:</strong> MASVS Control → MASWE Weakness → MASTG Test → MASTG Demo</li>
+      <li><strong>Profiles:</strong> L1 (baseline), L2 (enhanced), R (resilience), P (privacy)</li>
+      <li><strong>Status:</strong> current (aktif), placeholder (draft), deprecated (usang)</li>
+      <li><strong>MASTG v2.0.0:</strong> Released Jul 2026 — stable, non-beta. Legacy PDF deprecated.</li>
+      <li><strong>Repo:</strong> <a href="https://github.com/OWASP/maswe" target="_blank">github.com/OWASP/maswe</a></li>
+    </ul>
+  </div>
+
+  <div class="filter-bar">
+    <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by ID, title, or CWE (e.g., MASWE-0050, clipboard, CWE-319)..." oninput="filterWeaknesses()">
+    <div class="filter-row">
+      <span class="filter-label">Category:</span>
+      <button class="filter-btn active" onclick="filterCategory(this, 'all')">All</button>
+      <button class="filter-btn" onclick="filterCategory(this, 'STORAGE')">Storage</button>
+      <button class="filter-btn" onclick="filterCategory(this, 'CRYPTO')">Crypto</button>
+      <button class="filter-btn" onclick="filterCategory(this, 'AUTH')">Auth</button>
+      <button class="filter-btn" onclick="filterCategory(this, 'NETWORK')">Network</button>
+      <button class="filter-btn" onclick="filterCategory(this, 'PLATFORM')">Platform</button>
+      <button class="filter-btn" onclick="filterCategory(this, 'CODE')">Code</button>
+      <button class="filter-btn" onclick="filterCategory(this, 'RESILIENCE')">Resilience</button>
+      <button class="filter-btn" onclick="filterCategory(this, 'PRIVACY')">Privacy</button>
+    </div>
+    <div class="filter-row" style="margin-top: 8px;">
+      <span class="filter-label">Profile:</span>
+      <button class="filter-btn profile-L1" onclick="filterProfile(this, 'L1')">L1</button>
+      <button class="filter-btn profile-L2" onclick="filterProfile(this, 'L2')">L2</button>
+      <button class="filter-btn profile-R" onclick="filterProfile(this, 'R')">R</button>
+      <button class="filter-btn profile-P" onclick="filterProfile(this, 'P')">P</button>
+      <span class="result-count" id="resultCount">99 results</span>
+    </div>
+  </div>
+
+  <!-- STORAGE -->
+  <div class="control-group" data-category="STORAGE">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-STORAGE</span> Storage Weaknesses</div>
+      <div class="group-count">12 weaknesses <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">Weaknesses terkait penyimpanan data sensitif yang tidak aman, kebocoran data via logs, backups, cache, clipboard, dan memory.</div>
+      <div class="weakness-item" data-id="MASWE-0001" data-title="Insertion of Sensitive Data into Logs" data-cwe="CWE-532" data-profiles="L1,L2,P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0001</span><span class="weakness-title">Insertion of Sensitive Data into Logs</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-532</span><span class="meta-tag meta-masvs">MASVS-STORAGE-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Data sensitif seperti credentials, tokens, atau PII tercatat di log sistem (Android Logcat, iOS nslog) yang dapat diakses oleh attacker atau app lain.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0001 (Insertion of Sensitive Data into Logs) in detail for Android and iOS. Include: how sensitive data leaks into Logcat/nslog, common patterns, BuildConfig.DEBUG checks, ProGuard rules, os_log privacy levels, MASTG test cases (adb logcat, Frida hooking), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0002" data-title="Sensitive Data Stored With Insufficient Access Restrictions in Internal Locations" data-cwe="CWE-200" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0002</span><span class="weakness-title">Sensitive Data Stored With Insufficient Access Restrictions in Internal Locations</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-200</span><span class="meta-tag meta-masvs">MASVS-STORAGE-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif disimpan di internal storage tanpa proteksi akses yang memadai (MODE_WORLD_READABLE, file permission lemah), dapat diakses oleh app lain atau user dengan akses root.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0002 in detail. Cover: Android MODE_WORLD_READABLE/WRITEABLE deprecation, file permissions, iOS NSUserDefaults without encryption, internal storage access control, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0003" data-title="Backup Unencrypted" data-cwe="CWE-212" data-profiles="L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0003</span><span class="weakness-title">Backup Unencrypted</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-212</span><span class="meta-tag meta-masvs">MASVS-STORAGE-2</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif disimpan dalam backup yang tidak terenkripsi, sehingga dapat diekstrak dari backup device menggunakan tools seperti adb backup atau iTunes backup extractor.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0003 in detail. Cover: Android allowBackup flag, fullBackupContent, iOS iTunes/iCloud backup, backup encryption, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0004" data-title="Sensitive Data Not Excluded From Backup" data-cwe="CWE-212" data-profiles="L1,L2,P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0004</span><span class="weakness-title">Sensitive Data Not Excluded From Backup</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-212</span><span class="meta-tag meta-masvs">MASVS-STORAGE-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Data sensitif tidak dikecualikan dari backup sistem (allowBackup=true, tidak ada excludeFromBackup), sehingga dapat diekstrak dari backup Android/iOS.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0004 in detail. Cover: Android allowBackup=false, fullBackupContent rules, iOS isExcludedFromBackupKey, data extraction from backups (adb backup, iMazing), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0006" data-title="Sensitive Data Stored Unencrypted in Private Storage Locations" data-cwe="CWE-311" data-profiles="L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0006</span><span class="weakness-title">Sensitive Data Stored Unencrypted in Private Storage Locations</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-311</span><span class="meta-tag meta-masvs">MASVS-STORAGE-1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Data sensitif disimpan tanpa enkripsi di private storage (internal storage, SharedPreferences), rentan jika device di-root/jailbreak karena attacker dapat mengakses filesystem langsung.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0006 in detail. Cover: Android internal storage encryption, EncryptedSharedPreferences, iOS Data Protection API (NSFileProtectionComplete), Keychain, why private storage alone is insufficient (root/jailbreak), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0007" data-title="Sensitive Data Stored Unencrypted in Shared Storage Requiring No User Interaction" data-cwe="CWE-922" data-profiles="L1,L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0007</span><span class="weakness-title">Sensitive Data Stored Unencrypted in Shared Storage Requiring No User Interaction</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-922</span><span class="meta-tag meta-masvs">MASVS-STORAGE-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Data sensitif disimpan tanpa enkripsi di shared storage (external storage, MediaStore) yang dapat diakses oleh app lain tanpa interaksi user.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0007 in detail. Cover: Android external storage, MediaStore, scoped storage, iOS shared containers, App Group, risks of any app reading shared storage, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0008" data-title="Insecure Data Storage in Cloud Services" data-cwe="CWE-256" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0008</span><span class="weakness-title">Insecure Data Storage in Cloud Services</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-256</span><span class="meta-tag meta-masvs">MASVS-STORAGE-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif disinkronisasi ke cloud services (iCloud, Google Drive, Firebase) tanpa enkripsi atau proteksi yang memadai, dapat diakses dari akun cloud user.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0008 in detail. Cover: cloud sync risks (iCloud, Google Drive), credential storage in cloud key-value stores, Firebase security rules, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0009" data-title="Insecure Data Storage in Cache" data-cwe="CWE-922" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0009</span><span class="weakness-title">Insecure Data Storage in Cache</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-922</span><span class="meta-tag meta-masvs">MASVS-STORAGE-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif tersimpan di cache (HTTP cache, WebView cache, keyboard cache/autocorrect) yang dapat diekstrak oleh attacker dengan akses ke filesystem.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0009 in detail. Cover: Android cacheDir, WebView cache, HTTP cache, iOS NSCache, URLCache, keyboard cache (autocorrect, predictive text), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0011" data-title="Sensitive Data in Application Memory" data-cwe="CWE-226" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0011</span><span class="weakness-title">Sensitive Data in Application Memory</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-226</span><span class="meta-tag meta-masvs">MASVS-STORAGE-2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif tertinggal di memory aplikasi dan dapat di-dump oleh attacker dengan akses root/jailbreak menggunakan Frida, GameGuardian, atau inspecting /proc/[pid]/maps.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0011 in detail. Cover: memory dump risks, Android Frida/GameGuardian/proc maps, iOS Frida/objection memory list, zeroing memory (memset_s), MASTG test cases, and code examples in Kotlin, Swift, and C/C++.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0012" data-title="Sensitive Data in System Logs" data-cwe="CWE-532" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0012</span><span class="weakness-title">Sensitive Data in System Logs</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-532</span><span class="meta-tag meta-masvs">MASVS-STORAGE-2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif tercatat di system logs (crash logs, ANR traces, sysdiagnose) atau third-party logging services (Crashlytics, Sentry) yang dapat diakses oleh pihak ketiga.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0012 in detail. Cover: Android Logcat system logs, crash logs, iOS Console.app, sysdiagnose, third-party logging (Crashlytics, Sentry), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0092" data-title="Insecure Data Storage in External Devices" data-cwe="CWE-922" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0092</span><span class="weakness-title">Insecure Data Storage in External Devices</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-922</span><span class="meta-tag meta-masvs">MASVS-STORAGE-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif disimpan di external storage (SD card, USB OTG) tanpa enkripsi, dapat diakses oleh siapa saja yang memiliki akses fisik ke storage device.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0092 in detail. Cover: SD card storage risks, USB OTG, Android getExternalStorageDirectory, encryption limitations on external devices, MASTG test cases, and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0093" data-title="Sensitive Data in Backup Files" data-cwe="CWE-212" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0093</span><span class="weakness-title">Sensitive Data in Backup Files</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-212</span><span class="meta-tag meta-masvs">MASVS-STORAGE-2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif tersimpan di backup files yang dapat diekstrak menggunakan tools seperti adb backup (Android) atau iTunes backup extractor (iOS).</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0093 in detail. Cover: Android adb backup extraction, iOS iTunes backup extraction (iMazing, iPhone Backup Extractor), backup encryption, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRYPTO -->
+  <div class="control-group" data-category="CRYPTO">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-CRYPTO</span> Cryptography Weaknesses</div>
+      <div class="group-count">14 weaknesses <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">Weaknesses terkait algoritma kriptografi yang lemah, key derivation, hardcoded keys, IV, padding, MAC, signatures, dan random number generation.</div>
+      <div class="weakness-item" data-id="MASWE-0010" data-title="Improper Cryptographic Key Derivation" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0010</span><span class="weakness-title">Improper Cryptographic Key Derivation</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Key derivation function tidak menggunakan algoritma yang aman (PBKDF2, HKDF, Argon2) atau menggunakan salt yang lemah/hardcoded, menghasilkan key yang predictable.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0010 in detail. Cover: KDF best practices (PBKDF2, HKDF, Argon2), anti-patterns (SHA-256 as KDF, hardcoded salt, no salt), Android SecretKeyFactory, iOS CryptoKit HKDF, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0013" data-title="Hardcoded Cryptographic Keys in Use" data-cwe="" data-profiles="" data-status="deprecated">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0013</span><span class="weakness-title">Hardcoded Cryptographic Keys in Use</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-2</span><span class="meta-tag meta-status-deprecated">deprecated</span></div>
+        <div class="weakness-description">Keys kriptografi di-hardcode di source code, resources, atau native libraries, mudah ditemukan via decompilation (JADX, MobSF, string analysis).</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0013 in detail. Cover: how hardcoded keys are found (JADX, MobSF, string analysis), common locations, alternatives (Keystore, Keychain), MASTG test cases, and code examples showing anti-pattern vs secure pattern.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0014" data-title="Cryptographic Keys Not Properly Protected at Rest" data-cwe="" data-profiles="L1,L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0014</span><span class="weakness-title">Cryptographic Keys Not Properly Protected at Rest</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Keys tidak disimpan di hardware-backed keystore (Android Keystore, iOS Secure Enclave), melainkan di SharedPreferences, plist, atau hardcoded di code.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0014 in detail. Cover: Android Keystore (hardware-backed, key attestation, setUserAuthenticationRequired), iOS Keychain + Secure Enclave, anti-patterns (SharedPreferences, plist, hardcoded), envelope encryption (DEK+KEK), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0017" data-title="Insecure Use of Cryptography" data-cwe="CWE-327" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0017</span><span class="weakness-title">Insecure Use of Cryptography</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-327</span><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Penggunaan algoritma kriptografi yang sudah deprecated (DES, 3DES, RC4, MD5, SHA-1) atau mode yang lemah (ECB, tanpa AEAD, tanpa HMAC).</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0017 in detail. Cover: deprecated algorithms (DES, 3DES, RC4, MD5, SHA-1), weak modes (ECB, no padding, no AEAD), approved algorithms (AES-GCM, ChaCha20-Poly1305), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0018" data-title="Insecure Random Number Generation" data-cwe="CWE-338" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0018</span><span class="weakness-title">Insecure Random Number Generation</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-338</span><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Penggunaan PRNG yang tidak cryptographically secure (java.util.Random, Math.random()) untuk tujuan keamanan seperti key generation atau token creation.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0018 in detail. Cover: java.util.Random vs SecureRandom (Android), Swift SystemRandomNumberGenerator vs arc4random (iOS), predictable seeds, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0019" data-title="Risky Cryptography Implementations" data-cwe="CWE-327" data-profiles="L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0019</span><span class="weakness-title">Risky Cryptography Implementations</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-327</span><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Implementasi kriptografi custom yang tidak mengikuti standar industri (FIPS 140-2/3, NIST SP 800-175B), rentan terhadap cryptanalysis attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0019 in detail. Cover: custom crypto implementations, FIPS 140-2/3 compliance, NIST SP 800-175B/57, Android Conscrypt, iOS CryptoKit vs CommonCrypto, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0020" data-title="Improper Encryption" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0020</span><span class="weakness-title">Improper Encryption</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Enkripsi yang tidak proper: mode lemah (ECB), key size tidak cukup, tidak ada integrity check, atau tidak ada enkripsi sama sekali untuk data sensitif.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0020 in detail. Cover: improper encryption modes, missing encryption, weak key sizes, Android file-based encryption, iOS Data Protection API, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0021" data-title="Improper Hashing" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0021</span><span class="weakness-title">Improper Hashing</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Hashing menggunakan algoritma lemah (MD5, SHA-1) atau tanpa salt, rentan terhadap rainbow table attacks. Password hashing seharusnya menggunakan bcrypt, scrypt, atau Argon2.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0021 in detail. Cover: weak hash algorithms (MD5, SHA-1), missing salt, rainbow tables, password hashing (bcrypt, scrypt, Argon2), HMAC, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0022" data-title="Predictable Initialization Vectors (IVs)" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0022</span><span class="weakness-title">Predictable Initialization Vectors (IVs)</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">IV yang predictable, static, atau reused, yang dapat menyebabkan pattern leakage pada ciphertext dan memungkinkan attacker memulihkan plaintext.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0022 in detail. Cover: IV requirements (unique, unpredictable, never reused), AES-GCM IV generation, risks of static/reused IV, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0023" data-title="Risky Padding" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0023</span><span class="weakness-title">Risky Padding</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Padding scheme yang rentan terhadap padding oracle attacks (PKCS#7 dengan CBC mode), seharusnya menggunakan AEAD modes seperti GCM yang tidak memerlukan padding.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0023 in detail. Cover: PKCS#5/PKCS#7 padding oracle attacks, AES-CBC padding risks, why AEAD modes (GCM) avoid padding issues, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0024" data-title="Improper Use of Message Authentication Code (MAC)" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0024</span><span class="weakness-title">Improper Use of Message Authentication Code (MAC)</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">MAC tidak digunakan atau digunakan dengan urutan yang salah (MAC-then-Encrypt), rentan terhadap tampering. Seharusnya menggunakan Encrypt-then-MAC atau AEAD.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0024 in detail. Cover: HMAC vs AEAD, MAC-then-Encrypt vs Encrypt-then-MAC, timing attacks on MAC comparison, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0025" data-title="Improper Generation of Cryptographic Signatures" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0025</span><span class="weakness-title">Improper Generation of Cryptographic Signatures</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Signature generation yang tidak aman, seperti nonce reuse pada ECDSA yang dapat membocorkan private key, atau menggunakan random yang tidak secure.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0025 in detail. Cover: ECDSA, RSA-PSS signature generation, nonce reuse in ECDSA, deterministic signatures (RFC 6979), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0026" data-title="Improper Verification of Cryptographic Signature" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0026</span><span class="weakness-title">Improper Verification of Cryptographic Signature</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Verifikasi signature yang tidak proper: tidak memvalidasi certificate chain, menerima signature invalid, atau tidak memverifikasi signature sama sekali.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0026 in detail. Cover: signature verification bypass, not checking certificate chain, accepting invalid signatures, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0027" data-title="Improper Random Number Generation" data-cwe="CWE-338" data-profiles="L1,L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0027</span><span class="weakness-title">Improper Random Number Generation</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-338</span><span class="meta-tag meta-masvs">MASVS-CRYPTO-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Penggunaan random number generator yang tidak secure (java.util.Random) untuk key generation atau token (MASTG-TEST-0204, MASTG-DEMO-0007).</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0027 in detail. Cover: java.util.Random vs SecureRandom (MASTG-TEST-0204), Swift SystemRandomNumberGenerator, deterministic seeds (MASTG-DEMO-0007), Frida hooking, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH -->
+  <div class="control-group" data-category="AUTH">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-AUTH</span> Authentication & Authorization Weaknesses</div>
+      <div class="group-count">8 weaknesses <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">Weaknesses terkait hardcoded API keys, insecure auth protocols, token validation, biometric enrollment, dan local-only auth enforcement.</div>
+      <div class="weakness-item" data-id="MASWE-0005" data-title="API Keys Hardcoded in the App Package" data-cwe="CWE-798" data-profiles="L1,L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0005</span><span class="weakness-title">API Keys Hardcoded in the App Package</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-798</span><span class="meta-tag meta-masvs">MASVS-AUTH-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">API keys atau secrets di-hardcode di app package (BuildConfig, strings.xml, native .so), mudah diekstrak via decompilation menggunakan JADX atau MobSF.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0005 in detail. Cover: how API keys are found (JADX, MobSF, apktool), common locations (BuildConfig, strings.xml, native .so), secure alternatives (server-side proxy, OAuth2, dynamic fetch), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0034" data-title="Insecure Implementation of Confirm Credentials" data-cwe="" data-profiles="L2" data-status="deprecated">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0034</span><span class="weakness-title">Insecure Implementation of Confirm Credentials</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-AUTH-2</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-deprecated">deprecated</span></div>
+        <div class="weakness-description">Implementasi biometric yang hanya mengecek hasil authentication tanpa binding ke cryptographic operation, dapat di-bypass via Frida hooking.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0034 in detail. Cover: Android Confirm Credential API (deprecated), why checking biometric without crypto binding is bypassable, modern replacement (BiometricPrompt + CryptoObject), MASTG test cases, and code examples.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0035" data-title="Passwordless Authentication Not Implemented" data-cwe="" data-profiles="L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0035</span><span class="weakness-title">Passwordless Authentication Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-AUTH-1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">App tidak mendukung passwordless authentication (Passkeys/WebAuthn), masih bergantung pada password yang rentan terhadap phishing attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0035 in detail. Cover: Passkeys/WebAuthn for mobile, Android Credential Manager API, iOS ASAuthorizationPlatformPublicKeyCredentialRegistration, phishing-resistant benefits, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0037" data-title="Authentication Material Sent over Insecure Connections" data-cwe="CWE-319" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0037</span><span class="weakness-title">Authentication Material Sent over Insecure Connections</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-319</span><span class="meta-tag meta-masvs">MASVS-AUTH-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Credentials atau tokens dikirim melalui koneksi yang tidak aman (HTTP, tanpa TLS), rentan terhadap MITM attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0037 in detail. Cover: credentials/tokens over HTTP, MITM on auth endpoints, Android NSC, iOS ATS, MASTG test cases (Burp Suite), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0038" data-title="Authentication Tokens Not Validated" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0038</span><span class="weakness-title">Authentication Tokens Not Validated</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-AUTH-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Token autentikasi tidak divalidasi dengan benar (signature, expiry, issuer, audience), rentan terhadap token replay atau forgery attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0038 in detail. Cover: JWT validation (signature, expiry, issuer, audience), token replay attacks, server-side validation, client-side token storage and refresh, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0040" data-title="Insecure Authentication in WebViews" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0040</span><span class="weakness-title">Insecure Authentication in WebViews</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-AUTH-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Autentikasi di WebView tidak aman: cookie sharing dengan native app, JS bridge yang expose auth tokens, atau credential autofill yang rentan.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0040 in detail. Cover: WebView cookie jar sharing, JS bridge exposing auth tokens, WebView credential autofill risks, Android/iOS WebView settings for secure auth, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0041" data-title="Authentication Enforced Only Locally Instead of on the Server-side" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0041</span><span class="weakness-title">Authentication Enforced Only Locally Instead of on the Server-side</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-AUTH-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Autentikasi hanya di-enforce di client-side, dapat di-bypass dengan Frida atau patching. Server-side enforcement adalah true security boundary.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0041 in detail. Cover: client-side only auth bypass risks (Frida, patching), server-side enforcement as true security boundary, step-up auth (client UX + server validation), MASTG test cases, and code examples showing secure server-side enforcement.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0046" data-title="Crypto Keys Not Invalidated on New Biometric Enrollment" data-cwe="" data-profiles="L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0046</span><span class="weakness-title">Crypto Keys Not Invalidated on New Biometric Enrollment</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-AUTH-2</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Keys tidak di-invalidate saat biometric baru di-enroll, sehingga user lama masih dapat mengakses dengan biometric yang sudah dihapus dari device.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0046 in detail. Cover: risk of new fingerprint = key still valid, Android setInvalidatedByBiometricEnrollment(true), iOS LAContext evaluatedPolicyDomainState, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NETWORK -->
+  <div class="control-group" data-category="NETWORK">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-NETWORK</span> Network Communication Weaknesses</div>
+      <div class="group-count">8 weaknesses <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">Weaknesses terkait cleartext traffic, improper certificate validation, insecure identity pinning, dan unprotected open ports.</div>
+      <div class="weakness-item" data-id="MASWE-0015" data-title="Sensitive Data in URL" data-cwe="CWE-598" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0015</span><span class="weakness-title">Sensitive Data in URL</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-598</span><span class="meta-tag meta-masvs">MASVS-NETWORK-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif (tokens, session ID, PII) dikirim via URL query parameters, tercatat di server logs, proxy logs, dan browser history.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0015 in detail. Cover: GET parameters with tokens/session IDs/PII, URL logging (server logs, proxy logs), use POST with body, MASTG test cases (Burp Suite), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0016" data-title="Lack of Data Protection During Transmission" data-cwe="CWE-319" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0016</span><span class="weakness-title">Lack of Data Protection During Transmission</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-319</span><span class="meta-tag meta-masvs">MASVS-NETWORK-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data dikirim tanpa enkripsi (HTTP cleartext), rentan terhadap MITM attacks di jaringan publik seperti WiFi.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0016 in detail. Cover: HTTP cleartext risks, Android usesCleartextTraffic/NSC, iOS ATS/NSAllowsArbitraryLoads, MASTG test cases (MITM with Burp), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0047" data-title="Insecure Identity Pinning" data-cwe="" data-profiles="L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0047</span><span class="weakness-title">Insecure Identity Pinning</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-NETWORK-2</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Certificate/public key pinning tidak diimplementasi atau dapat di-bypass, rentan terhadap MITM dengan CA yang dipercaya oleh device.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0047 in detail. Cover: cert pinning vs public key pinning vs SPKI, Android NSC pin-set/OkHttp CertificatePinner/TrustKit, iOS TrustKit/URLSession delegate, pin rotation, known bypasses (Frida, Objection), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0050" data-title="Cleartext Traffic" data-cwe="CWE-319" data-profiles="L1,L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0050</span><span class="weakness-title">Cleartext Traffic</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-319</span><span class="meta-tag meta-masvs">MASVS-NETWORK-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">App mengizinkan cleartext HTTP traffic (usesCleartextTraffic=true atau ATS disabled), rentan terhadap traffic interception.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0050 in detail. Cover: Android usesCleartextTraffic/NSC, iOS ATS, detection (MobSF, Burp), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0051" data-title="Unprotected Open Ports" data-cwe="" data-profiles="L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0051</span><span class="weakness-title">Unprotected Open Ports</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-NETWORK-1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">App membuka network port tanpa proteksi (auth, binding ke specific interface), dapat diakses oleh app lain atau attacker di jaringan yang sama.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0051 in detail. Cover: Android local server/ServerSocket/P2P, risks (local network attacks, port scanning), restricting network bindings, MASTG test cases (nmap), and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0085" data-title="Insecure Inter-Process Communication" data-cwe="CWE-319" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0085</span><span class="weakness-title">Insecure Inter-Process Communication</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-319</span><span class="meta-tag meta-masvs">MASVS-NETWORK-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">IPC tanpa enkripsi atau permission checks, data sensitif dapat di-intercept oleh app lain di device yang sama.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0085 in detail. Cover: Android Intent-based IPC without encryption, AIDL without permissions, iOS URL scheme hijacking, MASTG test cases (Drozer), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0089" data-title="Improper Certificate Validation" data-cwe="CWE-295" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0089</span><span class="weakness-title">Improper Certificate Validation</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-295</span><span class="meta-tag meta-masvs">MASVS-NETWORK-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Custom TrustManager yang menerima semua certificate atau hostname verification yang dinonaktifkan, rentan terhadap MITM attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0089 in detail. Cover: custom TrustManager accepting all certs, disabled hostname verification, Android TrustManager/hostnameVerifier, iOS URLSessionDelegate/ServerTrustPolicy, MASTG test cases (MITM, Frida SSL bypass), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0094" data-title="Insecure Data Transmission Using Insecure Protocols" data-cwe="CWE-319" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0094</span><span class="weakness-title">Insecure Data Transmission Using Insecure Protocols</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-319</span><span class="meta-tag meta-masvs">MASVS-NETWORK-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Penggunaan protokol tidak aman (FTP, Telnet, HTTP, ws://) untuk transmisi data sensitif, tidak menggunakan versi encrypted (SFTP, SSH, HTTPS, wss://).</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0094 in detail. Cover: FTP/Telnet/HTTP instead of SFTP/SSH/HTTPS, WebSocket without TLS (ws:// vs wss://), MASTG test cases (Wireshark), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM -->
+  <div class="control-group" data-category="PLATFORM">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-PLATFORM</span> Platform Interaction Weaknesses</div>
+      <div class="group-count">22 weaknesses <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">Weaknesses terkait IPC mechanisms, WebView security, UI data leakage, tapjacking, deep links, exported components, UIActivity, dan App Extensions.</div>
+      <div class="weakness-item" data-id="MASWE-0053" data-title="Sensitive Data Leaked via the User Interface" data-cwe="" data-profiles="L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0053</span><span class="weakness-title">Sensitive Data Leaked via the User Interface</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-3</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif terlihat di UI dan dapat ter-capture via auto-generated screenshots di app switcher atau shoulder surfing.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0053 in detail. Cover: auto-generated screenshots in app switcher, shoulder surfing, Android FLAG_SECURE, iOS screenshot prevention, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0054" data-title="Sensitive Data Leaked via Notifications" data-cwe="" data-profiles="L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0054</span><span class="weakness-title">Sensitive Data Leaked via Notifications</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-3</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif (OTP, transaction details) tampil di notifications yang dapat diakses oleh app lain (Android NotificationListenerService) atau di lock screen (iOS).</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0054 in detail. Cover: Android notification access by other apps (NotificationListenerService), iOS notification content on lock screen, sensitive data in push notifications (OTP, transaction details), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0055" data-title="Sensitive Data Leaked via Screenshots or Screen Recordings" data-cwe="" data-profiles="L2" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0055</span><span class="weakness-title">Sensitive Data Leaked via Screenshots or Screen Recordings</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-3</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Data sensitif dapat ter-capture via screenshot atau screen recording, tidak ada FLAG_SECURE (Android) atau screenshot prevention (iOS).</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0055 in detail. Cover: Android FLAG_SECURE, iOS UIScreen capturedDidChangeNotification, screen recording apps/malware, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0056" data-title="Tapjacking Attacks" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0056</span><span class="weakness-title">Tapjacking Attacks</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-3</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Overlay attack di mana app malicious menutupi UI app target dengan transparent layer, mengelabui user untuk klik tombol yang tidak disengaja.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0056 in detail. Cover: Android overlay attacks, filterTouchesWhenObscured, Android 12+ touch protection, MASTG test cases, and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0057" data-title="StrandHogg Attack / Task Affinity Vulnerability" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0057</span><span class="weakness-title">StrandHogg Attack / Task Affinity Vulnerability</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-3</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Task hijacking attack di mana app malicious meniru UI app target untuk mencuri credentials, menggunakan allowTaskReparenting atau taskAffinity.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0057 in detail. Cover: StrandHogg task hijacking via allowTaskReparenting, StrandHogg 2.0, mitigation (Android 10+ fixes, taskAffinity=""), MASTG test cases, and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0058" data-title="Insecure Deep Links" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0058</span><span class="weakness-title">Insecure Deep Links</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Deep links tidak divalidasi dengan benar (tidak ada autoVerify, custom URL scheme tanpa validation), rentan terhadap hijacking atau parameter injection.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0058 in detail. Cover: Android custom URL schemes/intent filters/App Links, iOS custom URL schemes/Universal Links, deep link hijacking, android:autoVerify, MASTG test cases (Drozer), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0059" data-title="Use Of Unauthenticated Platform IPC" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0059</span><span class="weakness-title">Use Of Unauthenticated Platform IPC</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">IPC mechanisms (exported components, URL schemes) tanpa authentication atau permission checks, dapat dipanggil oleh app malicious.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0059 in detail. Cover: Android exported components without permission checks, iOS URL scheme handlers without validation, MASTG test cases (Drozer), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0060" data-title="Insecure Use of UIActivity" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0060</span><span class="weakness-title">Insecure Use of UIActivity</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">iOS UIActivityViewController yang share data sensitif tanpa validasi atau ke target yang tidak trusted, dapat leak data ke app malicious.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0060 in detail. Cover: iOS UIActivityViewController risks, sharing sensitive data, custom UIActivity without validation, MASTG test cases, and code examples in Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0061" data-title="Insecure Use of App Extensions" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0061</span><span class="weakness-title">Insecure Use of App Extensions</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">iOS App Extensions (Share, Action, Today) yang share data atau functionality tanpa proper access control via App Groups.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0061 in detail. Cover: iOS App Extensions (Share, Action, Today), data sharing via App Groups, security risks, MASTG test cases, and code examples in Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0062" data-title="Insecure Services" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0062</span><span class="weakness-title">Insecure Services</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Android exported services tanpa permission checks, dapat dipanggil oleh app lain untuk mengakses sensitive functionality atau data.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0062 in detail. Cover: Android exported services, IntentService, foreground services, permission requirements, Android 12+ exported enforcement, MASTG test cases (Drozer), and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0063" data-title="Insecure Broadcast Receivers" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0063</span><span class="weakness-title">Insecure Broadcast Receivers</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Android exported broadcast receivers tanpa permission, dapat menerima broadcast dari app malicious yang dapat trigger sensitive actions.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0063 in detail. Cover: Android exported broadcast receivers, sticky broadcasts, permission requirements, LocalBroadcastManager alternatives, MASTG test cases (Drozer), and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0064" data-title="Insecure Content Providers" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0064</span><span class="weakness-title">Insecure Content Providers</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Android exported content providers tanpa permission, rentan terhadap path traversal atau SQL injection via selection clause.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0064 in detail. Cover: Android exported content providers, path traversal, SQL injection, permission enforcement, FileProvider security, MASTG test cases (Drozer), and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0065" data-title="Sensitive Data Permanently Shared with Other Apps" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0065</span><span class="weakness-title">Sensitive Data Permanently Shared with Other Apps</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif di-share secara permanen ke app lain via clipboard, share intent, atau persistent URI permissions, tidak di-clear setelah digunakan.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0065 in detail. Cover: Android clipboard, share intent, persistent URI permissions, iOS UIPasteboard, UIActivityViewController, data persistence after sharing, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0066" data-title="Insecure Intents" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0066</span><span class="weakness-title">Insecure Intents</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Intent handling yang tidak aman: implicit intents untuk sensitive data, PendingIntent tanpa FLAG_IMMUTABLE, atau Intent redirection attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0066 in detail. Cover: implicit vs explicit intents, Intent injection, PendingIntent security (FLAG_IMMUTABLE), Intent redirection attacks, MASTG test cases (Drozer), and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0068" data-title="JavaScript Bridges in WebViews" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0068</span><span class="weakness-title">JavaScript Bridges in WebViews</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">JavaScript bridge (@JavascriptInterface, WKScriptMessageHandler) yang expose sensitive native methods ke web content, rentan terhadap code injection.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0068 in detail. Cover: Android @JavascriptInterface risks, addJavascriptInterface, iOS WKScriptMessageHandler, exposed sensitive methods, code injection, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0069" data-title="WebViews Allows Access to Local Resources" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0069</span><span class="weakness-title">WebViews Allows Access to Local Resources</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">WebView mengizinkan akses ke local files (file:// URI, setAllowFileAccess), rentan terhadap local file inclusion attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0069 in detail. Cover: Android setAllowFileAccess, setAllowContentAccess, file:// URI, iOS WKWebView loadFileURL, local file inclusion attacks, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0070" data-title="JavaScript Loaded from Untrusted Sources" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0070</span><span class="weakness-title">JavaScript Loaded from Untrusted Sources</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">JavaScript dimuat dari sumber yang tidak trusted (HTTP, CDN tanpa integrity, user-provided URL), rentan terhadap MITM injection.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0070 in detail. Cover: loading JS from HTTP/CDN/user URLs, MITM injection, CSP headers, script-src validation, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0071" data-title="WebViews Loading Content from Untrusted Sources" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0071</span><span class="weakness-title">WebViews Loading Content from Untrusted Sources</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">WebView memuat content dari sumber tidak trusted (HTTP, user-provided URL, intent data), rentan terhadap XSS atau content injection.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0071 in detail. Cover: loading content from HTTP/user URLs/intent data, XSS in WebView, SafeBrowsing API, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0072" data-title="Universal XSS" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0072</span><span class="weakness-title">Universal XSS</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-2</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">XSS yang mempengaruhi semua sites di WebView karena vulnerability di WebView engine (WebKit, Chromium), tidak terbatas pada satu domain.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0072 in detail. Cover: UXSS affecting all sites in WebView, WebView engine vulnerabilities (WebKit, Chromium), mitigation (disable JS, CSP, sanitize), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0073" data-title="Insecure WebResourceResponse Implementations" data-cwe="" data-profiles="L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0073</span><span class="weakness-title">Insecure WebResourceResponse Implementations</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-2</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Implementasi shouldInterceptRequest/WebResourceResponse yang tidak aman, dapat bypass CORS atau serve local files ke web content.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0073 in detail. Cover: Android shouldInterceptRequest, WebResourceResponse, serving local files, bypassing CORS, MASTG test cases, and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0074" data-title="Web Content Debugging Enabled" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0074</span><span class="weakness-title">Web Content Debugging Enabled</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">WebView debugging di-enable di production build (setWebContentsDebuggingEnabled(true)), memungkinkan remote code inspection via Chrome DevTools.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0074 in detail. Cover: Android WebView.setWebContentsDebuggingEnabled(true) in production, Chrome DevTools access, iOS WKWebView debugging/Safari Web Inspector, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0119" data-title="Insecure Activities" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0119</span><span class="weakness-title">Insecure Activities</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Android exported activities tanpa permission checks, rentan terhadap task hijacking atau unauthorized access ke sensitive functionality.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0119 in detail. Cover: Android exported activities without permission, task hijacking, activity alias risks, launchMode issues, Android 12+ exported enforcement, MASTG test cases (Drozer), and code examples in Kotlin.</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE -->
+  <div class="control-group" data-category="CODE">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-CODE</span> Code Quality Weaknesses</div>
+      <div class="group-count">11 weaknesses <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">Weaknesses terkait platform version targeting, dependencies with known vulnerabilities, input validation, SQL injection, deserialization, dan improper use of platform APIs.</div>
+      <div class="weakness-item" data-id="MASWE-0076" data-title="Dependencies with Known Vulnerabilities" data-cwe="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0076</span><span class="weakness-title">Dependencies with Known Vulnerabilities</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CODE-3</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Third-party libraries atau SDK dengan CVE yang diketahui, dapat dieksploitasi attacker untuk compromise app.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0076 in detail. Cover: Android Gradle dependency scanning, OWASP Dependency-Check, Sonatype OSS Index, iOS CocoaPods/SPM auditing, SBOM (CycloneDX), transitive dependency risks, MobSF, MASTG test cases, and config examples for Gradle and SPM.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0077" data-title="Running on a recent Platform Version Not Ensured" data-cew="" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0077</span><span class="weakness-title">Running on a recent Platform Version Not Ensured</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CODE-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">App tidak memastikan running di platform version terbaru, kehilangan security patches dan fitur keamanan terbaru dari OS.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0077 in detail. Cover: Android minSdkVersion strategy, iOS minimum deployment target, security features by API level, trade-offs (user base vs security), runtime enforcement, MASTG test cases, and code examples in Gradle and Xcode.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0078" data-title="Latest Platform Version Not Targeted" data-cwe="" data-profiles="L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0078</span><span class="weakness-title">Latest Platform Version Not Targeted</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CODE-1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">App tidak target platform version terbaru (targetSdkVersion/compileSdkVersion), tidak memanfaatkan security improvements dan behavior changes.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0078 in detail. Cover: Android targetSdkVersion/compileSdkVersion, iOS minimum deployment target, security features by version, trade-offs, MASTG test cases, and code examples in Gradle and Xcode.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0081" data-title="Unsafe Handling Of Data From External Interfaces" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0081</span><span class="weakness-title">Unsafe Handling Of Data From External Interfaces</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CODE-4</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data dari external sources (IPC, network, deep links, push notifications) tidak divalidasi atau disanitasi sebelum digunakan, rentan terhadap injection attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0081 in detail. Cover: external data sources (IPC, network, deep links, push notifications), input validation, sanitization, Android Intent extras validation, iOS URL scheme parameters, MASTG test cases (fuzzing, IPC injection), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0082" data-title="Unsafe Handling of Data From Local Storage" data-cwe="" data-profiles="L1,L2" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0082</span><span class="weakness-title">Unsafe Handling of Data From Local Storage</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-CODE-4</span><span class="meta-tag meta-L1">L1</span><span class="meta-tag meta-L2">L2</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data dari local storage (SharedPreferences, databases, files) tidak divalidasi sebelum digunakan, rentan terhadap tampering oleh app malicious atau attacker.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0082 in detail. Cover: data from SharedPreferences, databases, files, input validation for locally stored data, tampering risks, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0083" data-title="Unsafe Handling of Data From The User Interface" data-cwe="CWE-20" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0083</span><span class="weakness-title">Unsafe Handling of Data From The User Interface</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-20</span><span class="meta-tag meta-masvs">MASVS-CODE-4</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">User input dari text fields, forms, atau search tidak divalidasi atau disanitasi, rentan terhadap injection attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0083 in detail. Cover: user input validation (text fields, forms, search), input sanitization, length limits, character restrictions, MASTG test cases (UI fuzzing), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0084" data-title="Unsafe Handling of Data from IPC" data-cwe="CWE-20" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0084</span><span class="weakness-title">Unsafe Handling of Data from IPC</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-20</span><span class="meta-tag meta-masvs">MASVS-CODE-4</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data dari IPC (Intent extras, Bundle) tidak divalidasi, rentan terhadap Intent injection atau parameter tampering oleh app malicious.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0084 in detail. Cover: Android Intent extras validation, Bundle parsing, iOS URL scheme parameter validation, Intent injection, parameter tampering, MASTG test cases (IPC fuzzing, Drozer), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0086" data-title="SQL Injection" data-cwe="CWE-89" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0086</span><span class="weakness-title">SQL Injection</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-89</span><span class="meta-tag meta-masvs">MASVS-CODE-4</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">SQL query menggunakan string concatenation dengan input yang tidak trusted (rawQuery, execSQL), rentan terhadap SQL injection attacks.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0086 in detail. Cover: Android rawQuery/execSQL with string concatenation, SQLite/Room/SQLDelight parameterized queries, Content provider SQL injection via selection/uri, MASTG test cases (Drozer, Frida), and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0087" data-title="Insecure Parsing and Escaping" data-cwe="CWE-116" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0087</span><span class="weakness-title">Insecure Parsing and Escaping</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-116</span><span class="meta-tag meta-masvs">MASVS-CODE-4</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Parsing JSON/XML tidak aman (XXE, billion laughs) atau output escaping yang tidak proper untuk WebView, rentan terhadap injection.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0087 in detail. Cover: JSON/XML parsing risks (XXE, billion laughs), output encoding for WebView/HTML, Android JSON parsing/XmlPullParser, iOS JSONSerialization/XMLParser, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0088" data-title="Insecure Object Deserialization" data-cwe="CWE-502" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0088</span><span class="weakness-title">Insecure Object Deserialization</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-502</span><span class="meta-tag meta-masvs">MASVS-CODE-4</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Deserialisasi object dari sumber tidak trusted (Serializable, Parcelable, NSCoding), rentan terhadap code execution atau data tampering.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0088 in detail. Cover: Android Serializable/Parcelable risks, iOS NSCoding/NSSecureCoding, deserialization attacks (code execution, data tampering), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0090" data-title="Improper Use of Platform APIs" data-cwe="CWE-749" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0090</span><span class="weakness-title">Improper Use of Platform APIs</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-749</span><span class="meta-tag meta-masvs">MASVS-PLATFORM-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Penggunaan platform APIs yang dangerous atau deprecated (setJavaScriptEnabled, addJavascriptInterface, MODE_WORLD_READABLE).</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0090 in detail. Cover: dangerous APIs (setJavaScriptEnabled, addJavascriptInterface, MODE_WORLD_READABLE), deprecated APIs, MASTG test cases (Semgrep, MobSF), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESILIENCE -->
+  <div class="control-group" data-category="RESILIENCE">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-RESILIENCE</span> Resilience Weaknesses</div>
+      <div class="group-count">14 weaknesses <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">Weaknesses terkait root/jailbreak detection, emulator detection, anti-tampering, anti-debugging, anti-dynamic analysis, app integrity, dan runtime code integrity.</div>
+      <div class="weakness-item" data-id="MASWE-0079" data-title="App Runs on Jailbroken or Rooted Devices" data-cwe="CWE-862" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0079</span><span class="weakness-title">App Runs on Jailbroken or Rooted Devices</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-862</span><span class="meta-tag meta-masvs">MASVS-RESILIENCE-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">App tidak mendeteksi atau memblokir running di rooted/jailbroken device, platform security features dapat di-bypass oleh attacker.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0079 in detail. Cover: root detection methods (file checks, su binary, Magisk), jailbreak detection (Cydia, SSH, sandbox), Play Integrity API, MASTG test cases (bypassing with Frida, Magisk Hide), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0080" data-title="App Runs on Emulator" data-cwe="CWE-325" data-profiles="" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0080</span><span class="weakness-title">App Runs on Emulator</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-cwe">CWE-325</span><span class="meta-tag meta-masvs">MASVS-RESILIENCE-1</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">App tidak mendeteksi emulator, rentan terhadap dynamic analysis dan automation attacks di emulator environment.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0080 in detail. Cover: Android emulator detection (build properties, sensors, hardware), iOS simulator detection (UIDevice, mach checks), MASTG test cases (bypass), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0096" data-title="Data Sent Unencrypted Over Encrypted Connections" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0096</span><span class="weakness-title">Data Sent Unencrypted Over Encrypted Connections</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-3</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data tidak dienkripsi di application layer (hanya mengandalkan TLS), rentan jika TLS di-bypass menggunakan Frida atau SSL pinning bypass.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0096 in detail. Cover: application-layer encryption on top of TLS, payload encryption (AES-GCM, ChaCha20-Poly1305), defense against TLS interception, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0097" data-title="Root/Jailbreak Detection Not Implemented" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0097</span><span class="weakness-title">Root/Jailbreak Detection Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-1</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada mekanisme deteksi root/jailbreak, app berjalan di environment yang tidak trusted tanpa peringatan atau pemblokiran.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0097 in detail. Cover: Android root detection (file checks, su, Magisk, Play Integrity), iOS jailbreak detection (Cydia, SSH, sandbox, fork()), known bypasses (Magisk Hide, Frida, objection), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0098" data-title="App Virtualization Environment Detection Not Implemented" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0098</span><span class="weakness-title">App Virtualization Environment Detection Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-1</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada deteksi app virtualization (parallel space, dual apps), rentan terhadap analysis di virtual environment.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0098 in detail. Cover: Android parallel space, dual apps, virtual app containers, detection (package name, process name, data directory), MASTG test cases, and code examples in Kotlin.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0099" data-title="Emulator Detection Not Implemented" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0099</span><span class="weakness-title">Emulator Detection Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-1</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada deteksi emulator, attacker dapat menjalankan app di emulator untuk dynamic analysis dan automation.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0099 in detail. Cover: Android Build.FINGERPRINT/MODEL/HARDWARE, sensors, iOS UIDevice/mach checks, MASTG test cases (bypass), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0100" data-title="Device Attestation Not Implemented" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0100</span><span class="weakness-title">Device Attestation Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-1</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada device attestation (Play Integrity, App Attest), server tidak dapat memverifikasi integritas device dan app.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0100 in detail. Cover: Android Play Integrity API, Key Attestation, iOS DeviceCheck, App Attest, server-side verification, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0101" data-title="Debugger Detection Not Implemented" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0101</span><span class="weakness-title">Debugger Detection Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-4</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada deteksi debugger, attacker dapat attach debugger untuk runtime analysis dan memory inspection.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0101 in detail. Cover: Android Debug.isDebuggerConnected, ptrace, iOS sysctl P_TRACED, debugserver detection, MASTG test cases (bypass), and code examples in Kotlin, Swift, and C/C++.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0102" data-title="Dynamic Analysis Tools Detection Not Implemented" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0102</span><span class="weakness-title">Dynamic Analysis Tools Detection Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-4</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada deteksi tools seperti Frida, Xposed, Objection, attacker dapat melakukan dynamic analysis dengan mudah.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0102 in detail. Cover: Frida detection (port 27042, frida-server, frida-gadget), Xposed/Substrate, Objection, MASTG test cases (bypassing anti-Frida), and code examples in Kotlin, Swift, and C/C++.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0103" data-title="RASP Techniques Not Implemented" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0103</span><span class="weakness-title">RASP Techniques Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-4</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada Runtime Application Self-Protection, app rentan terhadap runtime tampering dan hooking oleh attacker.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0103 in detail. Cover: RASP concept, inline hooks detection, method swizzling detection, memory tampering, commercial RASP (Guardsquare, Promon, DexGuard), MASTG test cases, and code examples in Kotlin, Swift, and C/C++.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0104" data-title="App Integrity Not Verified" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0104</span><span class="weakness-title">App Integrity Not Verified</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-2</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada verifikasi integritas app (signature, checksum), app dapat di-repackage dengan kode malicious dan didistribusikan.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0104 in detail. Cover: APK signature verification (PackageInfo.signatures, APK Signature Scheme v2/v3), iOS code signing, Play Integrity appIntegrity, MASTG test cases (repackaging), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0105" data-title="Integrity of App Resources Not Verified" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0105</span><span class="weakness-title">Integrity of App Resources Not Verified</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-2</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Resources dan assets app tidak diverifikasi integritasnya, dapat dimodifikasi oleh attacker tanpa terdeteksi.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0105 in detail. Cover: checksum verification of assets/resources/native libraries, SHA-256 hash comparison, MASTG test cases (resource tampering), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0106" data-title="Official Store Verification Not Implemented" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0106</span><span class="weakness-title">Official Store Verification Not Implemented</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-2</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Tidak ada verifikasi bahwa app di-install dari official store, rentan terhadap sideloaded modified apps dari sumber tidak trusted.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0106 in detail. Cover: Android Play Store installer verification (getInstallSourceInfo), iOS App Store receipt validation, sideloading detection, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0107" data-title="Runtime Code Integrity Not Verified" data-cwe="" data-profiles="R" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0107</span><span class="weakness-title">Runtime Code Integrity Not Verified</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-RESILIENCE-2</span><span class="meta-tag meta-R">R</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Kode tidak diverifikasi integritasnya saat runtime, rentan terhadap Frida hooking dan runtime patching.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0107 in detail. Cover: runtime code hash verification (DEX, Mach-O), native library integrity, Frida hook detection via code integrity, MASTG test cases (runtime patching), and code examples in Kotlin, Swift, and C/C++.</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVACY -->
+  <div class="control-group" data-category="PRIVACY">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-PRIVACY</span> Privacy Weaknesses</div>
+      <div class="group-count">10 weaknesses <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">Weaknesses terkait data minimization, user identification/tracking, privacy policy, data collection declarations, consent mechanisms, dan permission management.</div>
+      <div class="weakness-item" data-id="MASWE-0108" data-title="Sensitive Data in Network Traffic" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0108</span><span class="weakness-title">Sensitive Data in Network Traffic</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-1</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">PII dikirim ke analytics, ads, atau tracking SDK tanpa anonymization, melanggar data minimization principle.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0108 in detail. Cover: PII sent to analytics/ads/tracking SDKs, data minimization in network requests, MASTG test cases (Burp Suite traffic analysis, SDK traffic inspection), and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0109" data-title="Lack of Anonymization or Pseudonymisation Measures" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0109</span><span class="weakness-title">Lack of Anonymization or Pseudonymisation Measures</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-2</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Tidak ada teknik anonymization atau pseudonymization, user dapat di-identifikasi dari data yang dikirim ke third parties.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0109 in detail. Cover: anonymization vs pseudonymization, data abstraction (hashing, tokenization, k-anonymity), Android App Set ID, iOS ATT/IDFA, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0110" data-title="Use of Unique Identifiers for User Tracking" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0110</span><span class="weakness-title">Use of Unique Identifiers for User Tracking</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-2</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Penggunaan unique identifiers (IMEI, ANDROID_ID, IDFA) untuk tracking tanpa consent, melanggar privacy regulations seperti GDPR.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0110 in detail. Cover: Android ANDROID_ID/IMEI/advertising ID/App Set ID, iOS IDFV/IDFA/UIDevice, cross-app tracking, fingerprinting, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0111" data-title="Inadequate Privacy Policy" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0111</span><span class="weakness-title">Inadequate Privacy Policy</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-3</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Privacy policy tidak lengkap atau tidak transparent tentang data yang dikumpulkan, purpose, retention, dan third parties yang menerima data.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0111 in detail. Cover: privacy policy requirements (data types, purpose, retention, third parties), Android Data Safety section, iOS App Privacy Report/Nutrition Labels, MASTG test cases, and best practices.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0112" data-title="Inadequate Data Collection Declarations" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0112</span><span class="weakness-title">Inadequate Data Collection Declarations</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-3</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Deklarasi data collection tidak lengkap, tidak semua data yang dikumpulkan (termasuk via SDK) dideklarasikan di Data Safety atau Privacy Nutrition Labels.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0112 in detail. Cover: declaring all data collection (SDKs, analytics, crash reporting), Android Data Safety form, iOS Privacy Nutrition Labels, MASTG test cases (network traffic analysis for undeclared data), and best practices.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0113" data-title="Lack of Proper Data Management Controls" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0113</span><span class="weakness-title">Lack of Proper Data Management Controls</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-4</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Tidak ada mekanisme untuk user manage, delete, atau export data mereka, melanggar GDPR/data subject rights.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0113 in detail. Cover: data management (view, edit, delete, export), Android Account deletion API, iOS account deletion requirement, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0114" data-title="Inadequate Data Visibility Controls" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0114</span><span class="weakness-title">Inadequate Data Visibility Controls</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-4</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">User tidak dapat melihat data apa yang dikumpulkan tentang mereka, tidak ada privacy dashboard atau data transparency.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0114 in detail. Cover: user dashboard (what data is collected), privacy settings UI (toggles, granular controls), data transparency (access, portability), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0115" data-title="Inadequate or Ambiguous User Consent Mechanisms" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0115</span><span class="weakness-title">Inadequate or Ambiguous User Consent Mechanisms</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-4</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Consent mechanism tidak clear atau tidak granular, user tidak dapat memberikan informed consent atau withdraw consent dengan mudah.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0115 in detail. Cover: granular consent (per-purpose, per-data-type), re-prompting when scope changes, consent withdrawal, dark patterns to avoid, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0117" data-title="Inadequate Permission Management" data-cwe="" data-profiles="P" data-status="current">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0117</span><span class="weakness-title">Inadequate Permission Management</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-1</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-current">current</span></div>
+        <div class="weakness-description">Permission management tidak proper: request permission yang tidak perlu, tidak ada granular control, atau SDK mengabaikan consent signals.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0117 in detail. Cover: Android runtime permissions, permission groups, minimal scope, iOS PrivacyInfo.xcprivacy, required reason API, third-party SDK permission enforcement, MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+      <div class="weakness-item" data-id="MASWE-0118" data-title="Sensitive Data Not Removed After Use" data-cwe="" data-profiles="P" data-status="placeholder">
+        <div class="weakness-header"><span class="weakness-id">MASWE-0118</span><span class="weakness-title">Sensitive Data Not Removed After Use</span></div>
+        <div class="weakness-meta"><span class="meta-tag meta-masvs">MASVS-PRIVACY-1</span><span class="meta-tag meta-P">P</span><span class="meta-tag meta-status-placeholder">placeholder</span></div>
+        <div class="weakness-description">Data sensitif tidak dihapus setelah digunakan, tertinggal di memory, cache, clipboard, atau storage yang dapat diakses attacker.</div>
+        <div class="prompt-section"><div class="prompt-toggle" onclick="togglePrompt(this)"><span class="toggle-chevron">▶</span> Prompt for detailed info</div><div class="prompt-content"><div class="prompt-box"><div class="prompt-label">Copy this prompt</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button><code>Explain MASWE-0118 in detail. Cover: data retention (clearing after processing), Android clearing caches/temp files/clipboard, iOS clearing Keychain/NSUserDefaults, memory zeroing (memset_s), MASTG test cases, and code examples in Kotlin and Swift.</code></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Source: OWASP MASWE (github.com/OWASP/maswe) · mas.owasp.org/MASWE · MASTG v2.0.0 (Jul 2026)</p>
+    <p><a href="https://github.com/OWASP/maswe" target="_blank">GitHub: OWASP/maswe</a> · <a href="https://mas.owasp.org/MASWE" target="_blank">mas.owasp.org/MASWE</a></p>
+  </div>
+</div>
+
+<script>
+  let activeCategory = 'all';
+  let activeProfiles = [];
+
+  function toggleGroup(el) { el.parentElement.classList.toggle('open'); }
+  function togglePrompt(el) { el.parentElement.classList.toggle('open'); }
+
+  function copyPrompt(btn) {
+    const code = btn.parentElement.querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = 'Copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function filterCategory(btn, category) {
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      if (b.classList.contains('profile-L1') || b.classList.contains('profile-L2') || b.classList.contains('profile-R') || b.classList.contains('profile-P')) return;
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+    activeCategory = category;
+    filterWeaknesses();
+  }
+
+  function filterProfile(btn, profile) {
+    btn.classList.toggle('active');
+    if (activeProfiles.includes(profile)) {
+      activeProfiles = activeProfiles.filter(p => p !== profile);
+    } else {
+      activeProfiles.push(profile);
+    }
+    filterWeaknesses();
+  }
+
+  function filterWeaknesses() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const items = document.querySelectorAll('.weakness-item');
+    let visibleCount = 0;
+
+    items.forEach(item => {
+      const id = (item.dataset.id || '').toLowerCase();
+      const title = (item.dataset.title || '').toLowerCase();
+      const cwe = (item.dataset.cwe || '').toLowerCase();
+      const profiles = (item.dataset.profiles || '').split(',');
+      const group = item.closest('.control-group');
+      const groupCategory = group.dataset.category;
+
+      let visible = true;
+      if (activeCategory !== 'all' && groupCategory !== activeCategory) visible = false;
+      if (activeProfiles.length > 0) {
+        const hasProfile = activeProfiles.some(p => profiles.includes(p));
+        if (!hasProfile) visible = false;
+      }
+      if (searchTerm && !id.includes(searchTerm) && !title.includes(searchTerm) && !cwe.includes(searchTerm)) visible = false;
+
+      if (visible) { item.classList.remove('hidden'); visibleCount++; }
+      else { item.classList.add('hidden'); }
+    });
+
+    document.querySelectorAll('.control-group').forEach(group => {
+      const visibleItems = group.querySelectorAll('.weakness-item:not(.hidden)');
+      if (visibleItems.length === 0) { group.style.display = 'none'; }
+      else { group.style.display = 'block'; }
+    });
+
+    document.getElementById('resultCount').textContent = visibleCount + ' results';
+  }
+
+  filterWeaknesses();
+</script>
+</body>
+</html>

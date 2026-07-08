@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OWASP MASVS v2.1.0 — Summary & Prompts</title>
+<style>
+  :root {
+    --owasp-blue: #1b7a8c;
+    --owasp-dark: #0d3b44;
+    --owasp-accent: #f2a900;
+    --bg: #f0f4f5;
+    --card-bg: #ffffff;
+    --text: #1a2a2e;
+    --text-muted: #5a6b70;
+    --border: #d4dde0;
+    --code-bg: #eef3f4;
+    --prompt-bg: #fffbea;
+    --prompt-border: #f2a900;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 24px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+    animation: fadeInDown 0.6s ease-out;
+  }
+  .header h1 {
+    font-size: 1.8em;
+    color: var(--owasp-dark);
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    color: var(--text-muted);
+    font-size: 0.95em;
+  }
+  .header .badge {
+    display: inline-block;
+    background: var(--owasp-blue);
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+
+  /* Overview */
+  .overview {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+  }
+  .overview h2 {
+    font-size: 1.15em;
+    color: var(--owasp-dark);
+    margin-bottom: 10px;
+    border-left: 4px solid var(--owasp-accent);
+    padding-left: 10px;
+  }
+  .overview p { font-size: 0.92em; color: var(--text-muted); }
+  .overview ul { margin-top: 8px; padding-left: 20px; }
+  .overview li { font-size: 0.9em; color: var(--text-muted); margin-bottom: 4px; }
+
+  /* Control Group Card */
+  .control-group {
+    background: var(--card-bg);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease-out both;
+  }
+  .control-group:nth-child(odd) { animation-delay: 0.05s; }
+  .control-group:nth-child(even) { animation-delay: 0.1s; }
+
+  .group-header {
+    background: linear-gradient(135deg, var(--owasp-dark), var(--owasp-blue));
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .group-header:hover { background: linear-gradient(135deg, var(--owasp-blue), var(--owasp-dark)); }
+  .group-header .group-title {
+    font-size: 1.05em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .group-header .group-id {
+    background: rgba(255,255,255,0.2);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75em;
+    font-family: monospace;
+  }
+  .group-header .group-count {
+    font-size: 0.8em;
+    opacity: 0.8;
+  }
+  .group-header .chevron {
+    font-size: 1.2em;
+    transition: transform 0.3s;
+  }
+  .control-group.open .chevron { transform: rotate(90deg); }
+
+  .group-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+  }
+  .control-group.open .group-body { max-height: 8000px; }
+
+  /* Group Description — always visible */
+  .group-description {
+    padding: 14px 20px 10px;
+    font-size: 0.88em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+  }
+
+  /* Individual Control — always visible (non-collapsible) */
+  .control-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .control-item:last-child { border-bottom: none; }
+
+  .control-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .control-header .control-id {
+    font-family: monospace;
+    font-size: 0.8em;
+    font-weight: 700;
+    color: var(--owasp-blue);
+    background: var(--code-bg);
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .control-header .control-text {
+    font-size: 0.92em;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .control-description {
+    font-size: 0.85em;
+    color: var(--text-muted);
+    padding-left: 0;
+    margin-bottom: 10px;
+  }
+
+  /* Prompt Section — collapsible */
+  .prompt-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--prompt-bg);
+    border: 1px solid var(--prompt-border);
+    color: var(--prompt-border);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.78em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    user-select: none;
+  }
+  .prompt-toggle:hover {
+    background: var(--prompt-border);
+    color: #fff;
+  }
+  .prompt-toggle .toggle-chevron {
+    font-size: 0.85em;
+    transition: transform 0.3s;
+  }
+  .prompt-section.open .toggle-chevron { transform: rotate(90deg); }
+
+  .prompt-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease-out;
+  }
+  .prompt-section.open .prompt-content { max-height: 600px; }
+
+  .prompt-box {
+    margin-top: 10px;
+    background: var(--prompt-bg);
+    border: 1px solid var(--prompt-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    position: relative;
+  }
+  .prompt-box .prompt-label {
+    font-size: 0.72em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--prompt-border);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .prompt-box .prompt-label::before { content: "▶"; font-size: 0.8em; }
+  .prompt-box code {
+    display: block;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.82em;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+  }
+  .prompt-box .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--prompt-border);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.72em;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    opacity: 0.7;
+  }
+  .prompt-box .copy-btn:hover { opacity: 1; }
+  .prompt-box .copy-btn.copied { background: #36B37E; opacity: 1; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 32px;
+    padding: 16px;
+    font-size: 0.8em;
+    color: var(--text-muted);
+  }
+  .footer a { color: var(--owasp-blue); text-decoration: none; }
+
+  /* Animations */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>OWASP MASVS v2.1.0</h1>
+    <div class="subtitle">Mobile Application Security Verification Standard</div>
+    <div class="badge">8 Control Groups · 24 Controls</div>
+  </div>
+
+  <!-- Overview -->
+  <div class="overview">
+    <h2>Overview</h2>
+    <p>OWASP MASVS adalah standar industri untuk keamanan aplikasi mobile. Menyediakan set kontrol keamanan komprehensif untuk menilai keamanan mobile apps di berbagai platform (Android, iOS) dan skenario deployment (consumer, enterprise).</p>
+    <ul>
+      <li><strong>Testing Profiles:</strong> L1, L2, dan R (Resilience) — kini disebut "MAS Testing Profiles" di MASTG, aligned dengan NIST OSCAL</li>
+      <li><strong>8 Kategori:</strong> Storage, Crypto, Auth, Network, Platform, Code Quality, Resilience, Privacy</li>
+      <li><strong>Digunakan oleh:</strong> Google (MASA/ADA), CREST, institusi pemerintah & edukasi</li>
+      <li><strong>Pendamping:</strong> OWASP MASTG (testing guide) & MASWE (weakness enumeration)</li>
+    </ul>
+  </div>
+
+  <!-- ==================== MASVS-STORAGE ==================== -->
+  <div class="control-group">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-STORAGE</span> Storage</div>
+      <div class="group-count">2 controls <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">
+        Memastikan data sensitif (PII, credentials, secrets, API keys) yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Juga mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-STORAGE-1</span>
+          <span class="control-text">The app securely stores sensitive data.</span>
+        </div>
+        <div class="control-description">
+          Data sensitif dari user, backend, system services, atau app lain harus disimpan dengan proteksi yang memadai, terlepas dari lokasi penyimpanan (internal storage, public folders, dll).
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-STORAGE-1 in detail for Android and iOS. Include:
+1. What constitutes "sensitive data" in this context
+2. Android secure storage APIs (Keystore, EncryptedSharedPreferences, file encryption)
+3. iOS secure storage APIs (Keychain, Secure Enclave, Data Protection API)
+4. Common mistakes developers make with local storage
+5. MASTG test cases for verifying this control (tools: Frida, MobSF, JADX)
+6. Code examples in Kotlin and Swift for secure storage implementation</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-STORAGE-2</span>
+          <span class="control-text">The app prevents leakage of sensitive data.</span>
+        </div>
+        <div class="control-description">
+          Mencegah kebocoran data sensitif yang tidak sengaja terjadi sebagai side-effect dari penggunaan API atau system capabilities seperti backups, logs, keyboard cache, notifications, clipboard, dan screenshots.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-STORAGE-2 in detail. Cover:
+1. Unintentional data leakage vectors: backups, logs, keyboard cache, clipboard, notifications, screenshots
+2. Android-specific: Logcat leakage, backup exclusion (allowBackup=false), clipboard prevention, FLAG_SECURE for screenshots
+3. iOS-specific: NSUserDefaults risks, backup exclusion, keyboard cache prevention, screenshot prevention
+4. Third-party SDK data sharing risks and anonymization requirements
+5. MASTG test cases and tools for detecting data leakage (MobSF, Frida, Burp Suite)
+6. Code examples for preventing each leakage vector in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MASVS-CRYPTO ==================== -->
+  <div class="control-group">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-CRYPTO</span> Cryptography</div>
+      <div class="group-count">2 controls <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">
+        Memastikan app menggunakan cryptography sesuai best practices industri (NIST SP 800-175B, NIST SP 800-57). Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle (generation, storage, protection).
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-CRYPTO-1</span>
+          <span class="control-text">The app employs current strong cryptography and uses it according to industry best practices.</span>
+        </div>
+        <div class="control-description">
+          Penggunaan cryptographic libraries yang terbukti, pemilihan dan konfigurasi cryptographic primitives yang tepat, serta random number generator yang sesuai. Mengikuti standar eksternal seperti NIST.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-CRYPTO-1 in detail. Include:
+1. Approved cryptographic algorithms (AES-GCM, ChaCha20-Poly1305, SHA-256/384, ECDSA, RSA-2048+)
+2. Deprecated algorithms to avoid (DES, 3DES, MD5, SHA-1, RC4)
+3. Android: javax.crypto, AndroidKeyStore, Conscrypt provider
+4. iOS: CommonCrypto, CryptoKit, Security framework
+5. Random number generation: SecureRandom (Android) vs SecRandomCopyBytes (iOS)
+6. Common cryptographic configuration mistakes
+7. MASTG test cases for verifying crypto configuration (Frida method tracing, static analysis)
+8. Code examples in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-CRYPTO-2</span>
+          <span class="control-text">The app performs key management according to industry best practices.</span>
+        </div>
+        <div class="control-description">
+          Manajemen cryptographic keys sepanjang lifecycle: generation, storage, dan protection. Keys tidak boleh hardcoded, tidak boleh didapat dari stable device features, tidak boleh disimpan tanpa proteksi tambahan, dan tidak boleh disinkronisasi antar device untuk high-risk data.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-CRYPTO-2 in detail. Cover:
+1. Key lifecycle: generation, storage, rotation, destruction
+2. Android Keystore: hardware-backed keys, key attestation, KeyGenParameterSpec
+3. iOS Secure Enclave + Keychain: hardware-backed keys, access control flags
+4. Anti-patterns: hardcoded keys, keys derived from device features, keys in C/C++ "hiding", keys in SharedPreferences/plist
+5. Envelope encryption (DEK + KEK pattern)
+6. Key purpose separation (signing vs encryption keys)
+7. MASTG test cases for key management verification (Frida hooking, filesystem monitoring)
+8. Code examples in Kotlin and Swift for proper key management</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MASVS-AUTH ==================== -->
+  <div class="control-group">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-AUTH</span> Authentication & Authorization</div>
+      <div class="group-count">3 controls <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">
+        Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth (OAuth2, dll), local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations. Enforcement harus di server side, tapi app harus mengikuti best practices client-side.
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-AUTH-1</span>
+          <span class="control-text">The app uses secure authentication and authorization protocols and follows the relevant best practices.</span>
+        </div>
+        <div class="control-description">
+          Penggunaan protokol auth yang aman (OAuth2, OpenID Connect) dengan implementasi yang benar di sisi mobile app. Termasuk token storage, token refresh, dan session management.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-AUTH-1 in detail. Include:
+1. OAuth2 flows suitable for mobile (Authorization Code + PKCE, not Implicit)
+2. Token storage best practices (access token vs refresh token storage)
+3. Session management on mobile: long-lived tokens, token rotation
+4. Common OAuth2 mobile pitfalls (custom tabs, in-app browser vs system browser)
+5. Android: Credential Manager, Google Sign-In, AppAuth library
+6. iOS: ASWebAuthenticationSession, AppAuth
+7. MASTG test cases for auth protocol verification (Burp Suite interception, token analysis)
+8. Code examples in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-AUTH-2</span>
+          <span class="control-text">The app performs local authentication securely according to the platform best practices.</span>
+        </div>
+        <div class="control-description">
+          Local authentication (biometrics, PIN, pattern) harus diimplementasikan mengikuti platform best practices. Tidak boleh hanya memeriksa apakah biometric berhasil tanpa mengikatnya ke cryptographic operation.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-AUTH-2 in detail. Cover:
+1. Android BiometricPrompt + CryptoObject binding to Keystore key
+2. iOS LocalAuthentication + Secure Enclave key binding (LAContext + accessControl)
+3. Anti-pattern: checking biometric result without crypto binding (bypassable via Frida)
+4. Fallback strategies: PIN/password fallback, biometric availability checks
+5. BiometricLiveness: active vs passive liveness detection
+6. MASTG test cases for local auth bypass (Frida hooking BiometricPrompt, LAContext)
+7. Code examples in Kotlin and Swift showing secure biometric + crypto binding</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-AUTH-3</span>
+          <span class="control-text">The app secures sensitive operations with additional authentication.</span>
+        </div>
+        <div class="control-description">
+          Operasi sensitif (transfer dana, perubahan password, hapus data) memerlukan additional authentication layer, seperti step-up authentication atau re-authentication.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-AUTH-3 in detail. Include:
+1. Step-up authentication concept and use cases (payment, password change, data deletion)
+2. Re-authentication patterns for sensitive operations
+3. Transaction signing and confirmation mechanisms
+4. Android: BiometricPrompt for transaction confirmation with CryptoObject
+5. iOS: LAContext for step-up auth with Secure Enclave
+6. Server-side enforcement vs client-side UX (true security boundary)
+7. MASTG test cases for step-up auth verification
+8. Code examples in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MASVS-NETWORK ==================== -->
+  <div class="control-group">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-NETWORK</span> Network Communication</div>
+      <div class="group-count">2 controls <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">
+        Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration yang benar dan certificate/public key pinning untuk endpoint yang dikuasai developer.
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-NETWORK-1</span>
+          <span class="control-text">The app secures all network traffic according to the current best practices.</span>
+        </div>
+        <div class="control-description">
+          Semua network traffic harus dienkripsi dan endpoint diautentikasi via TLS. Developer tidak boleh menonaktifkan platform secure defaults atau membypassnya via low-level APIs atau third-party libraries.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-NETWORK-1 in detail. Include:
+1. TLS best practices: TLS 1.2+, cipher suite selection, certificate validation
+2. Android Network Security Configuration (NSC): trust anchors, cleartext traffic prevention
+3. iOS App Transport Security (ATS): default secure config, exception justification
+4. Common pitfalls: custom TrustManager accepting all certs, disabled hostname verification
+5. Android 7+ default NSC not trusting user CAs
+6. MASTG test cases: MITM with Burp Suite, nscurl for ATS verification, Frida TLS bypass detection
+7. Code examples in Kotlin and Swift for secure TLS configuration</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-NETWORK-2</span>
+          <span class="control-text">The app performs identity pinning for all remote endpoints under the developer's control.</span>
+        </div>
+        <div class="control-description">
+          Certificate pinning atau public key pinning untuk memastikan hanya CA spesifik yang dipercaya, bukan semua default root CAs dari framework atau device.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-NETWORK-2 in detail. Cover:
+1. Certificate pinning vs public key pinning vs SPKI pinning — which to use
+2. Android: Network Security Configuration pin-set, OkHttp CertificatePinner, TrustKit
+3. iOS: TrustKit, pinned SPKI via NSC, custom URLSession delegate
+4. Pin rotation strategy and backup pins
+5. Known bypasses: Frida SSL bypass scripts, Objection, r2frida
+6. MASTG test cases for pinning verification (Burp + Frida bypass attempts)
+7. Code examples in Kotlin and Swift for implementing pinning</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MASVS-PLATFORM ==================== -->
+  <div class="control-group">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-PLATFORM</span> Platform Interaction</div>
+      <div class="group-count">3 controls <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">
+        Interaksi app dengan platform mobile harus aman. Mencakup penggunaan IPC mechanisms (Intent, ContentProvider, AIDL, URL schemes), WebView configuration, dan secure display of sensitive data di UI (screenshots, shoulder surfing).
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-PLATFORM-1</span>
+          <span class="control-text">The app uses IPC mechanisms securely.</span>
+        </div>
+        <div class="control-description">
+          IPC mechanisms (Android: Intent, ContentProvider, BroadcastReceiver, AIDL; iOS: URL schemes, App Extensions, UIPasteboard) harus dikonfigurasi dengan aman untuk mencegah data leakage dan exposure of sensitive functionality.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-PLATFORM-1 in detail. Include:
+1. Android IPC: exported components (android:exported), Intent permissions, ContentProvider access controls
+2. iOS IPC: URL schemes, Universal Links, App Extensions, UIPasteboard
+3. Common vulnerabilities: exported activities/services without permission checks, Intent injection
+4. Android 12+ exported attribute enforcement
+5. MASTG test cases: Drozer for Android IPC testing, custom URL scheme testing
+6. Code examples in Kotlin and Swift for secure IPC</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-PLATFORM-2</span>
+          <span class="control-text">The app uses WebViews securely.</span>
+        </div>
+        <div class="control-description">
+          WebView harus dikonfigurasi dengan aman untuk mencegah sensitive data leakage dan exposure of sensitive functionality via JavaScript bridges. Termasuk file access control, JavaScript interface restrictions, dan XSS prevention.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-PLATFORM-2 in detail. Cover:
+1. Android WebView: setAllowFileAccess, setAllowContentAccess, setJavaScriptEnabled, @JavascriptInterface risks
+2. iOS WKWebView: configuration, javascript bridge via WKScriptMessageHandler
+3. Local file inclusion attacks via WebView
+4. JavaScript bridge exploitation: exposed native methods
+5. MITM injection of JavaScript into WebView content
+6. MASTG test cases: WebView protocol handler testing, JavaScript bridge analysis
+7. Code examples in Kotlin and Swift for secure WebView configuration</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-PLATFORM-3</span>
+          <span class="control-text">The app uses the user interface securely.</span>
+        </div>
+        <div class="control-description">
+          Data sensitif yang ditampilkan di UI (passwords, credit card, OTP di notifications) tidak boleh terleak via auto-generated screenshots, shoulder surfing, atau device sharing.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-PLATFORM-3 in detail. Include:
+1. Android: FLAG_SECURE for preventing screenshots and screen recording
+2. iOS: password autofill, secure text entry, screenshot prevention techniques
+3. Sensitive data in notifications (Android notification access by other apps)
+4. Auto-generated screenshots in app switcher (Android recents, iOS multitasking)
+5. Shoulder surfing mitigations: masked inputs, short timeout
+6. MASTG test cases: screenshot capture testing, notification content inspection
+7. Code examples in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MASVS-CODE ==================== -->
+  <div class="control-group">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-CODE</span> Code Quality</div>
+      <div class="group-count">4 controls <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">
+        Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation/sanitization.
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-CODE-1</span>
+          <span class="control-text">The app requires an up-to-date platform version.</span>
+        </div>
+        <div class="control-description">
+          Setiap rilis OS mobile menyertakan security patches dan fitur keamanan baru. Dengan mendukung versi lama, app tetap rentan terhadap ancaman yang sudah diketahui.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-CODE-1 in detail. Include:
+1. Android: minSdkVersion strategy, security features by API level
+2. iOS: minimum deployment target, security features by iOS version
+3. Trade-offs: user base coverage vs security
+4. How to enforce minimum platform version at runtime
+5. MASTG test cases for platform version verification
+6. Code examples in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-CODE-2</span>
+          <span class="control-text">The app has a mechanism for enforcing app updates.</span>
+        </div>
+        <div class="control-description">
+          Saat vulnerability kritis ditemukan di app yang sudah production, harus ada mekanisme untuk memaksa user update sebelum dapat melanjutkan penggunaan app.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-CODE-2 in detail. Cover:
+1. Android: In-app update API (AppUpdateManager), flexible vs immediate updates
+2. iOS: No native force-update API — server-side version check + alert pattern
+3. Server-side version gating: API version enforcement
+4. Remote config / feature flags for gradual rollout
+5. MASTG test cases for update enforcement verification
+6. Code examples in Kotlin and Swift for force update implementation</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-CODE-3</span>
+          <span class="control-text">The app only uses software components without known vulnerabilities.</span>
+        </div>
+        <div class="control-description">
+          Komponen third-party (libraries, SDKs) harus bebas dari vulnerability yang diketahui. Setidaknya "low-hanging fruit" harus dideteksi via scanning libraries.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-CODE-3 in detail. Include:
+1. Android: Gradle dependency scanning, OWASP Dependency-Check, Sonatype OSS Index
+2. iOS: CocoaPods/SPM dependency auditing, Swift Package Manager security
+3. SBOM (Software Bill of Materials) for mobile apps
+4. Transitive dependency risks
+5. MobSF and static analysis for known vulnerable components
+6. MASTG test cases for third-party component verification
+7. Code/config examples for dependency scanning in Gradle and SPM</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-CODE-4</span>
+          <span class="control-text">The app validates and sanitizes all untrusted inputs.</span>
+        </div>
+        <div class="control-description">
+          Semua input dari sumber yang tidak terpercaya (user input, IPC, deep links, push notifications, web content) harus divalidasi dan disanitasi.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-CODE-4 in detail. Cover:
+1. Input sources: user input, Intent extras, deep links, push notifications, WebView content
+2. Android: Intent parameter validation, deep link validation, SQL injection prevention
+3. iOS: URL scheme validation, App Extension input validation
+4. Injection risks: SQL injection (Room/SQLite), command injection, path traversal
+5. XSS in WebView via untrusted content
+6. MASTG test cases for input validation testing (fuzzing, IPC injection)
+7. Code examples in Kotlin and Swift for input validation</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MASVS-RESILIENCE ==================== -->
+  <div class="control-group">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-RESILIENCE</span> Resilience Against Reverse Engineering & Tampering</div>
+      <div class="group-count">4 controls <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">
+        Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, dll. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks. Catatan: ketiadaan measures ini tidak menyebabkan vulnerability — ini adalah proteksi tambahan yang harus dikombinasikan dengan kontrol MASVS lainnya.
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-RESILIENCE-1</span>
+          <span class="control-text">The app validates the integrity of the platform.</span>
+        </div>
+        <div class="control-description">
+          Memvalidasi bahwa OS tidak telah di-tamper (rooted/jailbroken). Platform yang telah di-compromise dapat menonaktifkan fitur keamanan, sehingga banyak kontrol MASVS yang bergantung pada platform security menjadi tidak reliable.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-RESILIENCE-1 in detail. Include:
+1. Android root detection: SafetyNet/Play Integrity API, file-based checks, Magisk detection
+2. iOS jailbreak detection: file existence checks, sandbox violation, fork() test
+3. Google Play Integrity API: classic request, standard request, deviceIntegrity verdicts
+4. Android Key Attestation for platform integrity verification
+5. iOS DeviceCheck and App Attest
+6. Known bypasses: Magisk Hide, Frida root detection bypass, objection
+7. MASTG test cases: bypassing root/jailbreak detection (Frida, patching)
+8. Code examples in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-RESILIENCE-2</span>
+          <span class="control-text">The app implements anti-tampering mechanisms.</span>
+        </div>
+        <div class="control-description">
+          Mencegah modifikasi kode dan resources app. Tanpa proteksi, attacker dapat dengan mudah menjalankan versi yang dimodifikasi (cheat, unlock premium features) atau mendistribusikan versi yang di-backdoor.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-RESILIENCE-2 in detail. Cover:
+1. APK/IPA integrity verification: checksum verification, signature verification
+2. Android: PackageInfo signatures, APK Signature Scheme v2/v3, tamper detection libraries
+3. iOS: code signing verification, Mach-O integrity checks
+4. Play Integrity API for app integrity (appIntegrity verdict)
+5. Anti-repackaging techniques
+6. Known bypasses: APKTool repackage, Frida runtime patching
+7. MASTG test cases for tampering verification
+8. Code examples in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-RESILIENCE-3</span>
+          <span class="control-text">The app implements anti-static analysis mechanisms.</span>
+        </div>
+        <div class="control-description">
+          Mempersulit pemahaman internal app melalui static analysis. Code obfuscation, string encryption, dan teknik lain untuk menghambat reverse engineer memahami cara kerja app.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-RESILIENCE-3 in detail. Include:
+1. Android: R8/ProGuard obfuscation rules, DexGuard, native code obfuscation (LLVM)
+2. iOS: Swift optimization, symbol stripping, LLVM obfuscation
+3. String encryption: hiding API keys, URLs, secrets in binaries
+4. Control flow flattening and bogus control flow
+5. Meta-data obfuscation: renaming classes/methods/fields
+6. MASTG test cases: JADX decompilation, class-dump, Hopper/IDA Pro analysis
+7. ProGuard/R8 rules examples for SDK and app obfuscation</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-RESILIENCE-4</span>
+          <span class="control-text">The app implements anti-dynamic analysis techniques.</span>
+        </div>
+        <div class="control-description">
+          Mencegah dynamic analysis dan instrumentation yang memungkinkan attacker memodifikasi kode saat runtime. Deteksi tools seperti Frida, Cydia Substrate, debugger, dan emulator.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-RESILIENCE-4 in detail. Cover:
+1. Frida detection: port scanning (27042), frida-server process, frida-gadget in memory
+2. Debugger detection: ptrace, android.os.Debug.isDebuggerConnected, sysctl P_TRACED (iOS)
+3. Emulator detection: build properties, sensor checks, hardware fingerprints
+4. Anti-hooking: checking for Xposed, Substrate, inline hooks detection
+5. Response strategies: alert user, terminate, wipe data, report to backend
+6. Known bypasses: Frida anti-anti-frida, magisk module bypasses
+7. MASTG test cases: bypassing anti-dynamic analysis (Frida, objection)
+8. Code examples in Kotlin, Swift, and C/C++ (NDK)</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MASVS-PRIVACY ==================== -->
+  <div class="control-group">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-title"><span class="group-id">MASVS-PRIVACY</span> Privacy</div>
+      <div class="group-count">4 controls <span class="chevron">▶</span></div>
+    </div>
+    <div class="group-body">
+      <div class="group-description">
+        Kontrol privacy yang melengkapi (bukan menggantikan) assessment komprehensif seperti DPIA (GDPR). Mencakup data minimization, user identification prevention, transparency, dan user control over data. Tidak boleh menggantikan assessment oleh privacy experts.
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-PRIVACY-1</span>
+          <span class="control-text">The app minimizes access to sensitive data and resources.</span>
+        </div>
+        <div class="control-description">
+          App hanya boleh meminta akses ke data yang benar-benar dibutuhkan dengan informed consent dari user. Third-party SDK harus beroperasi berdasarkan user consent, bukan by default. End-to-end responsibility untuk data di supply chain SDK (SBOM alignment).
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-PRIVACY-1 in detail. Include:
+1. Data minimization principle: requesting only necessary permissions
+2. Android: runtime permissions, permission groups, minimal scope
+3. iOS: PrivacyInfo.xcprivacy, required reason API usage
+4. Third-party SDK consent enforcement: consent signals, SDK behavior control
+5. SDK supply chain: SBOM, transitive data sharing risks
+6. MASTG test cases for data minimization verification
+7. Code examples in Kotlin and Swift for permission management</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-PRIVACY-2</span>
+          <span class="control-text">The app prevents identification of the user.</span>
+        </div>
+        <div class="control-description">
+          Melindungi identitas user melalui teknik unlinkability: data abstraction, anonymization, dan pseudonymization. Mencegah user identification dan tracking.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-PRIVACY-2 in detail. Cover:
+1. Anonymization vs pseudonymization techniques
+2. Device fingerprinting prevention: advertising ID, ANDROID_ID, IDFV/IDFA
+3. Android: Advertising ID opt-out, App Set ID, limiting tracking
+4. iOS: App Tracking Transparency (ATT), IDFA deprecation, Privacy Sandbox
+5. Data abstraction: minimizing PII in logs, analytics, crash reports
+6. MASTG test cases for identification prevention
+7. Code examples in Kotlin and Swift</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-PRIVACY-3</span>
+          <span class="control-text">The app is transparent about data collection and usage.</span>
+        </div>
+        <div class="control-description">
+          App harus transparan tentang data yang dikumpulkan dan bagaimana digunakan. Termasuk privacy policy, in-app disclosures, dan data collection notices.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-PRIVACY-3 in detail. Include:
+1. Privacy policy requirements: what data, why, how long, third parties
+2. Android: Data safety section in Play Console, in-app disclosure
+3. iOS: App Privacy Report, Privacy Nutrition Labels
+4. In-app transparency: just-in-time disclosures, data collection notifications
+5. Third-party SDK transparency: disclosing data sharing with analytics/ads SDKs
+6. MASTG test cases for transparency verification (network traffic analysis)
+7. Best practices and code examples</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-item">
+        <div class="control-header">
+          <span class="control-id">MASVS-PRIVACY-4</span>
+          <span class="control-text">The app offers user control over their data.</span>
+        </div>
+        <div class="control-description">
+          User harus memiliki kontrol atas data mereka: mekanisme untuk manage, delete, modify data, dan change privacy settings (revoke consent). App harus re-prompt for consent saat membutuhkan lebih data dari yang awalnya dispecified.
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-toggle" onclick="togglePrompt(this)">
+            <span class="toggle-chevron">▶</span> Prompt for detailed info
+          </div>
+          <div class="prompt-content">
+            <div class="prompt-box">
+              <div class="prompt-label">Copy this prompt</div>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+<code>Explain MASVS-PRIVACY-4 in detail. Cover:
+1. Data management: view, edit, delete user data mechanisms
+2. Consent revocation: granular consent controls, re-prompting strategy
+3. Android: Account deletion API, data export, privacy dashboard
+4. iOS: Account deletion requirement (App Store guideline 5.1.1), data export
+5. Privacy settings UI: toggles for data collection, analytics opt-out
+6. MASTG test cases for user control verification
+7. Code examples in Kotlin and Swift for data control features</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Source: OWASP MASVS v2.1.0 (PDF) · OWASP MASTG v1.7.0 (PDF)</p>
+    <p><a href="https://mas.owasp.org/" target="_blank">mas.owasp.org</a> · <a href="https://github.com/OWASP/owasp-masvs" target="_blank">GitHub: OWASP/masvs</a></p>
+  </div>
+
+</div>
+
+<script>
+  function toggleGroup(el) {
+    const group = el.parentElement;
+    group.classList.toggle('open');
+  }
+
+  function togglePrompt(el) {
+    const section = el.parentElement;
+    section.classList.toggle('open');
+  }
+
+  function copyPrompt(btn) {
+    const code = btn.parentElement.querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
