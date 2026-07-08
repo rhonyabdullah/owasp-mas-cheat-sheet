@@ -25,10 +25,8 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg-page);
   color: var(--text-primary);
-  line-height: 1.6;
-  padding: 24px;
-}
-.container { max-width: 1200px; margin: 0 auto; }
+  line-height: 1.6;}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 .page-header { text-align: center; margin-bottom: 2rem; animation: fadeInDown 0.6s ease-out; }
 .page-header h1 { font-size: 2rem; color: var(--owasp-dark); margin-bottom: 0.5rem; }
 .page-header .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
@@ -76,9 +74,15 @@ body {
 .copy-btn { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--owasp-accent); color: #fff; border: none; border-radius: 4px; padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
 .copy-btn:hover { opacity: 0.85; }
 .copy-btn.copied { background: #36B37E; }
-.page-footer { background: var(--owasp-dark); color: rgba(255,255,255,0.8); text-align: center; padding: 2rem 1.5rem; margin-top: 2rem; border-radius: 8px; }
-.page-footer a { color: var(--owasp-accent); text-decoration: none; }
-.page-footer .disclaimer { font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem; }
+.page-footer {
+    background: var(--owasp-dark);
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    padding: 2rem 1.5rem;
+    font-size: 0.85rem;
+  }
+  .page-footer a { color: var(--owasp-accent); text-decoration: none; }
+  .page-footer .disclaimer { opacity: 0.7; margin-top: 0.5rem; }
 .no-results { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 1rem; display: none; }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
