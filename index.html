@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWASP Mobile Application Security — Cheat Sheets</title>
+  <style>
+    :root {
+      --owasp-blue: #1b7a8c;
+      --owasp-dark: #0d3b44;
+      --owasp-accent: #f2a900;
+      --owasp-light: #e8f4f6;
+      --bg-page: #f4f7f9;
+      --bg-card: #ffffff;
+      --text-primary: #1a1a2e;
+      --text-secondary: #5e6c84;
+      --border-subtle: #e1e4e8;
+      --L1-color: #36B37E;
+      --L2-color: #0052CC;
+      --R-color: #6554C0;
+      --P-color: #FF5630;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--owasp-dark), var(--owasp-blue));
+      color: #fff;
+      padding: 3.5rem 1.5rem 3rem;
+      text-align: center;
+      animation: fadeInDown 0.7s ease-out;
+    }
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    .hero .tagline {
+      font-size: 1.05rem;
+      opacity: 0.9;
+      max-width: 640px;
+      margin: 0 auto 1.25rem;
+      line-height: 1.6;
+    }
+    .hero .badges {
+      display: inline-flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .hero .badge {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 3rem;
+      width: 100%;
+    }
+
+    /* Topic Cards */
+    .topics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .topic-card {
+      position: relative;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      animation: fadeInUp 0.6s ease both;
+      text-decoration: none;
+      background: var(--bg-card);
+    }
+    .topic-card:nth-child(1) { animation-delay: 0.05s; }
+    .topic-card:nth-child(2) { animation-delay: 0.1s; }
+    .topic-card:nth-child(3) { animation-delay: 0.15s; }
+    .topic-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(27,122,140,0.15);
+      border-color: var(--owasp-blue);
+    }
+    .topic-cover-wrapper {
+      width: 100%;
+      height: 220px;
+      background: var(--owasp-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      padding: 1.25rem;
+    }
+    .topic-cover {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+    .topic-body {
+      padding: 1.25rem 1.5rem 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .topic-label {
+      display: inline-block;
+      align-self: flex-start;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--owasp-blue);
+      background: var(--owasp-light);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+    .topic-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--owasp-dark);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+    }
+    .topic-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      flex: 1;
+    }
+    .topic-meta {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .topic-meta span {
+      background: rgba(94,108,132,0.08);
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+    }
+
+    /* Quick Links Section */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--owasp-dark);
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--owasp-accent);
+      display: inline-block;
+    }
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .quick-link {
+      display: block;
+      text-decoration: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .quick-link:hover {
+      border-color: var(--owasp-blue);
+      box-shadow: 0 4px 12px rgba(27,122,140,0.08);
+      transform: translateY(-2px);
+    }
+    .quick-link-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+    }
+    .quick-link-id {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--owasp-blue);
+      background: var(--owasp-light);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+    }
+    .quick-link-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .quick-link-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Footer */
+    .page-footer {
+      background: var(--owasp-dark);
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: 0.85rem;
+    }
+    .page-footer a { color: var(--owasp-accent); text-decoration: none; }
+    .page-footer .disclaimer { opacity: 0.7; margin-top: 0.5rem; }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 2.5rem 1rem 2rem; }
+      .hero h1 { font-size: 1.7rem; }
+      .hero .tagline { font-size: 0.95rem; }
+      .main { padding: 1.5rem 1rem 2rem; }
+      .topic-cover-wrapper { height: 200px; }
+      .topic-title { font-size: 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <h1>OWASP Mobile Application Security</h1>
+    <p class="tagline">Interactive cheat sheets for MASVS, MASWE, and MASTG — designed for engineers who need fast, authoritative references.</p>
+    <div class="badges">
+      <span class="badge">Standards</span>
+      <span class="badge">Weaknesses</span>
+      <span class="badge">Testing Guide</span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="topics">
+      <a class="topic-card" href="masvs.html">
+        <div class="topic-cover-wrapper">
+          <img class="topic-cover" src="assets/masvs_cover.png" alt="OWASP MASVS Cover">
+        </div>
+        <div class="topic-body">
+          <span class="topic-label">MASVS</span>
+          <h2 class="topic-title">Mobile Application Security Verification Standard</h2>
+          <p class="topic-desc">8 control groups and 24 security controls. The baseline standard for defining what a secure mobile app must satisfy.</p>
+          <div class="topic-meta">
+            <span>8 groups</span>
+            <span>24 controls</span>
+            <span>L1 · L2 · R</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="topic-card" href="maswe.html">
+        <div class="topic-cover-wrapper">
+          <img class="topic-cover" src="assets/maswe_cover.png" alt="OWASP MASWE Cover">
+        </div>
+        <div class="topic-body">
+          <span class="topic-label">MASWE</span>
+          <h2 class="topic-title">Mobile Application Security Weakness Enumeration</h2>
+          <p class="topic-desc">119 concrete weaknesses mapped to MASVS controls and CWE. Use it as a checklist for threat modeling and gap analysis.</p>
+          <div class="topic-meta">
+            <span>8 categories</span>
+            <span>119 weaknesses</span>
+            <span>L1 · L2 · R</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="topic-card" href="mastg-index.html">
+        <div class="topic-cover-wrapper">
+          <img class="topic-cover" src="assets/mastg_cover.png" alt="OWASP MASTG Cover">
+        </div>
+        <div class="topic-body">
+          <span class="topic-label">MASTG</span>
+          <h2 class="topic-title">Mobile Application Security Testing Guide</h2>
+          <p class="topic-desc">Hands-on tests, tools, and techniques for Android and iOS security testing. V2 test cases across all MASVS profiles.</p>
+          <div class="topic-meta">
+            <span>200+ tests</span>
+            <span>135 tools</span>
+            <span>167 techniques</span>
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <h2 class="section-title">Quick Links — MASTG</h2>
+    <div class="quick-links">
+      <a class="quick-link" href="mastg-tests-android.html">
+        <div class="quick-link-header">
+          <span class="quick-link-id">TESTS</span>
+          <span class="quick-link-title">Android Tests</span>
+        </div>
+        <div class="quick-link-desc">V2 Android test cases across all 8 MASVS categories and profiles.</div>
+      </a>
+      <a class="quick-link" href="mastg-tools-android.html">
+        <div class="quick-link-header">
+          <span class="quick-link-id">TOOLS</span>
+          <span class="quick-link-title">Android Tools</span>
+        </div>
+        <div class="quick-link-desc">Android-specific testing tools: JADX, Drozer, Objection, etc.</div>
+      </a>
+      <a class="quick-link" href="mastg-tests-ios.html">
+        <div class="quick-link-header">
+          <span class="quick-link-id">TESTS</span>
+          <span class="quick-link-title">iOS Tests</span>
+        </div>
+        <div class="quick-link-desc">V2 iOS test cases across all 8 MASVS categories and profiles.</div>
+      </a>
+      <a class="quick-link" href="mastg-tools-ios.html">
+        <div class="quick-link-header">
+          <span class="quick-link-id">TOOLS</span>
+          <span class="quick-link-title">iOS Tools</span>
+        </div>
+        <div class="quick-link-desc">iOS-specific testing tools: class-dump, Passionfruit, etc.</div>
+      </a>
+      <a class="quick-link" href="mastg-tools-generic.html">
+        <div class="quick-link-header">
+          <span class="quick-link-id">TOOLS</span>
+          <span class="quick-link-title">Generic &amp; Network Tools</span>
+        </div>
+        <div class="quick-link-desc">Cross-platform tools: Frida, MobSF, Burp Suite, Semgrep, nscurl.</div>
+      </a>
+      <a class="quick-link" href="mastg-techniques-android.html">
+        <div class="quick-link-header">
+          <span class="quick-link-id">TECH</span>
+          <span class="quick-link-title">Android Techniques</span>
+        </div>
+        <div class="quick-link-desc">Step-by-step Android testing techniques with tooling references.</div>
+      </a>
+    </div>
+
+    <h2 class="section-title">Quick Links — Standards &amp; Weaknesses</h2>
+    <div class="quick-links">
+      <a class="quick-link" href="masvs.html">
+        <div class="quick-link-header">
+          <span class="quick-link-id">MASVS</span>
+          <span class="quick-link-title">MASVS Summary &amp; Prompts</span>
+        </div>
+        <div class="quick-link-desc">All 24 controls with copy-prompt buttons for each.</div>
+      </a>
+      <a class="quick-link" href="maswe.html">
+        <div class="quick-link-header">
+          <span class="quick-link-id">MASWE</span>
+          <span class="quick-link-title">MASWE Summary &amp; Prompts</span>
+        </div>
+        <div class="quick-link-desc">All 119 weaknesses with search, filter, and prompts.</div>
+      </a>
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    <p>Source: <a href="https://mas.owasp.org/">https://mas.owasp.org/</a> · OWASP MAS</p>
+    <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
+  </footer>
+</body>
+</html>
