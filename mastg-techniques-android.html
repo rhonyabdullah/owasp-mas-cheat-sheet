@@ -101,13 +101,51 @@ body {
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.3rem;
+    z-index: 200;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-btn.active, .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
+  /* Topic pages with light header need dark variant */
+  body.topic-page .lang-switcher .lang-btn {
+    border-color: var(--owasp-dark);
+    color: var(--owasp-dark);
+  }
+  body.topic-page .lang-switcher .lang-btn.active,
+  body.topic-page .lang-switcher .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
 </style>
 </head>
-<body>
+<body class="topic-page">
   <header class="page-header">
     <h1>OWASP MASTG Techniques — Android</h1>
     <p class="subtitle">Android · 78 techniques · Generated 2026-07-08 03:44 UTC</p>
   </header>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="id" aria-label="Bahasa Indonesia">ID</button>
+    <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+  </div>
   <main class="container">
     <div class="filter-bar">
       <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
@@ -124,14 +162,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+        <p class="group-description i18n" data-id="Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll." data-en="Ensures sensitive data stored locally is properly protected, whether in internal or public storage. Covers prevention of accidental data leakage via backups, logs, keyboard cache, etc.">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
 
       <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Host-Device Data Transfer</h3>
-        <p class="item-description">You can copy files to and from a device by using the @MASTG-TOOL-0004 commands adb pull &lt;remote&gt; &lt;local&gt; and adb push &lt;local&gt; &lt;remote&gt; commands. Their usage is very straightforward. For example, the f</p>
+        <p class="item-description i18n" data-id="Anda dapat menyalin file ke dan dari perangkat dengan menggunakan perintah @MASTG-TOOL-0004, yaitu adb pull &lt;remote&gt; &lt;local&gt; dan adb push &lt;local&gt; &lt;remote&gt;. Penggunaannya sangat mudah. Sebagai contoh, f" data-en="You can copy files to and from a device by using the @MASTG-TOOL-0004 commands adb pull &lt;remote&gt; &lt;local&gt; and adb push &lt;local&gt; &lt;remote&gt; commands. Their usage is very straightforward. For example, the f">Anda dapat menyalin file ke dan dari perangkat dengan menggunakan perintah @MASTG-TOOL-0004, yaitu adb pull &lt;remote&gt; &lt;local&gt; dan adb push &lt;local&gt; &lt;remote&gt;. Penggunaannya sangat mudah. Sebagai contoh, f</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -149,7 +187,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Obtaining and Extracting Apps</h3>
-        <p class="item-description">There are several ways of extracting APK files from a device. You will need to decide which one is the easiest method, depending on whether the app is public or private.</p>
+        <p class="item-description i18n" data-id="Ada beberapa cara untuk mengekstrak file APK dari perangkat. Anda perlu memutuskan metode mana yang paling mudah, tergantung pada apakah aplikasi tersebut bersifat publik atau privat." data-en="There are several ways of extracting APK files from a device. You will need to decide which one is the easiest method, depending on whether the app is public or private.">Ada beberapa cara untuk mengekstrak file APK dari perangkat. Anda perlu memutuskan metode mana yang paling mudah, tergantung pada apakah aplikasi tersebut bersifat publik atau privat.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -167,7 +205,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Disassembling Code to Smali</h3>
-        <p class="item-description">If you want to inspect the app's smali code (instead of Java), you can open your APK in Android Studio by clicking Profile or debug APK from the &quot;Welcome screen&quot; (even if you don't intend to debug it </p>
+        <p class="item-description i18n" data-id="Jika Anda ingin memeriksa kode smali aplikasi (bukan Java), Anda dapat membuka APK Anda di Android Studio dengan mengklik Profile atau debug APK dari &quot;Welcome screen&quot; (meskipun Anda tidak berniat untuk melakukan debug)." data-en="If you want to inspect the app's smali code (instead of Java), you can open your APK in Android Studio by clicking Profile or debug APK from the &quot;Welcome screen&quot; (even if you don't intend to debug it">Jika Anda ingin memeriksa kode smali aplikasi (bukan Java), Anda dapat membuka APK Anda di Android Studio dengan mengklik Profile atau debug APK dari "Welcome screen" (meskipun Anda tidak berniat untuk melakukan debug).</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -185,7 +223,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Retrieving Strings</h3>
-        <p class="item-description">While performing any kind of binary analysis, strings can be considered as one of the most valuable starting points, as they provide context. For example, an error log string like &quot;Data encryption fai</p>
+        <p class="item-description i18n" data-id="Saat melakukan analisis biner jenis apa pun, string dapat dianggap sebagai salah satu titik awal yang paling berharga, karena memberikan konteks. Sebagai contoh, string log error seperti &quot;Data encryption fai" data-en="While performing any kind of binary analysis, strings can be considered as one of the most valuable starting points, as they provide context. For example, an error log string like &quot;Data encryption fai">Saat melakukan analisis biner jenis apa pun, string dapat dianggap sebagai salah satu titik awal yang paling berharga, karena memberikan konteks. Sebagai contoh, string log error seperti &quot;Data encryption fai</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -203,7 +241,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Get Open Files</h3>
-        <p class="item-description">You can use lsof with the flag -p &lt;pid&gt; to return the list of open files for the specified process. See the man page for more options.</p>
+        <p class="item-description i18n" data-id="Anda dapat menggunakan lsof dengan flag -p <pid> untuk mengembalikan daftar file yang terbuka untuk proses yang ditentukan. Lihat man page untuk opsi lebih lanjut." data-en="You can use lsof with the flag -p &lt;pid&gt; to return the list of open files for the specified process. See the man page for more options.">Anda dapat menggunakan lsof dengan flag -p <pid> untuk mengembalikan daftar file yang terbuka untuk proses yang ditentukan. Lihat man page untuk opsi lebih lanjut.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -221,7 +259,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Obtaining Information from the AndroidManifest</h3>
-        <p class="item-description">The AndroidManifest.xml file is a critical component of any Android application, providing essential information about the app's structure, permissions, components, and configurations. During a securi</p>
+        <p class="item-description i18n" data-id="File AndroidManifest.xml adalah komponen kritis dari setiap aplikasi Android, yang menyediakan informasi penting tentang struktur, izin, komponen, dan konfigurasi aplikasi. Selama securi" data-en="The AndroidManifest.xml file is a critical component of any Android application, providing essential information about the app's structure, permissions, components, and configurations. During a securi">File AndroidManifest.xml adalah komponen kritis dari setiap aplikasi Android, yang menyediakan informasi penting tentang struktur, izin, komponen, dan konfigurasi aplikasi. Selama securi</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -239,7 +277,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Obtaining App Permissions</h3>
-        <p class="item-description">Android permissions are declared in the AndroidManifest.xml file using the &lt;uses-permission&gt; tag. You can use multiple tools to view them.</p>
+        <p class="item-description i18n" data-id="Izin Android dideklarasikan di dalam file AndroidManifest.xml menggunakan tag &lt;uses-permission&gt;. Anda dapat menggunakan berbagai tools untuk melihatnya." data-en="Android permissions are declared in the AndroidManifest.xml file using the &lt;uses-permission&gt; tag. You can use multiple tools to view them.">Izin Android dideklarasikan di dalam file AndroidManifest.xml menggunakan tag &lt;uses-permission&gt;. Anda dapat menggunakan berbagai tools untuk melihatnya.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -257,7 +295,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Performing a Backup and Restore of App Data</h3>
-        <p class="item-description">Run Backup Manager (adb shell bmgr)</p>
+        <p class="item-description i18n" data-id="Jalankan Backup Manager (adb shell bmgr)" data-en="Run Backup Manager (adb shell bmgr)">Jalankan Backup Manager (adb shell bmgr)</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -275,7 +313,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Software Composition Analysis (SCA) of Android Dependencies at Build Time</h3>
-        <p class="item-description">Modern Android applications rely heavily on third-party libraries, making dependency security a critical concern. Software Composition Analysis (SCA) tools inspect dependency metadata, such as package</p>
+        <p class="item-description i18n" data-id="Aplikasi Android modern sangat bergantung pada library pihak ketiga, sehingga keamanan dependency menjadi perhatian kritis. Alat Software Composition Analysis (SCA) memeriksa metadata dependency, seperti package" data-en="Modern Android applications rely heavily on third-party libraries, making dependency security a critical concern. Software Composition Analysis (SCA) tools inspect dependency metadata, such as package">Aplikasi Android modern sangat bergantung pada library pihak ketiga, sehingga keamanan dependency menjadi perhatian kritis. Alat Software Composition Analysis (SCA) memeriksa metadata dependency, seperti package</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -293,7 +331,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Inspecting the Merged AndroidManifest</h3>
-        <p class="item-description">During the build process, the Android build tools merge multiple manifest files from different sources (main app, flavors, and libraries) into a single merged manifest file. This merged manifest file </p>
+        <p class="item-description i18n" data-id="Selama proses build, build tools Android menggabungkan beberapa manifest files dari berbagai sumber (main app, flavors, dan libraries) menjadi satu merged manifest file. Merged manifest file ini" data-en="During the build process, the Android build tools merge multiple manifest files from different sources (main app, flavors, and libraries) into a single merged manifest file. This merged manifest file">Selama proses build, build tools Android menggabungkan beberapa manifest files dari berbagai sumber (main app, flavors, dan libraries) menjadi satu merged manifest file. Merged manifest file ini</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -311,7 +349,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Inspecting WebView Storage</h3>
-        <p class="item-description">To inspect WebView Storage, first follow the steps in official &quot;Remote debugging WebViews&quot; documentation to connect Chrome DevTools to the WebView of your app.</p>
+        <p class="item-description i18n" data-id="Untuk memeriksa WebView Storage, pertama ikuti langkah-langkah dalam dokumentasi resmi &quot;Remote debugging WebViews&quot; untuk menghubungkan Chrome DevTools ke WebView aplikasi Anda." data-en="To inspect WebView Storage, first follow the steps in official &quot;Remote debugging WebViews&quot; documentation to connect Chrome DevTools to the WebView of your app.">Untuk memeriksa WebView Storage, pertama ikuti langkah-langkah dalam dokumentasi resmi "Remote debugging WebViews" untuk menghubungkan Chrome DevTools ke WebView aplikasi Anda.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -329,7 +367,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Monitor File System Operations in WebViews</h3>
-        <p class="item-description">You can monitor any file system operations in the WebView storage directory using various techniques:</p>
+        <p class="item-description i18n" data-id="Anda dapat memantau semua file system operations di direktori penyimpanan WebView menggunakan berbagai techniques:" data-en="You can monitor any file system operations in the WebView storage directory using various techniques:">Anda dapat memantau semua file system operations di direktori penyimpanan WebView menggunakan berbagai techniques:</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -347,7 +385,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Bypassing Root Detection</h3>
-        <p class="item-description">Root detection mechanisms attempt to identify whether an Android device has been rooted, typically by checking for specific files, processes, or system properties. Bypassing these checks is a common s</p>
+        <p class="item-description i18n" data-id="Mekanisme Root detection berusaha mengidentifikasi apakah perangkat Android telah di-root, biasanya dengan memeriksa file, proses, atau properti sistem tertentu. Bypassing pemeriksaan ini adalah common s." data-en="Root detection mechanisms attempt to identify whether an Android device has been rooted, typically by checking for specific files, processes, or system properties. Bypassing these checks is a common s">Mekanisme Root detection berusaha mengidentifikasi apakah perangkat Android telah di-root, biasanya dengan memeriksa file, proses, atau properti sistem tertentu. Bypassing pemeriksaan ini adalah common s.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -365,7 +403,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Working with XAPK Files</h3>
-        <p class="item-description">When downloading apps from alternative stores such as APKPure or APKMirror, you may receive XAPK files instead of a single APK. XAPK is not an Android standard format. It is simply a ZIP archive used </p>
+        <p class="item-description i18n" data-id="Saat mengunduh aplikasi dari toko alternatif seperti APKPure atau APKMirror, Anda mungkin menerima file XAPK, bukan APK tunggal. XAPK bukanlah format standar Android. Ini hanyalah arsip ZIP yang digunakan." data-en="When downloading apps from alternative stores such as APKPure or APKMirror, you may receive XAPK files instead of a single APK. XAPK is not an Android standard format. It is simply a ZIP archive used">Saat mengunduh aplikasi dari toko alternatif seperti APKPure atau APKMirror, Anda mungkin menerima file XAPK, bukan APK tunggal. XAPK bukanlah format standar Android. Ini hanyalah arsip ZIP yang digunakan.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -383,7 +421,11 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Analyzing the Network Security Configuration</h3>
-        <p class="item-description">Once the app has been reverse engineered (see @MASTG-TECH-0013), the Network Security Configuration (NSC) file is available in the output directory. Its location is derived from the android:networkSec</p>
+        <p class="item-description i18n" data-id="Die Übersetzung lautet:
+
+Setelah aplikasi di-reverse engineer (lihat @MASTG-TECH-0013), file Network Security Configuration (NSC) tersedia di output directory. Lokasinya berasal dari android:networkSec." data-en="Once the app has been reverse engineered (see @MASTG-TECH-0013), the Network Security Configuration (NSC) file is available in the output directory. Its location is derived from the android:networkSec">Die Übersetzung lautet:
+
+Setelah aplikasi di-reverse engineer (lihat @MASTG-TECH-0013), file Network Security Configuration (NSC) tersedia di output directory. Lokasinya berasal dari android:networkSec.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -401,7 +443,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Extracting Bundled Native Libraries</h3>
-        <p class="item-description">This technique describes how to identify native libraries (.so files) that are packaged inside an Android app's APK using static analysis (without running the app). Native libraries are stored in the </p>
+        <p class="item-description i18n" data-id="Teknik ini menjelaskan cara mengidentifikasi native libraries (file .so) yang dikemas di dalam APK aplikasi Android menggunakan static analysis (tanpa menjalankan aplikasi). Native libraries disimpan di dalam" data-en="This technique describes how to identify native libraries (.so files) that are packaged inside an Android app's APK using static analysis (without running the app). Native libraries are stored in the">Teknik ini menjelaskan cara mengidentifikasi native libraries (file .so) yang dikemas di dalam APK aplikasi Android menggunakan static analysis (tanpa menjalankan aplikasi). Native libraries disimpan di dalam</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -419,7 +461,7 @@ body {
           <span class="item-id">MASTG-TECH-0159</span>
         </div>
         <h3 class="item-title">Verify Usage of File-Based Content Providers</h3>
-        <p class="item-description">See @MASTG-KNOW-0117 for an overview of Android ContentProviders, including URI structure, access control, and query handling.</p>
+        <p class="item-description i18n" data-id="Lihat @MASTG-KNOW-0117 untuk gambaran umum tentang Android ContentProviders, termasuk struktur URI, kontrol akses, dan penanganan query." data-en="See @MASTG-KNOW-0117 for an overview of Android ContentProviders, including URI structure, access control, and query handling.">Lihat @MASTG-KNOW-0117 untuk gambaran umum tentang Android ContentProviders, termasuk struktur URI, kontrol akses, dan penanganan query.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -437,7 +479,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Monitoring Deep Link Handlers at Runtime with Frida</h3>
-        <p class="item-description">Here you will use the list of deep links from the static analysis (see @MASTG-TECH-0172) to iterate and determine each handler method and the processed data, if any. You will first start a @MASTG-TOOL</p>
+        <p class="item-description i18n" data-id="Di sini Anda akan menggunakan daftar deep link dari analisis statis (lihat @MASTG-TECH-0172) untuk iterate dan determine setiap handler method serta data yang diproses, jika ada. Anda akan memulai dengan @MASTG-TOOL" data-en="Here you will use the list of deep links from the static analysis (see @MASTG-TECH-0172) to iterate and determine each handler method and the processed data, if any. You will first start a @MASTG-TOOL">Di sini Anda akan menggunakan daftar deep link dari analisis statis (lihat @MASTG-TECH-0172) untuk iterate dan determine setiap handler method serta data yang diproses, jika ada. Anda akan memulai dengan @MASTG-TOOL</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -458,14 +500,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
+        <p class="group-description i18n" data-id="Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle." data-en="Ensures the app uses cryptography according to industry best practices. Covers selection of strong algorithms, correct configuration, and key lifecycle management.">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
 
       <div class="item-card" data-id="" data-category="CRYPTO" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Obtaining Compiler-Provided Security Features</h3>
-        <p class="item-description">Run @MASTG-TOOL-0129 on the target binary, for example a shared library and grep for the keywords you'd like to check for.</p>
+        <p class="item-description i18n" data-id="Jalankan @MASTG-TOOL-0129 pada biner target, misalnya shared library, dan grep untuk kata kunci yang ingin Anda periksa." data-en="Run @MASTG-TOOL-0129 on the target binary, for example a shared library and grep for the keywords you'd like to check for.">Jalankan @MASTG-TOOL-0129 pada biner target, misalnya shared library, dan grep untuk kata kunci yang ingin Anda periksa.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -483,7 +525,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Reverse Engineering Flutter Applications</h3>
-        <p class="item-description">Flutter is an open source UI SDK from Google for building natively compiled applications for mobile, web, and desktop from a single codebase. Dart, the programming language used in Flutter, is key to </p>
+        <p class="item-description i18n" data-id="Flutter adalah open source UI SDK dari Google untuk membangun natively compiled applications untuk mobile, web, dan desktop dari satu codebase. Dart, bahasa pemrograman yang digunakan di Flutter, adalah kunci untuk" data-en="Flutter is an open source UI SDK from Google for building natively compiled applications for mobile, web, and desktop from a single codebase. Dart, the programming language used in Flutter, is key to">Flutter adalah open source UI SDK dari Google untuk membangun natively compiled applications untuk mobile, web, dan desktop dari satu codebase. Dart, bahasa pemrograman yang digunakan di Flutter, adalah kunci untuk</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -504,14 +546,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations.</p>
+        <p class="group-description i18n" data-id="Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations." data-en="Ensures the app implements authentication and authorization securely. Covers remote auth protocols, local authentication (biometrics, PIN), and additional authentication for sensitive operations.">Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations.</p>
 
       <div class="item-card" data-id="" data-category="AUTH" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Bypassing Certificate Pinning</h3>
-        <p class="item-description">Some applications will implement SSL Pinning, which prevents the application from accepting your intercepting certificate as a valid certificate. This means that you will not be able to monitor the tr</p>
+        <p class="item-description i18n" data-id="Beberapa aplikasi akan mengimplementasikan SSL Pinning, yang mencegah aplikasi tersebut menerima intercepting certificate Anda sebagai certificate yang valid. Ini berarti Anda tidak akan dapat memonitor tr" data-en="Some applications will implement SSL Pinning, which prevents the application from accepting your intercepting certificate as a valid certificate. This means that you will not be able to monitor the tr">Beberapa aplikasi akan mengimplementasikan SSL Pinning, yang mencegah aplikasi tersebut menerima intercepting certificate Anda sebagai certificate yang valid. Ini berarti Anda tidak akan dapat memonitor tr</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -532,14 +574,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+        <p class="group-description i18n" data-id="Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning." data-en="Ensures the app establishes secure and encrypted connections for all network communication. Covers TLS configuration and certificate/public key pinning.">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
 
       <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Basic Network Monitoring/Sniffing</h3>
-        <p class="item-description">Remotely sniffing all Android traffic in real-time is possible with @MASTG-TOOL-0080, netcat (nc), and @MASTG-TOOL-0081. First, make sure that you have the latest version of Android tcpdump on your ph</p>
+        <p class="item-description i18n" data-id="Menyadap semua traffic Android secara real-time dari jarak jauh dimungkinkan dengan @MASTG-TOOL-0080, netcat (nc), dan @MASTG-TOOL-0081. Pertama, pastikan Anda memiliki versi terbaru dari Android tcpdump pada ponsel Anda." data-en="Remotely sniffing all Android traffic in real-time is possible with @MASTG-TOOL-0080, netcat (nc), and @MASTG-TOOL-0081. First, make sure that you have the latest version of Android tcpdump on your ph">Menyadap semua traffic Android secara real-time dari jarak jauh dimungkinkan dengan @MASTG-TOOL-0080, netcat (nc), dan @MASTG-TOOL-0081. Pertama, pastikan Anda memiliki versi terbaru dari Android tcpdump pada ponsel Anda.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -557,7 +599,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Setting Up an Interception Proxy</h3>
-        <p class="item-description">Several tools support the network analysis of applications that rely on the HTTP(S) protocol. The most important tools are the so-called interception proxies; @MASTG-TOOL-0079 and @MASTG-TOOL-0077 are</p>
+        <p class="item-description i18n" data-id="Beberapa alat mendukung analisis jaringan dari aplikasi yang bergantung pada protokol HTTP(S). Alat yang paling penting adalah apa yang disebut interception proxies; @MASTG-TOOL-0079 dan @MASTG-TOOL-0077 adalah" data-en="Several tools support the network analysis of applications that rely on the HTTP(S) protocol. The most important tools are the so-called interception proxies; @MASTG-TOOL-0079 and @MASTG-TOOL-0077 are">Beberapa alat mendukung analisis jaringan dari aplikasi yang bergantung pada protokol HTTP(S). Alat yang paling penting adalah apa yang disebut interception proxies; @MASTG-TOOL-0079 dan @MASTG-TOOL-0077 adalah</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -575,7 +617,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Information Gathering - Network Communication</h3>
-        <p class="item-description">Most of the apps you might encounter connect to remote endpoints. Even before you perform any dynamic analysis (e.g. traffic capture and analysis), you can obtain some initial inputs or entry points b</p>
+        <p class="item-description i18n" data-id="Sebagian besar aplikasi yang mungkin Anda temui terhubung ke remote endpoint. Bahkan sebelum Anda melakukan analisis dinamis (misalnya traffic capture dan analysis), Anda bisa mendapatkan beberapa input awal atau entry points b" data-en="Most of the apps you might encounter connect to remote endpoints. Even before you perform any dynamic analysis (e.g. traffic capture and analysis), you can obtain some initial inputs or entry points b">Sebagian besar aplikasi yang mungkin Anda temui terhubung ke remote endpoint. Bahkan sebelum Anda melakukan analisis dinamis (misalnya traffic capture dan analysis), Anda bisa mendapatkan beberapa input awal atau entry points b</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -593,7 +635,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Intercepting Flutter HTTPS Traffic</h3>
-        <p class="item-description">Flutter is an open-source UI software development kit (SDK) created by Google. It is used to build natively compiled applications for mobile, web, and desktop from a single codebase. Flutter uses Dart</p>
+        <p class="item-description i18n" data-id="Flutter adalah kit pengembangan perangkat lunak (SDK) UI sumber terbuka yang dibuat oleh Google. Ini digunakan untuk membangun aplikasi yang dikompilasi secara native untuk mobile, web, dan desktop dari satu basis kode. Flutter menggunakan Dart." data-en="Flutter is an open-source UI software development kit (SDK) created by Google. It is used to build natively compiled applications for mobile, web, and desktop from a single codebase. Flutter uses Dart">Flutter adalah kit pengembangan perangkat lunak (SDK) UI sumber terbuka yang dibuat oleh Google. Ini digunakan untuk membangun aplikasi yang dikompilasi secara native untuk mobile, web, dan desktop dari satu basis kode. Flutter menggunakan Dart.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -614,14 +656,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+        <p class="group-description i18n" data-id="Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI." data-en="App interaction with the mobile platform must be secure. Covers IPC mechanisms, WebView configuration, and secure display of sensitive data in the UI.">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
 
       <div class="item-card" data-id="" data-category="PLATFORM" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Enumerating Content Providers</h3>
-        <p class="item-description">You can enumerate the content providers an app declares, and determine which of them are exported, by inspecting the app's AndroidManifest.xml or by querying the running system. See @MASTG-KNOW-0117 f</p>
+        <p class="item-description i18n" data-id="Anda dapat menghitung content providers yang dideklarasikan oleh sebuah aplikasi, dan menentukan mana yang diekspor, dengan memeriksa AndroidManifest.xml aplikasi atau dengan melakukan query pada sistem yang berjalan. Lihat @MASTG-KNOW-0117 f" data-en="You can enumerate the content providers an app declares, and determine which of them are exported, by inspecting the app's AndroidManifest.xml or by querying the running system. See @MASTG-KNOW-0117 f">Anda dapat menghitung content providers yang dideklarasikan oleh sebuah aplikasi, dan menentukan mana yang diekspor, dengan memeriksa AndroidManifest.xml aplikasi atau dengan melakukan query pada sistem yang berjalan. Lihat @MASTG-KNOW-0117 f</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -639,7 +681,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Sniffing Implicit Intents and Broadcasts</h3>
-        <p class="item-description">When an app sends an implicit intent or broadcast without restricting the recipient (for example, without an explicit target package or a required permission), any app on the device can register to re</p>
+        <p class="item-description i18n" data-id="Ketika sebuah aplikasi mengirim implicit intent atau broadcast tanpa membatasi penerima (misalnya, tanpa target package yang eksplisit atau permission yang diperlukan), aplikasi mana pun di perangkat dapat mendaftar untuk re" data-en="When an app sends an implicit intent or broadcast without restricting the recipient (for example, without an explicit target package or a required permission), any app on the device can register to re">Ketika sebuah aplikasi mengirim implicit intent atau broadcast tanpa membatasi penerima (misalnya, tanpa target package yang eksplisit atau permission yang diperlukan), aplikasi mana pun di perangkat dapat mendaftar untuk re</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -657,7 +699,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Listing Deep Links</h3>
-        <p class="item-description">Extract the AndroidManifest.xml (@MASTG-TECH-0117) and analyze it (@MASTG-TECH-0150), looking for &lt;intent-filter&gt; elements that determine whether deep links (with or without custom URL schemes) are de</p>
+        <p class="item-description i18n" data-id="Ekstrak AndroidManifest.xml (@MASTG-TECH-0117) dan analisis (@MASTG-TECH-0150), cari elemen <intent-filter> yang menentukan apakah deep links (dengan atau tanpa custom URL schemes) didefinisikan." data-en="Extract the AndroidManifest.xml (@MASTG-TECH-0117) and analyze it (@MASTG-TECH-0150), looking for &lt;intent-filter&gt; elements that determine whether deep links (with or without custom URL schemes) are de">Ekstrak AndroidManifest.xml (@MASTG-TECH-0117) dan analisis (@MASTG-TECH-0150), cari elemen <intent-filter> yang menentukan apakah deep links (dengan atau tanpa custom URL schemes) didefinisikan.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -675,7 +717,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Verifying App Link Website Association</h3>
-        <p class="item-description">Even when a deep link &lt;intent-filter&gt; declares android:autoVerify=&quot;true&quot;, the link is only treated as an App Link once Android confirms the website association against the domain's Digital Asset Links</p>
+        <p class="item-description i18n" data-id="Meskipun sebuah deep link <intent-filter> mendeklarasikan android:autoVerify=&quot;true&quot;, tautan tersebut hanya diperlakukan sebagai App Link setelah Android mengonfirmasi asosiasi website terhadap Digital Asset Links domain tersebut." data-en="Even when a deep link &lt;intent-filter&gt; declares android:autoVerify=&quot;true&quot;, the link is only treated as an App Link once Android confirms the website association against the domain's Digital Asset Links">Meskipun sebuah deep link <intent-filter> mendeklarasikan android:autoVerify="true", tautan tersebut hanya diperlakukan sebagai App Link setelah Android mengonfirmasi asosiasi website terhadap Digital Asset Links domain tersebut.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -696,14 +738,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+        <p class="group-description i18n" data-id="Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation." data-en="Ensures code quality and exploit mitigation. Covers platform version requirements, app update enforcement, third-party component vulnerability management, and input validation.">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
 
       <div class="item-card" data-id="" data-category="CODE" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Reverse Engineering Android Apps</h3>
-        <p class="item-description">Android's openness makes it a favorable environment for reverse engineers, offering significant advantages not available on iOS. Because Android is open-source, you can study its source code at the An</p>
+        <p class="item-description i18n" data-id="Keterbukaan Android menjadikannya lingkungan yang menguntungkan bagi reverse engineers, menawarkan keuntungan signifikan yang tidak tersedia di iOS. Karena Android bersifat open-source, Anda dapat mempelajari source code-nya di An" data-en="Android's openness makes it a favorable environment for reverse engineers, offering significant advantages not available on iOS. Because Android is open-source, you can study its source code at the An">Keterbukaan Android menjadikannya lingkungan yang menguntungkan bagi reverse engineers, menawarkan keuntungan signifikan yang tidak tersedia di iOS. Karena Android bersifat open-source, Anda dapat mempelajari source code-nya di An</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -721,7 +763,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Decompiling Java Code</h3>
-        <p class="item-description">When reverse-engineering an Android application, make sure to always identify all locations of interest regarding application logic and use the correct techniques to reverse-engineer them. In this tec</p>
+        <p class="item-description i18n" data-id="Ketika melakukan reverse-engineering pada aplikasi Android, pastikan untuk selalu mengidentifikasi semua lokasi yang menarik terkait logika aplikasi dan gunakan teknik yang tepat untuk melakukan reverse-engineering pada lokasi-lokasi tersebut. Dalam tec" data-en="When reverse-engineering an Android application, make sure to always identify all locations of interest regarding application logic and use the correct techniques to reverse-engineer them. In this tec">Ketika melakukan reverse-engineering pada aplikasi Android, pastikan untuk selalu mengidentifikasi semua lokasi yang menarik terkait logika aplikasi dan gunakan teknik yang tepat untuk melakukan reverse-engineering pada lokasi-lokasi tersebut. Dalam tec</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -739,7 +781,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Disassembling Native Code</h3>
-        <p class="item-description">Dalvik and ART both support the Java Native Interface (JNI), which defines a way for Java code to interact with native code written in C/C++. As on other Linux-based operating systems, native code is </p>
+        <p class="item-description i18n" data-id="Dalvik dan ART sama-sama mendukung Java Native Interface (JNI), yang mendefinisikan cara bagi kode Java untuk berinteraksi dengan kode native yang ditulis dalam C/C++. Seperti pada sistem operasi berbasis Linux lainnya, kode native adalah" data-en="Dalvik and ART both support the Java Native Interface (JNI), which defines a way for Java code to interact with native code written in C/C++. As on other Linux-based operating systems, native code is">Dalvik dan ART sama-sama mendukung Java Native Interface (JNI), yang mendefinisikan cara bagi kode Java untuk berinteraksi dengan kode native yang ditulis dalam C/C++. Seperti pada sistem operasi berbasis Linux lainnya, kode native adalah</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -757,7 +799,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Reviewing Decompiled Java Code</h3>
-        <p class="item-description">Following the example from @MASTG-TECH-0017, we assume that you've successfully decompiled and opened the @MASTG-APP-0003 app in @MASTG-TOOL-0018. Once jadx has finished decompiling, you can browse th</p>
+        <p class="item-description i18n" data-id="Mengikuti contoh dari @MASTG-TECH-0001, kami berasumsi bahwa Anda telah berhasil mendekompilasi dan membuka aplikasi @MASTG-APP-0003 di @MASTG-TOOL-0018. Setelah jadx selesai mendekompilasi, Anda dapat menelusuri th" data-en="Following the example from @MASTG-TECH-0017, we assume that you've successfully decompiled and opened the @MASTG-APP-0003 app in @MASTG-TOOL-0018. Once jadx has finished decompiling, you can browse th">Mengikuti contoh dari @MASTG-TECH-0001, kami berasumsi bahwa Anda telah berhasil mendekompilasi dan membuka aplikasi @MASTG-APP-0003 di @MASTG-TOOL-0018. Setelah jadx selesai mendekompilasi, Anda dapat menelusuri th</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -775,7 +817,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Automated Static Analysis</h3>
-        <p class="item-description">You should use tools for efficient static analysis. They allow the tester to focus on the more complicated business logic. A plethora of static code analyzers are available, ranging from open source s</p>
+        <p class="item-description i18n" data-id="Anda harus menggunakan tools untuk static analysis yang efisien. Tools tersebut memungkinkan tester untuk fokus pada business logic yang lebih rumit. Tersedia banyak static code analyzers, mulai dari open source s" data-en="You should use tools for efficient static analysis. They allow the tester to focus on the more complicated business logic. A plethora of static code analyzers are available, ranging from open source s">Anda harus menggunakan tools untuk static analysis yang efisien. Tools tersebut memungkinkan tester untuk fokus pada business logic yang lebih rumit. Tersedia banyak static code analyzers, mulai dari open source s</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -793,7 +835,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Execution Tracing</h3>
-        <p class="item-description">Performing execution tracing during Android reverse engineering allows you to observe control flow and runtime behavior across the entire stack, from managed Java code down to the Linux kernel. This i</p>
+        <p class="item-description i18n" data-id="Melakukan execution tracing selama reverse engineering Android memungkinkan Anda untuk mengamati control flow dan runtime behavior di seluruh stack, dari managed Java code hingga ke Linux kernel. Ini i" data-en="Performing execution tracing during Android reverse engineering allows you to observe control flow and runtime behavior across the entire stack, from managed Java code down to the Linux kernel. This i">Melakukan execution tracing selama reverse engineering Android memungkinkan Anda untuk mengamati control flow dan runtime behavior di seluruh stack, dari managed Java code hingga ke Linux kernel. Ini i</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -811,7 +853,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">JNI Tracing</h3>
-        <p class="item-description">As detailed in @MASTG-TECH-0024, the first argument passed to every JNI function is a JNI interface pointer. This pointer contains a table of functions that allows native code to access the Android Ru</p>
+        <p class="item-description i18n" data-id="Seperti yang dijelaskan dalam @MASTG-TECH-0024, argumen pertama yang diteruskan ke setiap fungsi JNI adalah pointer antarmuka JNI. Pointer ini berisi tabel fungsi yang memungkinkan kode native untuk mengakses Android Ru." data-en="As detailed in @MASTG-TECH-0024, the first argument passed to every JNI function is a JNI interface pointer. This pointer contains a table of functions that allows native code to access the Android Ru">Seperti yang dijelaskan dalam @MASTG-TECH-0024, argumen pertama yang diteruskan ke setiap fungsi JNI adalah pointer antarmuka JNI. Pointer ini berisi tabel fungsi yang memungkinkan kode native untuk mengakses Android Ru.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -829,7 +871,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Symbolic Execution</h3>
-        <p class="item-description">Symbolic execution is a very useful technique to have in your toolbox, especially while dealing with problems where you need to find a correct input for reaching a certain block of code. In this secti</p>
+        <p class="item-description i18n" data-id="Symbolic execution adalah teknik yang sangat berguna untuk dimiliki dalam toolbox Anda, terutama saat menangani masalah di mana Anda perlu menemukan input yang benar untuk mencapai blok kode tertentu. Pada bagian ini" data-en="Symbolic execution is a very useful technique to have in your toolbox, especially while dealing with problems where you need to find a correct input for reaching a certain block of code. In this secti">Symbolic execution adalah teknik yang sangat berguna untuk dimiliki dalam toolbox Anda, terutama saat menangani masalah di mana Anda perlu menemukan input yang benar untuk mencapai blok kode tertentu. Pada bagian ini</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -847,7 +889,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Patching</h3>
-        <p class="item-description">Making small changes to the Android Manifest or bytecode is often the quickest way to fix small annoyances that prevent you from testing or reverse engineering an app. On Android, two issues in partic</p>
+        <p class="item-description i18n" data-id="Melakukan perubahan kecil pada Android Manifest atau bytecode seringkali merupakan cara tercepat untuk memperbaiki gangguan kecil yang menghalangi Anda untuk menguji atau melakukan reverse engineering pada sebuah aplikasi. Di Android, dua masalah khusus" data-en="Making small changes to the Android Manifest or bytecode is often the quickest way to fix small annoyances that prevent you from testing or reverse engineering an app. On Android, two issues in partic">Melakukan perubahan kecil pada Android Manifest atau bytecode seringkali merupakan cara tercepat untuk memperbaiki gangguan kecil yang menghalangi Anda untuk menguji atau melakukan reverse engineering pada sebuah aplikasi. Di Android, dua masalah khusus</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -865,7 +907,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Library Injection</h3>
-        <p class="item-description">In the previous section, we learned about patching application code to assist in our analysis, but this approach has several limitations. For instance, you'd like to log everything that's being sent o</p>
+        <p class="item-description i18n" data-id="Pada bagian sebelumnya, kita belajar tentang patching kode aplikasi untuk membantu analisis kita, tetapi pendekatan ini memiliki beberapa keterbatasan. Misalnya, Anda ingin log semua yang dikirim o" data-en="In the previous section, we learned about patching application code to assist in our analysis, but this approach has several limitations. For instance, you'd like to log everything that's being sent o">Pada bagian sebelumnya, kita belajar tentang patching kode aplikasi untuk membantu analisis kita, tetapi pendekatan ini memiliki beberapa keterbatasan. Misalnya, Anda ingin log semua yang dikirim o</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -883,7 +925,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Getting Loaded Classes and Methods Dynamically</h3>
-        <p class="item-description">You can use the command Java in the Frida CLI to access the Java runtime and retrieve information from the running app. Remember that, unlike Frida for iOS, in Android, you need to wrap your code insi</p>
+        <p class="item-description i18n" data-id="Anda dapat menggunakan perintah Java di Frida CLI untuk mengakses Java runtime dan mengambil informasi dari aplikasi yang berjalan. Ingat bahwa, tidak seperti Frida untuk iOS, di Android, Anda perlu membungkus kode Anda di dalam" data-en="You can use the command Java in the Frida CLI to access the Java runtime and retrieve information from the running app. Remember that, unlike Frida for iOS, in Android, you need to wrap your code insi">Anda dapat menggunakan perintah Java di Frida CLI untuk mengakses Java runtime dan mengambil informasi dari aplikasi yang berjalan. Ingat bahwa, tidak seperti Frida untuk iOS, di Android, Anda perlu membungkus kode Anda di dalam</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -901,7 +943,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Verifying Android Dependencies at Runtime</h3>
-        <p class="item-description">When analyzing an application, it's important to analyze its dependencies, which are usually in the form of libraries, and ensure that they don't contain any known vulnerabilities. If the source code </p>
+        <p class="item-description i18n" data-id="Ketika menganalisis sebuah aplikasi, penting untuk menganalisis dependencies-nya, yang biasanya berupa libraries, dan memastikan bahwa dependencies tersebut tidak mengandung known vulnerabilities. Jika source code" data-en="When analyzing an application, it's important to analyze its dependencies, which are usually in the form of libraries, and ensure that they don't contain any known vulnerabilities. If the source code">Ketika menganalisis sebuah aplikasi, penting untuk menganalisis dependencies-nya, yang biasanya berupa libraries, dan memastikan bahwa dependencies tersebut tidak mengandung known vulnerabilities. Jika source code</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -922,14 +964,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+        <p class="group-description i18n" data-id="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks." data-en="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Enhances app resilience against reverse engineering and client-side attacks.">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
 
       <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Installing Apps</h3>
-        <p class="item-description">Use adb install (@MASTG-TOOL-0004) to install an APK on an emulator or connected device. The given path is the path of the APK on the host.</p>
+        <p class="item-description i18n" data-id="Gunakan adb install (@MASTG-TOOL-0004) untuk menginstal APK pada emulator atau perangkat yang terhubung. Jalur yang diberikan adalah jalur APK pada host." data-en="Use adb install (@MASTG-TOOL-0004) to install an APK on an emulator or connected device. The given path is the path of the APK on the host.">Gunakan adb install (@MASTG-TOOL-0004) untuk menginstal APK pada emulator atau perangkat yang terhubung. Jalur yang diberikan adalah jalur APK pada host.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -947,7 +989,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Debugging</h3>
-        <p class="item-description">So far, you've been using static analysis techniques without running the target apps. In the real world, especially when reversing malware or more complex apps, pure static analysis is very difficult.</p>
+        <p class="item-description i18n" data-id="Sejauh ini, Anda telah menggunakan teknik static analysis tanpa menjalankan aplikasi target. Di dunia nyata, terutama saat melakukan reversing malware atau aplikasi yang lebih kompleks, pure static analysis sangat sulit." data-en="So far, you've been using static analysis techniques without running the target apps. In the real world, especially when reversing malware or more complex apps, pure static analysis is very difficult.">Sejauh ini, Anda telah menggunakan teknik static analysis tanpa menjalankan aplikasi target. Di dunia nyata, terutama saat melakukan reversing malware atau aplikasi yang lebih kompleks, pure static analysis sangat sulit.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -965,7 +1007,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Emulation-based Analysis</h3>
-        <p class="item-description">The Android emulator is based on QEMU, a generic and open-source machine emulator. QEMU emulates a guest CPU by translating the guest instructions on-the-fly into instructions the host processor can u</p>
+        <p class="item-description i18n" data-id="Emulator Android didasarkan pada QEMU, sebuah emulator mesin generik dan open-source. QEMU mengemulasi CPU tamu dengan menerjemahkan instruksi tamu secara langsung (on-the-fly) menjadi instruksi yang dapat digunakan oleh prosesor host." data-en="The Android emulator is based on QEMU, a generic and open-source machine emulator. QEMU emulates a guest CPU by translating the guest instructions on-the-fly into instructions the host processor can u">Emulator Android didasarkan pada QEMU, sebuah emulator mesin generik dan open-source. QEMU mengemulasi CPU tamu dengan menerjemahkan instruksi tamu secara langsung (on-the-fly) menjadi instruksi yang dapat digunakan oleh prosesor host.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -983,7 +1025,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Waiting for the Debugger</h3>
-        <p class="item-description">The @MASTG-APP-0003 is not stupid: it notices that it has been run in debuggable mode and reacts by shutting down. A modal dialog is shown immediately, and the crackme terminates once you tap &quot;OK&quot;.</p>
+        <p class="item-description i18n" data-id="@MASTG-APP-0003 tidak bodoh: ia menyadari bahwa ia dijalankan dalam mode debuggable dan bereaksi dengan menutup diri. Sebuah modal dialog langsung ditampilkan, dan crackme berhenti begitu Anda mengetuk &quot;OK&quot;." data-en="The @MASTG-APP-0003 is not stupid: it notices that it has been run in debuggable mode and reacts by shutting down. A modal dialog is shown immediately, and the crackme terminates once you tap &quot;OK&quot;.">@MASTG-APP-0003 tidak bodoh: ia menyadari bahwa ia dijalankan dalam mode debuggable dan bereaksi dengan menutup diri. Sebuah modal dialog langsung ditampilkan, dan crackme berhenti begitu Anda mengetuk "OK".</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1001,7 +1043,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Process Exploration</h3>
-        <p class="item-description">When testing an app, process exploration can provide the tester with deep insights into the app's process memory. It can be achieved via runtime instrumentation and allows performing tasks such as:</p>
+        <p class="item-description i18n" data-id="Ketika menguji sebuah app, process exploration dapat memberikan wawasan mendalam kepada tester tentang memori proses app tersebut. Hal ini dapat dicapai melalui runtime instrumentation dan memungkinkan untuk melakukan tugas-tugas seperti:" data-en="When testing an app, process exploration can provide the tester with deep insights into the app's process memory. It can be achieved via runtime instrumentation and allows performing tasks such as:">Ketika menguji sebuah app, process exploration dapat memberikan wawasan mendalam kepada tester tentang memori proses app tersebut. Hal ini dapat dicapai melalui runtime instrumentation dan memungkinkan untuk melakukan tugas-tugas seperti:</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1019,7 +1061,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Software Composition Analysis (SCA) of Android Dependencies by Creating a SBOM</h3>
-        <p class="item-description">@MASTG-TOOL-0134 can be used to create a so-called Software Bill of Materials (SBOM) in the CycloneDX format. Navigate to the root directory of the Android Studio project you want to scan and execute </p>
+        <p class="item-description i18n" data-id="@MASTG-TOOL-0134 dapat digunakan untuk membuat apa yang disebut Software Bill of Materials (SBOM) dalam format CycloneDX. Navigasi ke direktori root dari proyek Android Studio yang ingin Anda pindai dan jalankan." data-en="@MASTG-TOOL-0134 can be used to create a so-called Software Bill of Materials (SBOM) in the CycloneDX format. Navigate to the root directory of the Android Studio project you want to scan and execute">@MASTG-TOOL-0134 dapat digunakan untuk membuat apa yang disebut Software Bill of Materials (SBOM) dalam format CycloneDX. Navigasi ke direktori root dari proyek Android Studio yang ingin Anda pindai dan jalankan.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1037,7 +1079,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Obtaining Debugging Information and Symbols</h3>
-        <p class="item-description">If a binary is not stripped, you can extract debugging symbols using standard ELF inspection tools. These symbols can provide insights into the functions and variables used in the binary, which is use</p>
+        <p class="item-description i18n" data-id="Jika binary tidak stripped, Anda dapat mengekstrak debugging symbols menggunakan standard ELF inspection tools. Simbol-simbol ini dapat memberikan wawasan tentang functions dan variables yang digunakan dalam binary, yang berguna." data-en="If a binary is not stripped, you can extract debugging symbols using standard ELF inspection tools. These symbols can provide insights into the functions and variables used in the binary, which is use">Jika binary tidak stripped, Anda dapat mengekstrak debugging symbols menggunakan standard ELF inspection tools. Simbol-simbol ini dapat memberikan wawasan tentang functions dan variables yang digunakan dalam binary, yang berguna.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1058,14 +1100,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
+        <p class="group-description i18n" data-id="Tools dan techniques yang berlaku lintas kategori MASVS." data-en="Tools and techniques applicable across MASVS categories.">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
 
       <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Accessing the Device Shell</h3>
-        <p class="item-description">One of the most common things you do when testing an app is accessing the device shell. In this section, we'll see how to access the Android shell both remotely from your host computer with/without a </p>
+        <p class="item-description i18n" data-id="Salah satu hal yang paling umum dilakukan saat menguji aplikasi adalah mengakses shell perangkat. Di bagian ini, kita akan melihat cara mengakses shell Android baik secara jarak jauh dari komputer host dengan/tanpa" data-en="One of the most common things you do when testing an app is accessing the device shell. In this section, we'll see how to access the Android shell both remotely from your host computer with/without a">Salah satu hal yang paling umum dilakukan saat menguji aplikasi adalah mengakses shell perangkat. Di bagian ini, kita akan melihat cara mengakses shell Android baik secara jarak jauh dari komputer host dengan/tanpa</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1083,7 +1125,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Repackaging Apps</h3>
-        <p class="item-description">If you need to test on a non-jailbroken device, you should learn how to repackage an app to enable dynamic testing on it.</p>
+        <p class="item-description i18n" data-id="Jika Anda perlu menguji pada perangkat non-jailbroken, Anda harus mempelajari cara merepaket ulang aplikasi untuk mengaktifkan dynamic testing di dalamnya." data-en="If you need to test on a non-jailbroken device, you should learn how to repackage an app to enable dynamic testing on it.">Jika Anda perlu menguji pada perangkat non-jailbroken, Anda harus mempelajari cara merepaket ulang aplikasi untuk mengaktifkan dynamic testing di dalamnya.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1101,7 +1143,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Listing Installed Apps</h3>
-        <p class="item-description">When targeting apps that are installed on the device, you'll first have to figure out the correct package name of the application you want to analyze. You can retrieve the installed apps either by usi</p>
+        <p class="item-description i18n" data-id="Ketika menargetkan aplikasi yang terinstal di perangkat, Anda harus terlebih dahulu mengetahui nama paket yang benar dari aplikasi yang ingin dianalisis. Anda dapat mengambil daftar aplikasi yang terinstal baik dengan menggunakan" data-en="When targeting apps that are installed on the device, you'll first have to figure out the correct package name of the application you want to analyze. You can retrieve the installed apps either by usi">Ketika menargetkan aplikasi yang terinstal di perangkat, Anda harus terlebih dahulu mengetahui nama paket yang benar dari aplikasi yang ingin dianalisis. Anda dapat mengambil daftar aplikasi yang terinstal baik dengan menggunakan</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1119,7 +1161,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Exploring the App Package</h3>
-        <p class="item-description">Once you have collected the package name of the application you want to target, you'll want to start gathering information about it. First, retrieve the APK as explained in @MASTG-TECH-0003.</p>
+        <p class="item-description i18n" data-id="Setelah Anda mengumpulkan nama paket dari aplikasi yang ingin Anda targetkan, Anda akan mulai mengumpulkan informasi tentangnya. Pertama, ambil APK seperti yang dijelaskan di @MASTG-TECH-0003." data-en="Once you have collected the package name of the application you want to target, you'll want to start gathering information about it. First, retrieve the APK as explained in @MASTG-TECH-0003.">Setelah Anda mengumpulkan nama paket dari aplikasi yang ingin Anda targetkan, Anda akan mulai mengumpulkan informasi tentangnya. Pertama, ambil APK seperti yang dijelaskan di @MASTG-TECH-0003.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1155,7 +1197,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Monitoring System Logs</h3>
-        <p class="item-description">On Android, you can easily inspect the log of system messages by using Logcat. There are two ways to execute Logcat:</p>
+        <p class="item-description i18n" data-id="Di Android, Anda dapat dengan mudah memeriksa log pesan sistem menggunakan Logcat. Ada dua cara untuk menjalankan Logcat:" data-en="On Android, you can easily inspect the log of system messages by using Logcat. There are two ways to execute Logcat:">Di Android, Anda dapat dengan mudah memeriksa log pesan sistem menggunakan Logcat. Ada dua cara untuk menjalankan Logcat:</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1461,7 +1503,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Obtaining Information about the APK Signature</h3>
-        <p class="item-description">@MASTG-TOOL-0123 can be used to verify APK signatures:</p>
+        <p class="item-description i18n" data-id="@MASTG-TOOL-0123 dapat digunakan untuk memverifikasi tanda tangan APK:" data-en="@MASTG-TOOL-0123 can be used to verify APK signatures:">@MASTG-TOOL-0123 dapat digunakan untuk memverifikasi tanda tangan APK:</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1497,7 +1539,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Interacting with Android ContentProviders</h3>
-        <p class="item-description">See @MASTG-KNOW-0117 for an overview of Android ContentProviders, including URI structure, access control, and query handling.</p>
+        <p class="item-description i18n" data-id="Lihat @MASTG-KNOW-0117 untuk gambaran umum tentang Android ContentProviders, termasuk struktur URI, kontrol akses, dan penanganan query." data-en="See @MASTG-KNOW-0117 for an overview of Android ContentProviders, including URI structure, access control, and query handling.">Lihat @MASTG-KNOW-0117 untuk gambaran umum tentang Android ContentProviders, termasuk struktur URI, kontrol akses, dan penanganan query.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1515,7 +1557,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Analyzing the AndroidManifest</h3>
-        <p class="item-description">Once you've extracted the AndroidManifest.xml as described in @MASTG-TECH-0117, you can analyze its content to look for specific attributes, flags, permissions, or component declarations.</p>
+        <p class="item-description i18n" data-id="Setelah Anda mengekstrak AndroidManifest.xml seperti yang dijelaskan di @MASTG-TECH-0117, Anda dapat menganalisis kontennya untuk mencari atribut, flag, izin, atau deklarasi komponen tertentu." data-en="Once you've extracted the AndroidManifest.xml as described in @MASTG-TECH-0117, you can analyze its content to look for specific attributes, flags, permissions, or component declarations.">Setelah Anda mengekstrak AndroidManifest.xml seperti yang dijelaskan di @MASTG-TECH-0117, Anda dapat menganalisis kontennya untuk mencari atribut, flag, izin, atau deklarasi komponen tertentu.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1533,7 +1575,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Enumerating Activities</h3>
-        <p class="item-description">You can enumerate the activities an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by querying</p>
+        <p class="item-description i18n" data-id="Anda dapat mendaftar activities yang dideklarasikan oleh sebuah aplikasi, menentukan mana yang diekspor, dan mengidentifikasi nilai android:permission yang terkait dengan memeriksa AndroidManifest.xml aplikasi atau dengan melakukan query." data-en="You can enumerate the activities an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by querying">Anda dapat mendaftar activities yang dideklarasikan oleh sebuah aplikasi, menentukan mana yang diekspor, dan mengidentifikasi nilai android:permission yang terkait dengan memeriksa AndroidManifest.xml aplikasi atau dengan melakukan query.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1551,7 +1593,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Enumerating Services</h3>
-        <p class="item-description">You can enumerate the services an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by querying t</p>
+        <p class="item-description i18n" data-id="Anda dapat menghitung layanan yang dideklarasikan oleh aplikasi, menentukan mana yang diekspor, dan mengidentifikasi nilai android:permission yang terkait dengan memeriksa AndroidManifest.xml aplikasi atau dengan melakukan kueri t" data-en="You can enumerate the services an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by querying t">Anda dapat menghitung layanan yang dideklarasikan oleh aplikasi, menentukan mana yang diekspor, dan mengidentifikasi nilai android:permission yang terkait dengan memeriksa AndroidManifest.xml aplikasi atau dengan melakukan kueri t</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1569,7 +1611,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Enumerating Broadcast Receivers</h3>
-        <p class="item-description">You can enumerate the broadcast receivers an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by</p>
+        <p class="item-description i18n" data-id="Anda dapat mendaftar broadcast receivers yang dideklarasikan oleh sebuah aplikasi, menentukan mana yang exported, dan mengidentifikasi nilai android:permission yang terkait dengan memeriksa AndroidManifest.xml aplikasi atau dengan" data-en="You can enumerate the broadcast receivers an app declares, determine which of them are exported, and identify any associated android:permission values by inspecting the app's AndroidManifest.xml or by">Anda dapat mendaftar broadcast receivers yang dideklarasikan oleh sebuah aplikasi, menentukan mana yang exported, dan mengidentifikasi nilai android:permission yang terkait dengan memeriksa AndroidManifest.xml aplikasi atau dengan</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1587,7 +1629,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Identifying Compilers, Obfuscators, and Packers in Android Apps</h3>
-        <p class="item-description">Use @MASTG-TOOL-0009 to scan the APK and identify the compilers, obfuscators, and packers applied to it.</p>
+        <p class="item-description i18n" data-id="Gunakan @MASTG-TOOL-0009 untuk memindai APK dan mengidentifikasi compiler, obfuscator, serta packer yang diterapkan padanya." data-en="Use @MASTG-TOOL-0009 to scan the APK and identify the compilers, obfuscators, and packers applied to it.">Gunakan @MASTG-TOOL-0009 untuk memindai APK dan mengidentifikasi compiler, obfuscator, serta packer yang diterapkan padanya.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1676,6 +1718,27 @@ filterBtns.forEach(b => b.addEventListener('click', () => {
   b.classList.add('active');
   applyFilters();
 }));
+
+
+  // Language toggle
+  (function() {
+    const savedLang = localStorage.getItem('owasp-mas-lang') || 'id';
+    function setLang(lang) {
+      localStorage.setItem('owasp-mas-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.querySelectorAll('.i18n').forEach(el => {
+        const text = el.dataset[lang];
+        if (text) el.textContent = text;
+      });
+      document.documentElement.lang = lang === 'id' ? 'id' : 'en';
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+    setLang(savedLang);
+  })();
 
 </script>
 </body>

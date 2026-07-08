@@ -261,9 +261,43 @@
   }
   .page-footer a { color: var(--owasp-accent); text-decoration: none; }
   .page-footer .disclaimer { opacity: 0.7; margin-top: 0.5rem; }
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.3rem;
+    z-index: 200;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-btn.active, .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
+  /* Topic pages with light header need dark variant */
+  body.topic-page .lang-switcher .lang-btn {
+    border-color: var(--owasp-dark);
+    color: var(--owasp-dark);
+  }
+  body.topic-page .lang-switcher .lang-btn.active,
+  body.topic-page .lang-switcher .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
 </style>
 </head>
-<body>
+<body class="topic-page">
 <div class="container">
 
   <!-- Header -->
@@ -272,16 +306,20 @@
     <div class="subtitle">Mobile Application Security Verification Standard</div>
     <div class="badge">8 Control Groups · 24 Controls</div>
   </div>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="id" aria-label="Bahasa Indonesia">ID</button>
+    <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+  </div>
 
   <!-- Overview -->
   <div class="overview">
     <h2>Overview</h2>
-    <p>OWASP MASVS adalah standar industri untuk keamanan aplikasi mobile. Menyediakan set kontrol keamanan komprehensif untuk menilai keamanan mobile apps di berbagai platform (Android, iOS) dan skenario deployment (consumer, enterprise).</p>
+    <p class="i18n" data-id="OWASP MASVS adalah standar industri untuk keamanan aplikasi mobile. Menyediakan set kontrol keamanan komprehensif untuk menilai keamanan mobile apps di berbagai platform (Android, iOS) dan skenario deployment (consumer, enterprise)." data-en="OWASP MASVS is the industry standard for mobile application security. It provides a comprehensive set of security controls to assess the security of mobile apps across various platforms (Android, iOS) and deployment scenarios (consumer, enterprise).">OWASP MASVS adalah standar industri untuk keamanan aplikasi mobile. Menyediakan set kontrol keamanan komprehensif untuk menilai keamanan mobile apps di berbagai platform (Android, iOS) dan skenario deployment (consumer, enterprise).</p>
     <ul>
-      <li><strong>Testing Profiles:</strong> L1, L2, dan R (Resilience) — kini disebut "MAS Testing Profiles" di MASTG, aligned dengan NIST OSCAL</li>
-      <li><strong>8 Kategori:</strong> Storage, Crypto, Auth, Network, Platform, Code Quality, Resilience, Privacy</li>
-      <li><strong>Digunakan oleh:</strong> Google (MASA/ADA), CREST, institusi pemerintah & edukasi</li>
-      <li><strong>Pendamping:</strong> OWASP MASTG (testing guide) & MASWE (weakness enumeration)</li>
+      <li class="i18n" data-id="Testing Profiles: L1, L2, dan R (Resilience) - kini disebut MAS Testing Profiles di MASTG, aligned dengan NIST OSCAL" data-en="Testing Profiles: L1, L2, and R (Resilience) - now called MAS Testing Profiles in MASTG, aligned with NIST OSCAL"><strong>Testing Profiles:</strong> L1, L2, dan R (Resilience) — kini disebut "MAS Testing Profiles" di MASTG, aligned dengan NIST OSCAL</li>
+      <li class="i18n" data-id="8 Kategori: Storage, Crypto, Auth, Network, Platform, Code Quality, Resilience, Privacy" data-en="8 Categories: Storage, Crypto, Auth, Network, Platform, Code Quality, Resilience, Privacy"><strong>8 Kategori:</strong> Storage, Crypto, Auth, Network, Platform, Code Quality, Resilience, Privacy</li>
+      <li class="i18n" data-id="Digunakan oleh: Google (MASA/ADA), CREST, institusi pemerintah & edukasi" data-en="Used by: Google (MASA/ADA), CREST, government & educational institutions"><strong>Digunakan oleh:</strong> Google (MASA/ADA), CREST, institusi pemerintah &amp; edukasi</li>
+      <li class="i18n" data-id="Pendamping: OWASP MASTG (testing guide) & MASWE (weakness enumeration)" data-en="Companion: OWASP MASTG (testing guide) & MASWE (weakness enumeration)"><strong>Pendamping:</strong> OWASP MASTG (testing guide) &amp; MASWE (weakness enumeration)</li>
     </ul>
   </div>
 
@@ -292,7 +330,7 @@
       <div class="group-count">2 controls <span class="chevron">▶</span></div>
     </div>
     <div class="group-body">
-      <div class="group-description">
+      <div class="group-description i18n" data-id="Memastikan data sensitif (PII, credentials, secrets, API keys) yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Juga mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll." data-en="Ensures sensitive data (PII, credentials, secrets, API keys) stored locally is properly protected, whether in internal or public storage. Also covers prevention of accidental data leakage via backups, logs, keyboard cache, etc.">
         Memastikan data sensitif (PII, credentials, secrets, API keys) yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Juga mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.
       </div>
 
@@ -301,7 +339,7 @@
           <span class="control-id">MASVS-STORAGE-1</span>
           <span class="control-text">The app securely stores sensitive data.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Data sensitif dari user, backend, system services, atau app lain harus disimpan dengan proteksi yang memadai, terlepas dari lokasi penyimpanan (internal storage, public folders, dll)." data-en="Sensitive data from users, backend, system services, or other apps must be stored with adequate protection, regardless of storage location (internal storage, public folders, etc.).">
           Data sensitif dari user, backend, system services, atau app lain harus disimpan dengan proteksi yang memadai, terlepas dari lokasi penyimpanan (internal storage, public folders, dll).
         </div>
         <div class="prompt-section">
@@ -329,7 +367,7 @@
           <span class="control-id">MASVS-STORAGE-2</span>
           <span class="control-text">The app prevents leakage of sensitive data.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Mencegah kebocoran data sensitif yang tidak sengaja terjadi sebagai side-effect dari penggunaan API atau system capabilities seperti backups, logs, keyboard cache, notifications, clipboard, dan screenshots." data-en="Prevents accidental leakage of sensitive data as a side-effect of using platform APIs or system capabilities such as backups, logs, keyboard cache, notifications, clipboard, and screenshots.">
           Mencegah kebocoran data sensitif yang tidak sengaja terjadi sebagai side-effect dari penggunaan API atau system capabilities seperti backups, logs, keyboard cache, notifications, clipboard, dan screenshots.
         </div>
         <div class="prompt-section">
@@ -361,7 +399,7 @@
       <div class="group-count">2 controls <span class="chevron">▶</span></div>
     </div>
     <div class="group-body">
-      <div class="group-description">
+      <div class="group-description i18n" data-id="Memastikan app menggunakan cryptography sesuai best practices industri (NIST SP 800-175B, NIST SP 800-57). Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle (generation, storage, protection)." data-en="Ensures the app uses cryptography according to industry best practices (NIST SP 800-175B, NIST SP 800-57). Covers selection of strong algorithms, correct configuration, and key lifecycle management (generation, storage, protection).">
         Memastikan app menggunakan cryptography sesuai best practices industri (NIST SP 800-175B, NIST SP 800-57). Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle (generation, storage, protection).
       </div>
 
@@ -370,7 +408,7 @@
           <span class="control-id">MASVS-CRYPTO-1</span>
           <span class="control-text">The app employs current strong cryptography and uses it according to industry best practices.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Penggunaan cryptographic libraries yang terbukti, pemilihan dan konfigurasi cryptographic primitives yang tepat, serta random number generator yang sesuai. Mengikuti standar eksternal seperti NIST." data-en="Use of proven cryptographic libraries, selection and configuration of appropriate cryptographic primitives, and suitable random number generators. Following external standards such as NIST.">
           Penggunaan cryptographic libraries yang terbukti, pemilihan dan konfigurasi cryptographic primitives yang tepat, serta random number generator yang sesuai. Mengikuti standar eksternal seperti NIST.
         </div>
         <div class="prompt-section">
@@ -400,7 +438,7 @@
           <span class="control-id">MASVS-CRYPTO-2</span>
           <span class="control-text">The app performs key management according to industry best practices.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Manajemen cryptographic keys sepanjang lifecycle: generation, storage, dan protection. Keys tidak boleh hardcoded, tidak boleh didapat dari stable device features, tidak boleh disimpan tanpa proteksi tambahan, dan tidak boleh disinkronisasi antar device untuk high-risk data." data-en="Cryptographic key management throughout the lifecycle: generation, storage, and protection. Keys must not be hardcoded, derived from stable device features, stored without additional protection, or synchronized across devices for high-risk data.">
           Manajemen cryptographic keys sepanjang lifecycle: generation, storage, dan protection. Keys tidak boleh hardcoded, tidak boleh didapat dari stable device features, tidak boleh disimpan tanpa proteksi tambahan, dan tidak boleh disinkronisasi antar device untuk high-risk data.
         </div>
         <div class="prompt-section">
@@ -434,7 +472,7 @@
       <div class="group-count">3 controls <span class="chevron">▶</span></div>
     </div>
     <div class="group-body">
-      <div class="group-description">
+      <div class="group-description i18n" data-id="Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth (OAuth2, dll), local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations. Enforcement harus di server side, tapi app harus mengikuti best practices client-side." data-en="Ensures the app implements authentication and authorization securely. Covers remote auth protocols (OAuth2, etc.), local authentication (biometrics, PIN), and additional authentication for sensitive operations. Enforcement must be server-side, but the app must follow client-side best practices.">
         Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth (OAuth2, dll), local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations. Enforcement harus di server side, tapi app harus mengikuti best practices client-side.
       </div>
 
@@ -443,7 +481,7 @@
           <span class="control-id">MASVS-AUTH-1</span>
           <span class="control-text">The app uses secure authentication and authorization protocols and follows the relevant best practices.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Penggunaan protokol auth yang aman (OAuth2, OpenID Connect) dengan implementasi yang benar di sisi mobile app. Termasuk token storage, token refresh, dan session management." data-en="Use of secure auth protocols (OAuth2, OpenID Connect) with correct implementation on the mobile app side. Includes token storage, token refresh, and session management.">
           Penggunaan protokol auth yang aman (OAuth2, OpenID Connect) dengan implementasi yang benar di sisi mobile app. Termasuk token storage, token refresh, dan session management.
         </div>
         <div class="prompt-section">
@@ -473,7 +511,7 @@
           <span class="control-id">MASVS-AUTH-2</span>
           <span class="control-text">The app performs local authentication securely according to the platform best practices.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Local authentication (biometrics, PIN, pattern) harus diimplementasikan mengikuti platform best practices. Tidak boleh hanya memeriksa apakah biometric berhasil tanpa mengikatnya ke cryptographic operation." data-en="Local authentication (biometrics, PIN, pattern) must be implemented following platform best practices. Must not only check whether biometric authentication succeeded without binding it to a cryptographic operation.">
           Local authentication (biometrics, PIN, pattern) harus diimplementasikan mengikuti platform best practices. Tidak boleh hanya memeriksa apakah biometric berhasil tanpa mengikatnya ke cryptographic operation.
         </div>
         <div class="prompt-section">
@@ -502,7 +540,7 @@
           <span class="control-id">MASVS-AUTH-3</span>
           <span class="control-text">The app secures sensitive operations with additional authentication.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Operasi sensitif (transfer dana, perubahan password, hapus data) memerlukan additional authentication layer, seperti step-up authentication atau re-authentication." data-en="Sensitive operations (fund transfers, password changes, data deletion) require an additional authentication layer, such as step-up authentication or re-authentication.">
           Operasi sensitif (transfer dana, perubahan password, hapus data) memerlukan additional authentication layer, seperti step-up authentication atau re-authentication.
         </div>
         <div class="prompt-section">
@@ -536,7 +574,7 @@
       <div class="group-count">2 controls <span class="chevron">▶</span></div>
     </div>
     <div class="group-body">
-      <div class="group-description">
+      <div class="group-description i18n" data-id="Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration yang benar dan certificate/public key pinning untuk endpoint yang dikuasai developer." data-en="Ensures the app establishes secure and encrypted connections for all network communication. Covers correct TLS configuration and certificate/public key pinning for developer-controlled endpoints.">
         Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration yang benar dan certificate/public key pinning untuk endpoint yang dikuasai developer.
       </div>
 
@@ -545,7 +583,7 @@
           <span class="control-id">MASVS-NETWORK-1</span>
           <span class="control-text">The app secures all network traffic according to the current best practices.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Semua network traffic harus dienkripsi dan endpoint diautentikasi via TLS. Developer tidak boleh menonaktifkan platform secure defaults atau membypassnya via low-level APIs atau third-party libraries." data-en="All network traffic must be encrypted and endpoints authenticated via TLS. Developers must not disable platform secure defaults or bypass them via low-level APIs or third-party libraries.">
           Semua network traffic harus dienkripsi dan endpoint diautentikasi via TLS. Developer tidak boleh menonaktifkan platform secure defaults atau membypassnya via low-level APIs atau third-party libraries.
         </div>
         <div class="prompt-section">
@@ -574,7 +612,7 @@
           <span class="control-id">MASVS-NETWORK-2</span>
           <span class="control-text">The app performs identity pinning for all remote endpoints under the developer's control.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Certificate pinning atau public key pinning untuk memastikan hanya CA spesifik yang dipercaya, bukan semua default root CAs dari framework atau device." data-en="Certificate pinning or public key pinning to ensure only specific CAs are trusted, rather than all default root CAs from the framework or device.">
           Certificate pinning atau public key pinning untuk memastikan hanya CA spesifik yang dipercaya, bukan semua default root CAs dari framework atau device.
         </div>
         <div class="prompt-section">
@@ -607,7 +645,7 @@
       <div class="group-count">3 controls <span class="chevron">▶</span></div>
     </div>
     <div class="group-body">
-      <div class="group-description">
+      <div class="group-description i18n" data-id="Interaksi app dengan platform mobile harus aman. Mencakup penggunaan IPC mechanisms (Intent, ContentProvider, AIDL, URL schemes), WebView configuration, dan secure display of sensitive data di UI (screenshots, shoulder surfing)." data-en="App interaction with the mobile platform must be secure. Covers use of IPC mechanisms (Intent, ContentProvider, AIDL, URL schemes), WebView configuration, and secure display of sensitive data in the UI (screenshots, shoulder surfing).">
         Interaksi app dengan platform mobile harus aman. Mencakup penggunaan IPC mechanisms (Intent, ContentProvider, AIDL, URL schemes), WebView configuration, dan secure display of sensitive data di UI (screenshots, shoulder surfing).
       </div>
 
@@ -616,7 +654,7 @@
           <span class="control-id">MASVS-PLATFORM-1</span>
           <span class="control-text">The app uses IPC mechanisms securely.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="IPC mechanisms (Android: Intent, ContentProvider, BroadcastReceiver, AIDL; iOS: URL schemes, App Extensions, UIPasteboard) harus dikonfigurasi dengan aman untuk mencegah data leakage dan exposure of sensitive functionality." data-en="IPC mechanisms (Android: Intent, ContentProvider, BroadcastReceiver, AIDL; iOS: URL schemes, App Extensions, UIPasteboard) must be securely configured to prevent data leakage and exposure of sensitive functionality.">
           IPC mechanisms (Android: Intent, ContentProvider, BroadcastReceiver, AIDL; iOS: URL schemes, App Extensions, UIPasteboard) harus dikonfigurasi dengan aman untuk mencegah data leakage dan exposure of sensitive functionality.
         </div>
         <div class="prompt-section">
@@ -644,7 +682,7 @@
           <span class="control-id">MASVS-PLATFORM-2</span>
           <span class="control-text">The app uses WebViews securely.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="WebView harus dikonfigurasi dengan aman untuk mencegah sensitive data leakage dan exposure of sensitive functionality via JavaScript bridges. Termasuk file access control, JavaScript interface restrictions, dan XSS prevention." data-en="WebView must be securely configured to prevent sensitive data leakage and exposure of sensitive functionality via JavaScript bridges. Includes file access control, JavaScript interface restrictions, and XSS prevention.">
           WebView harus dikonfigurasi dengan aman untuk mencegah sensitive data leakage dan exposure of sensitive functionality via JavaScript bridges. Termasuk file access control, JavaScript interface restrictions, dan XSS prevention.
         </div>
         <div class="prompt-section">
@@ -673,7 +711,7 @@
           <span class="control-id">MASVS-PLATFORM-3</span>
           <span class="control-text">The app uses the user interface securely.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Data sensitif yang ditampilkan di UI (passwords, credit card, OTP di notifications) tidak boleh terleak via auto-generated screenshots, shoulder surfing, atau device sharing." data-en="Sensitive data displayed in the UI (passwords, credit card, OTP in notifications) must not leak via auto-generated screenshots, shoulder surfing, or device sharing.">
           Data sensitif yang ditampilkan di UI (passwords, credit card, OTP di notifications) tidak boleh terleak via auto-generated screenshots, shoulder surfing, atau device sharing.
         </div>
         <div class="prompt-section">
@@ -706,7 +744,7 @@
       <div class="group-count">4 controls <span class="chevron">▶</span></div>
     </div>
     <div class="group-body">
-      <div class="group-description">
+      <div class="group-description i18n" data-id="Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation/sanitization." data-en="Ensures code quality and exploit mitigation. Covers platform version requirements, app update enforcement, third-party component vulnerability management, and input validation/sanitization.">
         Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation/sanitization.
       </div>
 
@@ -715,7 +753,7 @@
           <span class="control-id">MASVS-CODE-1</span>
           <span class="control-text">The app requires an up-to-date platform version.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Setiap rilis OS mobile menyertakan security patches dan fitur keamanan baru. Dengan mendukung versi lama, app tetap rentan terhadap ancaman yang sudah diketahui." data-en="Each mobile OS release includes security patches and new security features. By supporting older versions, the app remains vulnerable to known threats.">
           Setiap rilis OS mobile menyertakan security patches dan fitur keamanan baru. Dengan mendukung versi lama, app tetap rentan terhadap ancaman yang sudah diketahui.
         </div>
         <div class="prompt-section">
@@ -743,7 +781,7 @@
           <span class="control-id">MASVS-CODE-2</span>
           <span class="control-text">The app has a mechanism for enforcing app updates.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Saat vulnerability kritis ditemukan di app yang sudah production, harus ada mekanisme untuk memaksa user update sebelum dapat melanjutkan penggunaan app." data-en="When a critical vulnerability is found in a production app, there must be a mechanism to force users to update before they can continue using the app.">
           Saat vulnerability kritis ditemukan di app yang sudah production, harus ada mekanisme untuk memaksa user update sebelum dapat melanjutkan penggunaan app.
         </div>
         <div class="prompt-section">
@@ -771,7 +809,7 @@
           <span class="control-id">MASVS-CODE-3</span>
           <span class="control-text">The app only uses software components without known vulnerabilities.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Komponen third-party (libraries, SDKs) harus bebas dari vulnerability yang diketahui. Setidaknya &quot;low-hanging fruit&quot; harus dideteksi via scanning libraries." data-en="Third-party components (libraries, SDKs) must be free from known vulnerabilities. At minimum, &quot;low-hanging fruit&quot; should be detected via library scanning.">
           Komponen third-party (libraries, SDKs) harus bebas dari vulnerability yang diketahui. Setidaknya "low-hanging fruit" harus dideteksi via scanning libraries.
         </div>
         <div class="prompt-section">
@@ -800,7 +838,7 @@
           <span class="control-id">MASVS-CODE-4</span>
           <span class="control-text">The app validates and sanitizes all untrusted inputs.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Semua input dari sumber yang tidak terpercaya (user input, IPC, deep links, push notifications, web content) harus divalidasi dan disanitasi." data-en="All input from untrusted sources (user input, IPC, deep links, push notifications, web content) must be validated and sanitized.">
           Semua input dari sumber yang tidak terpercaya (user input, IPC, deep links, push notifications, web content) harus divalidasi dan disanitasi.
         </div>
         <div class="prompt-section">
@@ -833,7 +871,7 @@
       <div class="group-count">4 controls <span class="chevron">▶</span></div>
     </div>
     <div class="group-body">
-      <div class="group-description">
+      <div class="group-description i18n" data-id="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, dll. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks. Catatan: ketiadaan measures ini tidak menyebabkan vulnerability — ini adalah proteksi tambahan yang harus dikombinasikan dengan kontrol MASVS lainnya." data-en="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, etc. Enhances app resilience against reverse engineering and client-side attacks. Note: absence of these measures does not cause a vulnerability — they are additional protections that should be combined with other MASVS controls.">
         Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, dll. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks. Catatan: ketiadaan measures ini tidak menyebabkan vulnerability — ini adalah proteksi tambahan yang harus dikombinasikan dengan kontrol MASVS lainnya.
       </div>
 
@@ -842,7 +880,7 @@
           <span class="control-id">MASVS-RESILIENCE-1</span>
           <span class="control-text">The app validates the integrity of the platform.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Memvalidasi bahwa OS tidak telah di-tamper (rooted/jailbroken). Platform yang telah di-compromise dapat menonaktifkan fitur keamanan, sehingga banyak kontrol MASVS yang bergantung pada platform security menjadi tidak reliable." data-en="Validates that the OS has not been tampered with (rooted/jailbroken). A compromised platform can disable security features, making many MASVS controls that depend on platform security unreliable.">
           Memvalidasi bahwa OS tidak telah di-tamper (rooted/jailbroken). Platform yang telah di-compromise dapat menonaktifkan fitur keamanan, sehingga banyak kontrol MASVS yang bergantung pada platform security menjadi tidak reliable.
         </div>
         <div class="prompt-section">
@@ -872,7 +910,7 @@
           <span class="control-id">MASVS-RESILIENCE-2</span>
           <span class="control-text">The app implements anti-tampering mechanisms.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Mencegah modifikasi kode dan resources app. Tanpa proteksi, attacker dapat dengan mudah menjalankan versi yang dimodifikasi (cheat, unlock premium features) atau mendistribusikan versi yang di-backdoor." data-en="Prevents modification of app code and resources. Without protection, attackers can easily run modified versions (cheat, unlock premium features) or distribute backdoored versions.">
           Mencegah modifikasi kode dan resources app. Tanpa proteksi, attacker dapat dengan mudah menjalankan versi yang dimodifikasi (cheat, unlock premium features) atau mendistribusikan versi yang di-backdoor.
         </div>
         <div class="prompt-section">
@@ -902,7 +940,7 @@
           <span class="control-id">MASVS-RESILIENCE-3</span>
           <span class="control-text">The app implements anti-static analysis mechanisms.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Mempersulit pemahaman internal app melalui static analysis. Code obfuscation, string encryption, dan teknik lain untuk menghambat reverse engineer memahami cara kerja app." data-en="Hinders understanding of the app internals through static analysis. Code obfuscation, string encryption, and other techniques to impede reverse engineers from understanding how the app works.">
           Mempersulit pemahaman internal app melalui static analysis. Code obfuscation, string encryption, dan teknik lain untuk menghambat reverse engineer memahami cara kerja app.
         </div>
         <div class="prompt-section">
@@ -931,7 +969,7 @@
           <span class="control-id">MASVS-RESILIENCE-4</span>
           <span class="control-text">The app implements anti-dynamic analysis techniques.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Mencegah dynamic analysis dan instrumentation yang memungkinkan attacker memodifikasi kode saat runtime. Deteksi tools seperti Frida, Cydia Substrate, debugger, dan emulator." data-en="Prevents dynamic analysis and instrumentation that allows attackers to modify code at runtime. Detection of tools such as Frida, Cydia Substrate, debuggers, and emulators.">
           Mencegah dynamic analysis dan instrumentation yang memungkinkan attacker memodifikasi kode saat runtime. Deteksi tools seperti Frida, Cydia Substrate, debugger, dan emulator.
         </div>
         <div class="prompt-section">
@@ -965,7 +1003,7 @@
       <div class="group-count">4 controls <span class="chevron">▶</span></div>
     </div>
     <div class="group-body">
-      <div class="group-description">
+      <div class="group-description i18n" data-id="Kontrol privacy yang melengkapi (bukan menggantikan) assessment komprehensif seperti DPIA (GDPR). Mencakup data minimization, user identification prevention, transparency, dan user control over data. Tidak boleh menggantikan assessment oleh privacy experts." data-en="Privacy controls that complement (not replace) comprehensive assessments like DPIA (GDPR). Covers data minimization, user identification prevention, transparency, and user control over data. Must not replace assessment by privacy experts.">
         Kontrol privacy yang melengkapi (bukan menggantikan) assessment komprehensif seperti DPIA (GDPR). Mencakup data minimization, user identification prevention, transparency, dan user control over data. Tidak boleh menggantikan assessment oleh privacy experts.
       </div>
 
@@ -974,7 +1012,7 @@
           <span class="control-id">MASVS-PRIVACY-1</span>
           <span class="control-text">The app minimizes access to sensitive data and resources.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="App hanya boleh meminta akses ke data yang benar-benar dibutuhkan dengan informed consent dari user. Third-party SDK harus beroperasi berdasarkan user consent, bukan by default. End-to-end responsibility untuk data di supply chain SDK (SBOM alignment)." data-en="The app should only request access to data that is truly needed with informed consent from the user. Third-party SDKs must operate based on user consent, not by default. End-to-end responsibility for data in the SDK supply chain (SBOM alignment).">
           App hanya boleh meminta akses ke data yang benar-benar dibutuhkan dengan informed consent dari user. Third-party SDK harus beroperasi berdasarkan user consent, bukan by default. End-to-end responsibility untuk data di supply chain SDK (SBOM alignment).
         </div>
         <div class="prompt-section">
@@ -1003,7 +1041,7 @@
           <span class="control-id">MASVS-PRIVACY-2</span>
           <span class="control-text">The app prevents identification of the user.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="Melindungi identitas user melalui teknik unlinkability: data abstraction, anonymization, dan pseudonymization. Mencegah user identification dan tracking." data-en="Protects user identity through unlinkability techniques: data abstraction, anonymization, and pseudonymization. Prevents user identification and tracking.">
           Melindungi identitas user melalui teknik unlinkability: data abstraction, anonymization, dan pseudonymization. Mencegah user identification dan tracking.
         </div>
         <div class="prompt-section">
@@ -1032,7 +1070,7 @@
           <span class="control-id">MASVS-PRIVACY-3</span>
           <span class="control-text">The app is transparent about data collection and usage.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="App harus transparan tentang data yang dikumpulkan dan bagaimana digunakan. Termasuk privacy policy, in-app disclosures, dan data collection notices." data-en="The app must be transparent about data collected and how it is used. Includes privacy policy, in-app disclosures, and data collection notices.">
           App harus transparan tentang data yang dikumpulkan dan bagaimana digunakan. Termasuk privacy policy, in-app disclosures, dan data collection notices.
         </div>
         <div class="prompt-section">
@@ -1061,7 +1099,7 @@
           <span class="control-id">MASVS-PRIVACY-4</span>
           <span class="control-text">The app offers user control over their data.</span>
         </div>
-        <div class="control-description">
+        <div class="control-description i18n" data-id="User harus memiliki kontrol atas data mereka: mekanisme untuk manage, delete, modify data, dan change privacy settings (revoke consent). App harus re-prompt for consent saat membutuhkan lebih data dari yang awalnya dispecified." data-en="Users must have control over their data: mechanisms to manage, delete, modify data, and change privacy settings (revoke consent). The app must re-prompt for consent when it needs more data than originally specified.">
           User harus memiliki kontrol atas data mereka: mekanisme untuk manage, delete, modify data, dan change privacy settings (revoke consent). App harus re-prompt for consent saat membutuhkan lebih data dari yang awalnya dispecified.
         </div>
         <div class="prompt-section">
@@ -1114,6 +1152,27 @@
       }, 2000);
     });
   }
+
+  // Language toggle
+  (function() {
+    const savedLang = localStorage.getItem('owasp-mas-lang') || 'id';
+    function setLang(lang) {
+      localStorage.setItem('owasp-mas-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.querySelectorAll('.i18n').forEach(el => {
+        const text = el.dataset[lang];
+        if (text) el.textContent = text;
+      });
+      document.documentElement.lang = lang === 'id' ? 'id' : 'en';
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+    setLang(savedLang);
+  })();
+
 </script>
   <footer class="page-footer">
     <p>Source: <a href="https://mas.owasp.org/MASVS">https://mas.owasp.org/MASVS</a> · OWASP MASVS</p>

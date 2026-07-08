@@ -101,13 +101,51 @@ body {
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.3rem;
+    z-index: 200;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-btn.active, .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
+  /* Topic pages with light header need dark variant */
+  body.topic-page .lang-switcher .lang-btn {
+    border-color: var(--owasp-dark);
+    color: var(--owasp-dark);
+  }
+  body.topic-page .lang-switcher .lang-btn.active,
+  body.topic-page .lang-switcher .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
 </style>
 </head>
-<body>
+<body class="topic-page">
   <header class="page-header">
     <h1>OWASP MASTG Tools — Android</h1>
     <p class="subtitle">Android · 48 tools · Generated 2026-07-08 03:37 UTC</p>
   </header>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="id" aria-label="Bahasa Indonesia">ID</button>
+    <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+  </div>
   <main class="container">
     <div class="filter-bar">
       <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
@@ -124,14 +162,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+        <p class="group-description i18n" data-id="Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll." data-en="Ensures sensitive data stored locally is properly protected, whether in internal or public storage. Covers prevention of accidental data leakage via backups, logs, keyboard cache, etc.">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
 
       <div class="item-card" data-id="" data-category="STORAGE" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Apktool</h3>
-        <p class="item-description">Apktool is used to unpack Android app packages (APKs). Simply unzipping APKs with the standard unzip utility leaves some files unreadable. AndroidManifest.xml is encoded into binary XML format, which </p>
+        <p class="item-description i18n" data-id="Apktool digunakan untuk membongkar paket aplikasi Android (APK). Hanya dengan mengekstrak APK menggunakan utilitas unzip standar akan membuat beberapa file tidak dapat dibaca. AndroidManifest.xml dienkode ke dalam format XML biner, yang" data-en="Apktool is used to unpack Android app packages (APKs). Simply unzipping APKs with the standard unzip utility leaves some files unreadable. AndroidManifest.xml is encoded into binary XML format, which">Apktool digunakan untuk membongkar paket aplikasi Android (APK). Hanya dengan mengekstrak APK menggunakan utilitas unzip standar akan membuat beberapa file tidak dapat dibaca. AndroidManifest.xml dienkode ke dalam format XML biner, yang</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -149,7 +187,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Magisk</h3>
-        <p class="item-description">Magisk (&quot;Magic Mask&quot;) is one way to root your Android device. It's specialty lies in the way the modifications on the system are performed. While other rooting tools alter the actual data on the syste</p>
+        <p class="item-description i18n" data-id="Magisk (&quot;Magic Mask&quot;) adalah salah satu cara untuk me-root perangkat Android Anda. Keistimewaannya terletak pada cara modifikasi pada sistem dilakukan. Sementara alat rooting lainnya mengubah data aktual pada sistem" data-en="Magisk (&quot;Magic Mask&quot;) is one way to root your Android device. It's specialty lies in the way the modifications on the system are performed. While other rooting tools alter the actual data on the syste">Magisk ("Magic Mask") adalah salah satu cara untuk me-root perangkat Android Anda. Keistimewaannya terletak pada cara modifikasi pada sistem dilakukan. Sementara alat rooting lainnya mengubah data aktual pada sistem</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -167,7 +205,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">ProGuard</h3>
-        <p class="item-description">ProGuard is a free Java class file shrinker, optimizer, obfuscator, and preverifier. It detects and removes unused classes, fields, methods, and attributes and can also be used to delete logging-relat</p>
+        <p class="item-description i18n" data-id="ProGuard adalah sebuah Java class file shrinker, optimizer, obfuscator, dan preverifier gratis. Ia mendeteksi dan menghapus unused classes, fields, methods, dan attributes, dan juga dapat digunakan untuk menghapus logging-related code." data-en="ProGuard is a free Java class file shrinker, optimizer, obfuscator, and preverifier. It detects and removes unused classes, fields, methods, and attributes and can also be used to delete logging-relat">ProGuard adalah sebuah Java class file shrinker, optimizer, obfuscator, dan preverifier gratis. Ia mendeteksi dan menghapus unused classes, fields, methods, dan attributes, dan juga dapat digunakan untuk menghapus logging-related code.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -185,7 +223,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">radare2 for Android</h3>
-        <p class="item-description">radare2 (r2) is a popular open source reverse engineering framework for disassembling, debugging, patching, and analyzing binaries that is scriptable and supports many architectures and file formats, </p>
+        <p class="item-description i18n" data-id="radare2 (r2) adalah sebuah framework reverse engineering open source yang populer untuk melakukan disassembling, debugging, patching, dan analyzing binaries, yang bersifat scriptable dan mendukung banyak architectures dan file formats." data-en="radare2 (r2) is a popular open source reverse engineering framework for disassembling, debugging, patching, and analyzing binaries that is scriptable and supports many architectures and file formats,">radare2 (r2) adalah sebuah framework reverse engineering open source yang populer untuk melakukan disassembling, debugging, patching, dan analyzing binaries, yang bersifat scriptable dan mendukung banyak architectures dan file formats.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -203,7 +241,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">blutter</h3>
-        <p class="item-description">Blutter is an open-source tool created to support the reverse engineering of Flutter applications. Unlike other Flutter tools, blutter parses the libapp.so file statically, without requiring you to ru</p>
+        <p class="item-description i18n" data-id="Blutter adalah alat open-source yang dibuat untuk mendukung reverse engineering aplikasi Flutter. Tidak seperti alat Flutter lainnya, blutter mem-parsing file libapp.so secara statis, tanpa mengharuskan Anda untuk menjalankan." data-en="Blutter is an open-source tool created to support the reverse engineering of Flutter applications. Unlike other Flutter tools, blutter parses the libapp.so file statically, without requiring you to ru">Blutter adalah alat open-source yang dibuat untuk mendukung reverse engineering aplikasi Flutter. Tidak seperti alat Flutter lainnya, blutter mem-parsing file libapp.so secara statis, tanpa mengharuskan Anda untuk menjalankan.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -221,7 +259,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Apkleaks</h3>
-        <p class="item-description">Apkleaks is an open-source utility designed for static analysis of Android APK files, with a primary focus on identifying sensitive data such as API keys, URLs, AWS S3 buckets, and Firebase URLs. This</p>
+        <p class="item-description i18n" data-id="Apkleaks adalah utilitas open-source yang dirancang untuk static analysis file APK Android, dengan fokus utama pada identifikasi data sensitif seperti API keys, URLs, AWS S3 buckets, dan Firebase URLs." data-en="Apkleaks is an open-source utility designed for static analysis of Android APK files, with a primary focus on identifying sensitive data such as API keys, URLs, AWS S3 buckets, and Firebase URLs. This">Apkleaks adalah utilitas open-source yang dirancang untuk static analysis file APK Android, dengan fokus utama pada identifikasi data sensitif seperti API keys, URLs, AWS S3 buckets, dan Firebase URLs.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -239,7 +277,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">apkeep</h3>
-        <p class="item-description">apkeep is a command-line tool written in Rust for downloading APK files from various sources including Google Play Store. It's designed to make downloading and archiving Android APKs simple and reliab</p>
+        <p class="item-description i18n" data-id="apkeep adalah alat baris perintah yang ditulis dalam Rust untuk mengunduh file APK dari berbagai sumber termasuk Google Play Store. Alat ini dirancang untuk membuat pengunduhan dan pengarsipan APK Android menjadi sederhana dan andal." data-en="apkeep is a command-line tool written in Rust for downloading APK files from various sources including Google Play Store. It's designed to make downloading and archiving Android APKs simple and reliab">apkeep adalah alat baris perintah yang ditulis dalam Rust untuk mengunduh file APK dari berbagai sumber termasuk Google Play Store. Alat ini dirancang untuk membuat pengunduhan dan pengarsipan APK Android menjadi sederhana dan andal.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -260,14 +298,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+        <p class="group-description i18n" data-id="Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning." data-en="Ensures the app establishes secure and encrypted connections for all network communication. Covers TLS configuration and certificate/public key pinning.">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
 
       <div class="item-card" data-id="" data-category="NETWORK" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Android-SSL-TrustKiller</h3>
-        <p class="item-description">Android-SSL-TrustKiller is a Cydia Substrate Module acting as a blackbox tool to bypass SSL certificate pinning for most applications running on a device.</p>
+        <p class="item-description i18n" data-id="Android-SSL-TrustKiller adalah sebuah Cydia Substrate Module yang berfungsi sebagai blackbox tool untuk bypass SSL certificate pinning pada sebagian besar aplikasi yang berjalan pada perangkat." data-en="Android-SSL-TrustKiller is a Cydia Substrate Module acting as a blackbox tool to bypass SSL certificate pinning for most applications running on a device.">Android-SSL-TrustKiller adalah sebuah Cydia Substrate Module yang berfungsi sebagai blackbox tool untuk bypass SSL certificate pinning pada sebagian besar aplikasi yang berjalan pada perangkat.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -285,7 +323,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">APKLab</h3>
-        <p class="item-description">APKLab is a Visual Studio Code extension leveraging tools such as @MASTG-TOOL-0011 and @MASTG-TOOL-0018 to enable features including app unpacking, decompilation, code patching (e.g. for MITM), and re</p>
+        <p class="item-description i18n" data-id="APKLab adalah ekstensi Visual Studio Code yang memanfaatkan alat seperti @MASTG-TOOL-0011 dan @MASTG-TOOL-0018 untuk mengaktifkan fitur-fitur termasuk app unpacking, decompilation, code patching (misalnya untuk MITM), dan re" data-en="APKLab is a Visual Studio Code extension leveraging tools such as @MASTG-TOOL-0011 and @MASTG-TOOL-0018 to enable features including app unpacking, decompilation, code patching (e.g. for MITM), and re">APKLab adalah ekstensi Visual Studio Code yang memanfaatkan alat seperti @MASTG-TOOL-0011 dan @MASTG-TOOL-0018 untuk mengaktifkan fitur-fitur termasuk app unpacking, decompilation, code patching (misalnya untuk MITM), dan re</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -303,7 +341,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">JustTrustMe</h3>
-        <p class="item-description">JustTrustMe is an @MASTG-TOOL-0149 module to bypass SSL certificate pinning.</p>
+        <p class="item-description i18n" data-id="JustTrustMe adalah modul @MASTG-TOOL-0149 untuk bypass SSL certificate pinning." data-en="JustTrustMe is an @MASTG-TOOL-0149 module to bypass SSL certificate pinning.">JustTrustMe adalah modul @MASTG-TOOL-0149 untuk bypass SSL certificate pinning.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -321,7 +359,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">SSLUnpinning</h3>
-        <p class="item-description">SSLUnpinning is an @MASTG-TOOL-0149 module to bypass SSL certificate pinning.</p>
+        <p class="item-description i18n" data-id="SSLUnpinning adalah modul @MASTG-TOOL-0149 untuk melewati SSL certificate pinning." data-en="SSLUnpinning is an @MASTG-TOOL-0149 module to bypass SSL certificate pinning.">SSLUnpinning adalah modul @MASTG-TOOL-0149 untuk melewati SSL certificate pinning.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -339,7 +377,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">ProxyDroid</h3>
-        <p class="item-description">ProxyDroid is an open source app available in Google Play that configures your device to send HTTP(S) traffic to a proxy. It is especially useful for apps that ignore the system's proxy settings, as i</p>
+        <p class="item-description i18n" data-id="ProxyDroid adalah aplikasi open source yang tersedia di Google Play yang mengonfigurasi perangkat Anda untuk mengirim lalu lintas HTTP(S) ke proxy. Ini sangat berguna untuk aplikasi yang mengabaikan pengaturan proxy sistem, karena i" data-en="ProxyDroid is an open source app available in Google Play that configures your device to send HTTP(S) traffic to a proxy. It is especially useful for apps that ignore the system's proxy settings, as i">ProxyDroid adalah aplikasi open source yang tersedia di Google Play yang mengonfigurasi perangkat Anda untuk mengirim lalu lintas HTTP(S) ke proxy. Ini sangat berguna untuk aplikasi yang mengabaikan pengaturan proxy sistem, karena i</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -357,7 +395,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">frida-multiple-unpinning</h3>
-        <p class="item-description">Frida-multiple unpinning is a Frida CodeShare script to bypass various forms of TLS pinning. This is one of the most extensive TLS pinning bypass scripts available on CodeShare. One of its main streng</p>
+        <p class="item-description i18n" data-id="Frida-multiple unpinning adalah skrip Frida CodeShare untuk melewati berbagai bentuk TLS pinning. Ini adalah salah satu skrip bypass TLS pinning paling ekstensif yang tersedia di CodeShare. Salah satu kekuatan utamanya" data-en="Frida-multiple unpinning is a Frida CodeShare script to bypass various forms of TLS pinning. This is one of the most extensive TLS pinning bypass scripts available on CodeShare. One of its main streng">Frida-multiple unpinning adalah skrip Frida CodeShare untuk melewati berbagai bentuk TLS pinning. Ini adalah salah satu skrip bypass TLS pinning paling ekstensif yang tersedia di CodeShare. Salah satu kekuatan utamanya</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -378,14 +416,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+        <p class="group-description i18n" data-id="Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI." data-en="App interaction with the mobile platform must be secure. Covers IPC mechanisms, WebView configuration, and secure display of sensitive data in the UI.">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
 
       <div class="item-card" data-id="" data-category="PLATFORM" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Android SDK</h3>
-        <p class="item-description">Local Android SDK installations are managed via Android Studio. Create an empty project in Android Studio and select Tools -&gt; SDK Manager to open the SDK Manager GUI. The SDK Platforms tab is where yo</p>
+        <p class="item-description i18n" data-id="Instalasi SDK Android lokal dikelola melalui Android Studio. Buat proyek kosong di Android Studio dan pilih Tools -> SDK Manager untuk membuka GUI SDK Manager. Tab SDK Platforms adalah tempat Anda" data-en="Local Android SDK installations are managed via Android Studio. Create an empty project in Android Studio and select Tools -&gt; SDK Manager to open the SDK Manager GUI. The SDK Platforms tab is where yo">Instalasi SDK Android lokal dikelola melalui Android Studio. Buat proyek kosong di Android Studio dan pilih Tools -> SDK Manager untuk membuka GUI SDK Manager. Tab SDK Platforms adalah tempat Anda</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -406,14 +444,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+        <p class="group-description i18n" data-id="Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation." data-en="Ensures code quality and exploit mitigation. Covers platform version requirements, app update enforcement, third-party component vulnerability management, and input validation.">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
 
       <div class="item-card" data-id="" data-category="CODE" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Bytecode Viewer</h3>
-        <p class="item-description">Bytecode Viewer (BCV) is a free and open source Java decompiler framework running on all operating systems. It is a versatile tool which can be used to decompile Android apps, view APK resources (via </p>
+        <p class="item-description i18n" data-id="Bytecode Viewer (BCV) adalah framework Java decompiler gratis dan sumber terbuka yang berjalan di semua sistem operasi. Ini adalah alat serbaguna yang dapat digunakan untuk mendekompilasi aplikasi Android, melihat sumber daya APK (via" data-en="Bytecode Viewer (BCV) is a free and open source Java decompiler framework running on all operating systems. It is a versatile tool which can be used to decompile Android apps, view APK resources (via">Bytecode Viewer (BCV) adalah framework Java decompiler gratis dan sumber terbuka yang berjalan di semua sistem operasi. Ini adalah alat serbaguna yang dapat digunakan untuk mendekompilasi aplikasi Android, melihat sumber daya APK (via</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -431,7 +469,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">jdb</h3>
-        <p class="item-description">jdb is a Java Debugger which allows to set breakpoints and print application variables. jdb uses the JDWP protocol.</p>
+        <p class="item-description i18n" data-id="jdb adalah Java Debugger yang memungkinkan untuk set breakpoints dan print application variables. jdb menggunakan JDWP protocol." data-en="jdb is a Java Debugger which allows to set breakpoints and print application variables. jdb uses the JDWP protocol.">jdb adalah Java Debugger yang memungkinkan untuk set breakpoints dan print application variables. jdb menggunakan JDWP protocol.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -449,7 +487,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">uber-apk-signer</h3>
-        <p class="item-description">Uber-apk-signer is a tool that helps to sign, zip align and verify one or more Android application packages (APKs) with either debug or provided release certificates. It supports v1, v2, v3 and v4 And</p>
+        <p class="item-description i18n" data-id="Uber-apk-signer adalah alat yang membantu untuk menandatangani, zip align, dan memverifikasi satu atau lebih paket aplikasi Android (APK) dengan sertifikat debug atau rilis yang disediakan. Ini mendukung v1, v2, v3 dan v4 And." data-en="Uber-apk-signer is a tool that helps to sign, zip align and verify one or more Android application packages (APKs) with either debug or provided release certificates. It supports v1, v2, v3 and v4 And">Uber-apk-signer adalah alat yang membantu untuk menandatangani, zip align, dan memverifikasi satu atau lebih paket aplikasi Android (APK) dengan sertifikat debug atau rilis yang disediakan. Ini mendukung v1, v2, v3 dan v4 And.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -467,7 +505,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">RootBeer</h3>
-        <p class="item-description">RootBeer is an Android library for detecting root access on devices. It implements multiple detection techniques using both Java and native code (JNI) to make bypassing more difficult. The library che</p>
+        <p class="item-description i18n" data-id="RootBeer adalah pustaka Android untuk mendeteksi akses root pada perangkat. Pustaka ini mengimplementasikan beberapa teknik deteksi menggunakan kode Java dan native (JNI) untuk membuat bypass lebih sulit. Pustaka che" data-en="RootBeer is an Android library for detecting root access on devices. It implements multiple detection techniques using both Java and native code (JNI) to make bypassing more difficult. The library che">RootBeer adalah pustaka Android untuk mendeteksi akses root pada perangkat. Pustaka ini mengimplementasikan beberapa teknik deteksi menggunakan kode Java dan native (JNI) untuk membuat bypass lebih sulit. Pustaka che</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -485,7 +523,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Android RASP</h3>
-        <p class="item-description">Android RASP (Runtime Application Self-Protection) is a library written in Kotlin and Rust that provides runtime security checks for Android applications. It detects emulators, debuggers, and root acc</p>
+        <p class="item-description i18n" data-id="Android RASP (Runtime Application Self-Protection) adalah sebuah library yang ditulis dalam Kotlin dan Rust yang menyediakan runtime security checks untuk aplikasi Android. Library ini mendeteksi emulator, debugger, dan root acc." data-en="Android RASP (Runtime Application Self-Protection) is a library written in Kotlin and Rust that provides runtime security checks for Android applications. It detects emulators, debuggers, and root acc">Android RASP (Runtime Application Self-Protection) adalah sebuah library yang ditulis dalam Kotlin dan Rust yang menyediakan runtime security checks untuk aplikasi Android. Library ini mendeteksi emulator, debugger, dan root acc.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -503,7 +541,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">debugmepLS</h3>
-        <p class="item-description">debugmepLS is an @MASTG-TOOL-0149 module and companion app that makes selected Android apps appear debuggable at runtime. It hooks framework services in systemserver to modify ApplicationInfo and proc</p>
+        <p class="item-description i18n" data-id="debugmepLS adalah modul dan aplikasi pendamping @MASTG-TOOL-0149 yang membuat aplikasi Android yang dipilih tampak debuggable saat runtime. Ia melakukan hook pada layanan framework di systemserver untuk memodifikasi ApplicationInfo dan proc." data-en="debugmepLS is an @MASTG-TOOL-0149 module and companion app that makes selected Android apps appear debuggable at runtime. It hooks framework services in systemserver to modify ApplicationInfo and proc">debugmepLS adalah modul dan aplikasi pendamping @MASTG-TOOL-0149 yang membuat aplikasi Android yang dipilih tampak debuggable saat runtime. Ia melakukan hook pada layanan framework di systemserver untuk memodifikasi ApplicationInfo dan proc.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -521,7 +559,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">lldb (Android)</h3>
-        <p class="item-description">lldb is the LLVM debugger. On Android, it can be used to debug native code in apps, including JNI libraries, native crashes, memory, registers, system calls, and compiled control flow.</p>
+        <p class="item-description i18n" data-id="lldb adalah debugger LLVM. Di Android, ia dapat digunakan untuk men-debug kode native di aplikasi, termasuk library JNI, native crashes, memori, register, system calls, dan compiled control flow." data-en="lldb is the LLVM debugger. On Android, it can be used to debug native code in apps, including JNI libraries, native crashes, memory, registers, system calls, and compiled control flow.">lldb adalah debugger LLVM. Di Android, ia dapat digunakan untuk men-debug kode native di aplikasi, termasuk library JNI, native crashes, memori, register, system calls, dan compiled control flow.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -539,7 +577,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">dProtect</h3>
-        <p class="item-description">dProtect is an extension of Proguard with enhanced code obfuscation features. While Proguard is known for obfuscating symbols (package names, class names, ...) and optimizing Java/Kotlin code, dProtec</p>
+        <p class="item-description i18n" data-id="dProtect adalah ekstensi dari Proguard dengan fitur obfuscation kode yang ditingkatkan. Sementara Proguard dikenal karena mengobfuscate simbol (package names, class names, ...) dan mengoptimalkan kode Java/Kotlin, dProtec" data-en="dProtect is an extension of Proguard with enhanced code obfuscation features. While Proguard is known for obfuscating symbols (package names, class names, ...) and optimizing Java/Kotlin code, dProtec">dProtect adalah ekstensi dari Proguard dengan fitur obfuscation kode yang ditingkatkan. Sementara Proguard dikenal karena mengobfuscate simbol (package names, class names, ...) dan mengoptimalkan kode Java/Kotlin, dProtec</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -560,14 +598,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+        <p class="group-description i18n" data-id="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks." data-en="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Enhances app resilience against reverse engineering and client-side attacks.">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
 
       <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Frida (Android)</h3>
-        <p class="item-description">Frida supports interaction with the Android Java runtime through the Java API. You'll be able to hook and call both Java and native functions inside the process and its native libraries. Your JavaScri</p>
+        <p class="item-description i18n" data-id="Frida mendukung interaksi dengan runtime Java Android melalui Java API. Anda akan dapat melakukan hook dan memanggil fungsi Java dan native di dalam proses dan library native-nya. JavaScri Anda" data-en="Frida supports interaction with the Android Java runtime through the Java API. You'll be able to hook and call both Java and native functions inside the process and its native libraries. Your JavaScri">Frida mendukung interaksi dengan runtime Java Android melalui Java API. Anda akan dapat melakukan hook dan memanggil fungsi Java dan native di dalam proses dan library native-nya. JavaScri Anda</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -585,7 +623,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">adb</h3>
-        <p class="item-description">adb, shipped with the Android SDK, bridges the gap between your local development environment and a connected Android device. You'll usually leverage it to test apps on the emulator or a connected dev</p>
+        <p class="item-description i18n" data-id="adb, yang dikirimkan bersama Android SDK, menjembatani kesenjangan antara lingkungan pengembangan lokal Anda dan perangkat Android yang terhubung. Anda biasanya akan memanfaatkannya untuk menguji aplikasi di emulator atau perangkat dev yang terhubung." data-en="adb, shipped with the Android SDK, bridges the gap between your local development environment and a connected Android device. You'll usually leverage it to test apps on the emulator or a connected dev">adb, yang dikirimkan bersama Android SDK, menjembatani kesenjangan antara lingkungan pengembangan lokal Anda dan perangkat Android yang terhubung. Anda biasanya akan memanfaatkannya untuk menguji aplikasi di emulator atau perangkat dev yang terhubung.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -603,7 +641,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">RootCloak Plus</h3>
-        <p class="item-description">RootCloak Plus is a Cydia Substrate Module used to check for commonly known indications of root</p>
+        <p class="item-description i18n" data-id="RootCloak Plus adalah Cydia Substrate Module yang digunakan untuk memeriksa indikasi root yang umum diketahui." data-en="RootCloak Plus is a Cydia Substrate Module used to check for commonly known indications of root">RootCloak Plus adalah Cydia Substrate Module yang digunakan untuk memeriksa indikasi root yang umum diketahui.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -621,7 +659,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Scrcpy</h3>
-        <p class="item-description">Scrcpy provides display and control of Android devices connected over USB (or TCP/IP). It does not require any root access and it works on GNU/Linux, Windows and macOS.</p>
+        <p class="item-description i18n" data-id="Scrcpy menyediakan tampilan dan kontrol perangkat Android yang terhubung melalui USB (atau TCP/IP). Ini tidak memerlukan akses root dan berfungsi di GNU/Linux, Windows, dan macOS." data-en="Scrcpy provides display and control of Android devices connected over USB (or TCP/IP). It does not require any root access and it works on GNU/Linux, Windows and macOS.">Scrcpy menyediakan tampilan dan kontrol perangkat Android yang terhubung melalui USB (atau TCP/IP). Ini tidak memerlukan akses root dan berfungsi di GNU/Linux, Windows, dan macOS.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -639,7 +677,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Termux</h3>
-        <p class="item-description">Termux is a terminal emulator for Android that provides a Linux environment that works directly with or without rooting and with no setup required. The installation of additional packages is a trivial</p>
+        <p class="item-description i18n" data-id="Termux adalah emulator terminal untuk Android yang menyediakan lingkungan Linux yang dapat bekerja langsung dengan atau tanpa rooting dan tanpa memerlukan pengaturan. Instalasi paket tambahan adalah hal yang sederhana." data-en="Termux is a terminal emulator for Android that provides a Linux environment that works directly with or without rooting and with no setup required. The installation of additional packages is a trivial">Termux adalah emulator terminal untuk Android yang menyediakan lingkungan Linux yang dapat bekerja langsung dengan atau tanpa rooting dan tanpa memerlukan pengaturan. Instalasi paket tambahan adalah hal yang sederhana.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -660,14 +698,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
+        <p class="group-description i18n" data-id="Tools dan techniques yang berlaku lintas kategori MASVS." data-en="Tools and techniques applicable across MASVS categories.">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
 
       <div class="item-card" data-id="" data-category="GENERAL" data-platform="android">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">MobSF (Android)</h3>
-        <p class="item-description">After MobSF is done with its analysis, you will receive a one-page overview of all the tests that were executed. The page is split up into multiple sections, giving some first hints on the attack surf</p>
+        <p class="item-description i18n" data-id="Setelah MobSF selesai dengan analisisnya, Anda akan menerima ikhtisar satu halaman dari semua tes yang telah dijalankan. Halaman tersebut terbagi menjadi beberapa bagian, memberikan beberapa petunjuk awal tentang attack surface." data-en="After MobSF is done with its analysis, you will receive a one-page overview of all the tests that were executed. The page is split up into multiple sections, giving some first hints on the attack surf">Setelah MobSF selesai dengan analisisnya, Anda akan menerima ikhtisar satu halaman dari semua tes yang telah dijalankan. Halaman tersebut terbagi menjadi beberapa bagian, memberikan beberapa petunjuk awal tentang attack surface.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -685,7 +723,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">nm (Android)</h3>
-        <p class="item-description">nm is a tool that displays the name list (symbol table) of the given binary. More information for the Android (GNU) version.</p>
+        <p class="item-description i18n" data-id="nm adalah alat yang menampilkan daftar nama (symbol table) dari binary yang diberikan. Informasi lebih lanjut untuk versi Android (GNU)." data-en="nm is a tool that displays the name list (symbol table) of the given binary. More information for the Android (GNU) version.">nm adalah alat yang menampilkan daftar nama (symbol table) dari binary yang diberikan. Informasi lebih lanjut untuk versi Android (GNU).</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -703,7 +741,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Android NDK</h3>
-        <p class="item-description">The Android NDK contains prebuilt versions of the native compiler and toolchain. Both the GCC and Clang compilers have traditionally been supported, but active support for GCC ended with NDK revision </p>
+        <p class="item-description i18n" data-id="Android NDK berisi versi prebuilt dari compiler native dan toolchain. Baik compiler GCC maupun Clang secara tradisional telah didukung, tetapi dukungan aktif untuk GCC berakhir dengan revisi NDK" data-en="The Android NDK contains prebuilt versions of the native compiler and toolchain. Both the GCC and Clang compilers have traditionally been supported, but active support for GCC ended with NDK revision">Android NDK berisi versi prebuilt dari compiler native dan toolchain. Baik compiler GCC maupun Clang secara tradisional telah didukung, tetapi dukungan aktif untuk GCC berakhir dengan revisi NDK</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -721,7 +759,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Android Studio</h3>
-        <p class="item-description">Android Studio is the official IDE for Google's Android operating system, built on JetBrains' IntelliJ IDEA software and designed specifically for Android development.</p>
+        <p class="item-description i18n" data-id="Android Studio adalah IDE resmi untuk sistem operasi Android milik Google, yang dibangun di atas perangkat lunak IntelliJ IDEA milik JetBrains dan dirancang khusus untuk pengembangan Android." data-en="Android Studio is the official IDE for Google's Android operating system, built on JetBrains' IntelliJ IDEA software and designed specifically for Android development.">Android Studio adalah IDE resmi untuk sistem operasi Android milik Google, yang dibangun di atas perangkat lunak IntelliJ IDEA milik JetBrains dan dirancang khusus untuk pengembangan Android.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -739,7 +777,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">APKiD</h3>
-        <p class="item-description">APKiD gives you information about how an APK was made. It identifies many compilers, packers, obfuscators, and other weird stuff.</p>
+        <p class="item-description i18n" data-id="APKiD memberikan informasi tentang bagaimana sebuah APK dibuat. Ini mengidentifikasi banyak compiler, packer, obfuscator, dan hal-hal aneh lainnya." data-en="APKiD gives you information about how an APK was made. It identifies many compilers, packers, obfuscators, and other weird stuff.">APKiD memberikan informasi tentang bagaimana sebuah APK dibuat. Ini mengidentifikasi banyak compiler, packer, obfuscator, dan hal-hal aneh lainnya.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -757,7 +795,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">apkx</h3>
-        <p class="item-description">apkx is a Python wrapper to popular free DEX converters and Java decompilers. It automates the extraction, conversion, and decompilation of APKs. Install it as follows:</p>
+        <p class="item-description i18n" data-id="apkx adalah Python wrapper untuk converter DEX gratis dan decompiler Java yang populer. Ini mengotomatiskan ekstraksi, konversi, dan dekompilasi APK. Instal dengan cara berikut:" data-en="apkx is a Python wrapper to popular free DEX converters and Java decompilers. It automates the extraction, conversion, and decompilation of APKs. Install it as follows:">apkx adalah Python wrapper untuk converter DEX gratis dan decompiler Java yang populer. Ini mengotomatiskan ekstraksi, konversi, dan dekompilasi APK. Instal dengan cara berikut:</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -775,7 +813,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Busybox</h3>
-        <p class="item-description">Busybox combines multiple common Unix utilities into a small single executable. The utilities included generally have fewer options than their full-featured GNU counterparts, but are sufficient enough</p>
+        <p class="item-description i18n" data-id="Busybox menggabungkan beberapa utilitas Unix umum ke dalam satu executable kecil. Utilitas yang disertakan umumnya memiliki lebih sedikit opsi dibandingkan dengan rekan-rekan GNU yang fiturnya lengkap, tetapi sudah cukup memadai." data-en="Busybox combines multiple common Unix utilities into a small single executable. The utilities included generally have fewer options than their full-featured GNU counterparts, but are sufficient enough">Busybox menggabungkan beberapa utilitas Unix umum ke dalam satu executable kecil. Utilitas yang disertakan umumnya memiliki lebih sedikit opsi dibandingkan dengan rekan-rekan GNU yang fiturnya lengkap, tetapi sudah cukup memadai.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -793,7 +831,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">drozer</h3>
-        <p class="item-description">drozer is a security testing framework for Android that allows you to search for security vulnerabilities in apps and devices by assuming the role of an app interacting with the Android runtime, other</p>
+        <p class="item-description i18n" data-id="drozer adalah kerangka kerja pengujian keamanan untuk Android yang memungkinkan Anda mencari kerentanan keamanan di aplikasi dan perangkat dengan berperan sebagai aplikasi yang berinteraksi dengan runtime Android, other" data-en="drozer is a security testing framework for Android that allows you to search for security vulnerabilities in apps and devices by assuming the role of an app interacting with the Android runtime, other">drozer adalah kerangka kerja pengujian keamanan untuk Android yang memungkinkan Anda mencari kerentanan keamanan di aplikasi dan perangkat dengan berperan sebagai aplikasi yang berinteraksi dengan runtime Android, other</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -811,7 +849,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">gplaycli</h3>
-        <p class="item-description">gplaycli is a Python-based CLI tool to search, install, and update Android applications from the Google Play Store. Follow the installation steps and you're ready to run it. gplaycli offers several op</p>
+        <p class="item-description i18n" data-id="gplaycli adalah alat CLI berbasis Python untuk mencari, menginstal, dan memperbarui aplikasi Android dari Google Play Store. Ikuti langkah-langkah instalasi dan Anda siap menjalankannya. gplaycli menawarkan beberapa op" data-en="gplaycli is a Python-based CLI tool to search, install, and update Android applications from the Google Play Store. Follow the installation steps and you're ready to run it. gplaycli offers several op">gplaycli adalah alat CLI berbasis Python untuk mencari, menginstal, dan memperbarui aplikasi Android dari Google Play Store. Ikuti langkah-langkah instalasi dan Anda siap menjalankannya. gplaycli menawarkan beberapa op</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -829,7 +867,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">House</h3>
-        <p class="item-description">House is a runtime mobile application analysis toolkit for Android apps, developed and maintained by the NCC Group and is written in Python.</p>
+        <p class="item-description i18n" data-id="House adalah runtime mobile application analysis toolkit untuk aplikasi Android, dikembangkan dan dipelihara oleh NCC Group dan ditulis dalam Python." data-en="House is a runtime mobile application analysis toolkit for Android apps, developed and maintained by the NCC Group and is written in Python.">House adalah runtime mobile application analysis toolkit untuk aplikasi Android, dikembangkan dan dipelihara oleh NCC Group dan ditulis dalam Python.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -847,7 +885,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">jadx</h3>
-        <p class="item-description">Jadx is an open-source Dex and Java decompiler available both in a CLI (jadx) and GUI (jadx-gui) form. It's actively developed and offers an extensive range of features to help you analyze Android app</p>
+        <p class="item-description i18n" data-id="Jadx adalah decompiler Dex dan Java open-source yang tersedia dalam bentuk CLI (jadx) dan GUI (jadx-gui). Ini dikembangkan secara aktif dan menawarkan berbagai fitur yang luas untuk membantu Anda menganalisis aplikasi Android." data-en="Jadx is an open-source Dex and Java decompiler available both in a CLI (jadx) and GUI (jadx-gui) form. It's actively developed and offers an extensive range of features to help you analyze Android app">Jadx adalah decompiler Dex dan Java open-source yang tersedia dalam bentuk CLI (jadx) dan GUI (jadx-gui). Ini dikembangkan secara aktif dan menawarkan berbagai fitur yang luas untuk membantu Anda menganalisis aplikasi Android.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -865,7 +903,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Xposed</h3>
-        <p class="item-description">Xposed is a framework that allows modifying the system or application aspect and behavior at runtime, without modifying any Android application package (APK) or re-flashing. Technically, it is an exte</p>
+        <p class="item-description i18n" data-id="Xposed adalah sebuah framework yang memungkinkan modifikasi aspek dan perilaku sistem atau aplikasi saat runtime, tanpa memodifikasi paket aplikasi Android (APK) atau re-flashing. Secara teknis, ini adalah sebuah extension." data-en="Xposed is a framework that allows modifying the system or application aspect and behavior at runtime, without modifying any Android application package (APK) or re-flashing. Technically, it is an exte">Xposed adalah sebuah framework yang memungkinkan modifikasi aspek dan perilaku sistem atau aplikasi saat runtime, tanpa memodifikasi paket aplikasi Android (APK) atau re-flashing. Secara teknis, ini adalah sebuah extension.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -883,7 +921,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">objection (Android)</h3>
-        <p class="item-description">Objection offers several features specific to Android. You can find the full list of features on the project's page, but here are a few interesting ones:</p>
+        <p class="item-description i18n" data-id="Objection menawarkan beberapa fitur yang spesifik untuk Android. Anda dapat menemukan daftar lengkap fitur di halaman proyek, tetapi berikut adalah beberapa yang menarik:" data-en="Objection offers several features specific to Android. You can find the full list of features on the project's page, but here are a few interesting ones:">Objection menawarkan beberapa fitur yang spesifik untuk Android. Anda dapat menemukan daftar lengkap fitur di halaman proyek, tetapi berikut adalah beberapa yang menarik:</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -955,7 +993,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">pidcat</h3>
-        <p class="item-description">The pidcat tool acts as a wrapper for adb logcat that allows you to view Android log entries for specific application packages in a visually distinct color format.</p>
+        <p class="item-description i18n" data-id="Alat pidcat berfungsi sebagai wrapper untuk adb logcat yang memungkinkan Anda melihat log entries Android untuk paket aplikasi tertentu dalam format warna yang berbeda secara visual." data-en="The pidcat tool acts as a wrapper for adb logcat that allows you to view Android log entries for specific application packages in a visually distinct color format.">Alat pidcat berfungsi sebagai wrapper untuk adb logcat yang memungkinkan Anda melihat log entries Android untuk paket aplikasi tertentu dalam format warna yang berbeda secara visual.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -973,7 +1011,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">apksigner</h3>
-        <p class="item-description">apksigner, available in revision 24.0.3 and higher of the Android SDK Build Tools, is contained in the @MASTG-TOOL-0006 at [SDK-Path]/build-tools/[version]/apksigner and can be used to verify APK sign</p>
+        <p class="item-description i18n" data-id="apksigner, yang tersedia dalam revisi 24.0.3 dan lebih tinggi dari Android SDK Build Tools, terdapat di @MASTG-TOOL-0006 pada [SDK-Path]/build-tools/[version]/apksigner dan dapat digunakan untuk memverifikasi APK sign." data-en="apksigner, available in revision 24.0.3 and higher of the Android SDK Build Tools, is contained in the @MASTG-TOOL-0006 at [SDK-Path]/build-tools/[version]/apksigner and can be used to verify APK sign">apksigner, yang tersedia dalam revisi 24.0.3 dan lebih tinggi dari Android SDK Build Tools, terdapat di @MASTG-TOOL-0006 pada [SDK-Path]/build-tools/[version]/apksigner dan dapat digunakan untuk memverifikasi APK sign.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -991,7 +1029,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">aapt2</h3>
-        <p class="item-description">aapt2, available in Android SDK Build Tools since revision 26.0.2, is contained in the @MASTG-TOOL-0006 at [SDK-Path]/build-tools/[version]/aapt2 and can be used, for example, to examine the contents </p>
+        <p class="item-description i18n" data-id="aapt2, yang tersedia di Android SDK Build Tools sejak revisi 26.0.2, terdapat di dalam @MASTG-TOOL-0006 di [SDK-Path]/build-tools/[version]/aapt2 dan dapat digunakan, misalnya, untuk memeriksa konten." data-en="aapt2, available in Android SDK Build Tools since revision 26.0.2, is contained in the @MASTG-TOOL-0006 at [SDK-Path]/build-tools/[version]/aapt2 and can be used, for example, to examine the contents">aapt2, yang tersedia di Android SDK Build Tools sejak revisi 26.0.2, terdapat di dalam @MASTG-TOOL-0006 di [SDK-Path]/build-tools/[version]/aapt2 dan dapat digunakan, misalnya, untuk memeriksa konten.</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1009,7 +1047,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">blint</h3>
-        <p class="item-description">Blint is a Binary Linter that checks the security properties and capabilities of an executable. Since version 2, blint can generate Software Bill-of-Materials (SBOM) for supported binaries, which incl</p>
+        <p class="item-description i18n" data-id="Blint adalah Binary Linter yang memeriksa properti keamanan dan kemampuan dari sebuah executable. Sejak versi 2, blint dapat menghasilkan Software Bill-of-Materials (SBOM) untuk binary yang didukung, yang mencakup" data-en="Blint is a Binary Linter that checks the security properties and capabilities of an executable. Since version 2, blint can generate Software Bill-of-Materials (SBOM) for supported binaries, which incl">Blint adalah Binary Linter yang memeriksa properti keamanan dan kemampuan dari sebuah executable. Sejak versi 2, blint dapat menghasilkan Software Bill-of-Materials (SBOM) untuk binary yang didukung, yang mencakup</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1027,7 +1065,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">LSPosed</h3>
-        <p class="item-description">LSPosed is a Zygisk module that allows modifying the system or application aspect and behavior at runtime, without modifying any Android application package (APK) or re-flashing. Technically, it is an</p>
+        <p class="item-description i18n" data-id="LSPosed adalah modul Zygisk yang memungkinkan modifikasi aspek dan perilaku sistem atau aplikasi saat runtime, tanpa memodifikasi paket aplikasi Android (APK) atau re-flashing. Secara teknis, ini adalah" data-en="LSPosed is a Zygisk module that allows modifying the system or application aspect and behavior at runtime, without modifying any Android application package (APK) or re-flashing. Technically, it is an">LSPosed adalah modul Zygisk yang memungkinkan modifikasi aspek dan perilaku sistem atau aplikasi saat runtime, tanpa memodifikasi paket aplikasi Android (APK) atau re-flashing. Secara teknis, ini adalah</p>
         <div class="item-badges">
           <span class="badge badge-android">android</span>
         </div>
@@ -1116,6 +1154,27 @@ filterBtns.forEach(b => b.addEventListener('click', () => {
   b.classList.add('active');
   applyFilters();
 }));
+
+
+  // Language toggle
+  (function() {
+    const savedLang = localStorage.getItem('owasp-mas-lang') || 'id';
+    function setLang(lang) {
+      localStorage.setItem('owasp-mas-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.querySelectorAll('.i18n').forEach(el => {
+        const text = el.dataset[lang];
+        if (text) el.textContent = text;
+      });
+      document.documentElement.lang = lang === 'id' ? 'id' : 'en';
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+    setLang(savedLang);
+  })();
 
 </script>
 </body>

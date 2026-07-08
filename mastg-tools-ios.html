@@ -101,13 +101,51 @@ body {
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.3rem;
+    z-index: 200;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-btn.active, .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
+  /* Topic pages with light header need dark variant */
+  body.topic-page .lang-switcher .lang-btn {
+    border-color: var(--owasp-dark);
+    color: var(--owasp-dark);
+  }
+  body.topic-page .lang-switcher .lang-btn.active,
+  body.topic-page .lang-switcher .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
 </style>
 </head>
-<body>
+<body class="topic-page">
   <header class="page-header">
     <h1>OWASP MASTG Tools — iOS</h1>
     <p class="subtitle">iOS · 54 tools · Generated 2026-07-08 03:42 UTC</p>
   </header>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="id" aria-label="Bahasa Indonesia">ID</button>
+    <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+  </div>
   <main class="container">
     <div class="filter-bar">
       <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
@@ -124,14 +162,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+        <p class="group-description i18n" data-id="Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll." data-en="Ensures sensitive data stored locally is properly protected, whether in internal or public storage. Covers prevention of accidental data leakage via backups, logs, keyboard cache, etc.">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
 
       <div class="item-card" data-id="" data-category="STORAGE" data-platform="ios">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">BinaryCookieReader</h3>
-        <p class="item-description">BinaryCookieReader is a tool to dump all the cookies from the binary Cookies.binarycookies file - &lt;https://github.com/as0ler/BinaryCookieReader/blob/master/BinaryCookieReader.py&gt;</p>
+        <p class="item-description i18n" data-id="BinaryCookieReader adalah alat untuk melakukan dump semua cookies dari file binary Cookies.binarycookies - <https://github.com/as0ler/BinaryCookieReader/blob/master/BinaryCookieReader.py>" data-en="BinaryCookieReader is a tool to dump all the cookies from the binary Cookies.binarycookies file - &lt;https://github.com/as0ler/BinaryCookieReader/blob/master/BinaryCookieReader.py&gt;">BinaryCookieReader adalah alat untuk melakukan dump semua cookies dari file binary Cookies.binarycookies - <https://github.com/as0ler/BinaryCookieReader/blob/master/BinaryCookieReader.py></p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -149,7 +187,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">class-dump</h3>
-        <p class="item-description">class-dump is a command line utility for examining the Objective-C runtime information stored in Mach-O (Mach object) files. It generates declarations for the classes, categories, and protocols.</p>
+        <p class="item-description i18n" data-id="class-dump adalah command line utility untuk memeriksa Objective-C runtime information yang disimpan dalam file Mach-O (Mach object). class-dump menghasilkan declarations untuk classes, categories, dan protocols." data-en="class-dump is a command line utility for examining the Objective-C runtime information stored in Mach-O (Mach object) files. It generates declarations for the classes, categories, and protocols.">class-dump adalah command line utility untuk memeriksa Objective-C runtime information yang disimpan dalam file Mach-O (Mach object). class-dump menghasilkan declarations untuk classes, categories, dan protocols.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -167,7 +205,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">class-dump-dyld</h3>
-        <p class="item-description">class-dump-dyld allows symbols to be dumped and retrieved directly from the shared cache, eliminating the necessity of extracting the files first. It can generate header files from app binaries, libra</p>
+        <p class="item-description i18n" data-id="class-dump-dyld memungkinkan simbol untuk di-dump dan diambil langsung dari shared cache, sehingga menghilangkan kebutuhan untuk mengekstrak file terlebih dahulu. Ini dapat menghasilkan file header dari biner aplikasi, libraries." data-en="class-dump-dyld allows symbols to be dumped and retrieved directly from the shared cache, eliminating the necessity of extracting the files first. It can generate header files from app binaries, libra">class-dump-dyld memungkinkan simbol untuk di-dump dan diambil langsung dari shared cache, sehingga menghilangkan kebutuhan untuk mengekstrak file terlebih dahulu. Ini dapat menghasilkan file header dari biner aplikasi, libraries.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -185,7 +223,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">iOSbackup</h3>
-        <p class="item-description">iOSbackup is a Python 3 class that reads and extracts files from a password-encrypted iOS backup created by iTunes on Mac and Windows.</p>
+        <p class="item-description i18n" data-id="iOSbackup adalah kelas Python 3 yang membaca dan mengekstrak file dari password-encrypted iOS backup yang dibuat oleh iTunes di Mac dan Windows." data-en="iOSbackup is a Python 3 class that reads and extracts files from a password-encrypted iOS backup created by iTunes on Mac and Windows.">iOSbackup adalah kelas Python 3 yang membaca dan mengekstrak file dari password-encrypted iOS backup yang dibuat oleh iTunes di Mac dan Windows.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -203,7 +241,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">MachoOView</h3>
-        <p class="item-description">MachoOView is a useful visual Mach-O file browser that also allows in-file editing of ARM binaries.</p>
+        <p class="item-description i18n" data-id="MachoOView adalah browser file Mach-O visual yang berguna dan juga memungkinkan pengeditan biner ARM di dalam file." data-en="MachoOView is a useful visual Mach-O file browser that also allows in-file editing of ARM binaries.">MachoOView adalah browser file Mach-O visual yang berguna dan juga memungkinkan pengeditan biner ARM di dalam file.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -221,7 +259,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">otool</h3>
-        <p class="item-description">otool is a tool for displaying specific parts of object files or libraries. It works with Mach-O files and universal file formats.</p>
+        <p class="item-description i18n" data-id="otool adalah alat untuk menampilkan bagian-bagian tertentu dari object files atau libraries. Alat ini bekerja dengan Mach-O files dan universal file formats." data-en="otool is a tool for displaying specific parts of object files or libraries. It works with Mach-O files and universal file formats.">otool adalah alat untuk menampilkan bagian-bagian tertentu dari object files atau libraries. Alat ini bekerja dengan Mach-O files dan universal file formats.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -239,7 +277,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Plutil</h3>
-        <p class="item-description">Plutil is a program that can convert .plist files between a binary version and an XML version.</p>
+        <p class="item-description i18n" data-id="Plutil adalah sebuah program yang dapat mengonversi file .plist antara versi binary dan versi XML." data-en="Plutil is a program that can convert .plist files between a binary version and an XML version.">Plutil adalah sebuah program yang dapat mengonversi file .plist antara versi binary dan versi XML.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -257,7 +295,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">ios-app-signer</h3>
-        <p class="item-description">ios-app-signer is a GUI-based tool for macOS that allows you to re-sign iOS apps and bundle them into IPA files ready to be installed on an iOS device. It can be installed using the .app file from the</p>
+        <p class="item-description i18n" data-id="ios-app-signer adalah alat berbasis GUI untuk macOS yang memungkinkan Anda untuk menandatangani ulang aplikasi iOS dan menggabungkannya ke dalam file IPA yang siap diinstal pada perangkat iOS. Alat ini dapat diinstal menggunakan file .app dari" data-en="ios-app-signer is a GUI-based tool for macOS that allows you to re-sign iOS apps and bundle them into IPA files ready to be installed on an iOS device. It can be installed using the .app file from the">ios-app-signer adalah alat berbasis GUI untuk macOS yang memungkinkan Anda untuk menandatangani ulang aplikasi iOS dan menggabungkannya ke dalam file IPA yang siap diinstal pada perangkat iOS. Alat ini dapat diinstal menggunakan file .app dari</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -275,7 +313,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">ipsw</h3>
-        <p class="item-description">IPSW calls itself an &quot;iOS/macOS Research Swiss Army Knife&quot;. In general, IPSW allows you to obtain iOS specific files (IPSW, OTA, ...) and also statically analyze them. For application analysis, the mo</p>
+        <p class="item-description i18n" data-id="IPSW menyebut dirinya sebagai &quot;iOS/macOS Research Swiss Army Knife&quot;. Secara umum, IPSW memungkinkan Anda untuk mendapatkan file spesifik iOS (IPSW, OTA, ...) dan juga menganalisisnya secara statis. Untuk analisis aplikasi, mo" data-en="IPSW calls itself an &quot;iOS/macOS Research Swiss Army Knife&quot;. In general, IPSW allows you to obtain iOS specific files (IPSW, OTA, ...) and also statically analyze them. For application analysis, the mo">IPSW menyebut dirinya sebagai "iOS/macOS Research Swiss Army Knife". Secara umum, IPSW memungkinkan Anda untuk mendapatkan file spesifik iOS (IPSW, OTA, ...) dan juga menganalisisnya secara statis. Untuk analisis aplikasi, mo</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -293,7 +331,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Sideloadly</h3>
-        <p class="item-description">Sideloadly allows you to obtain a valid signature for a given IPA file and then install it to a connected iOS device. In addition to signing and installing an IPA file, Sideloadly also allows you to i</p>
+        <p class="item-description i18n" data-id="Sideloadly memungkinkan Anda untuk mendapatkan tanda tangan yang valid untuk file IPA tertentu dan kemudian menginstalnya ke perangkat iOS yang terhubung. Selain menandatangani dan menginstal file IPA, Sideloadly juga memungkinkan Anda untuk i" data-en="Sideloadly allows you to obtain a valid signature for a given IPA file and then install it to a connected iOS device. In addition to signing and installing an IPA file, Sideloadly also allows you to i">Sideloadly memungkinkan Anda untuk mendapatkan tanda tangan yang valid untuk file IPA tertentu dan kemudian menginstalnya ke perangkat iOS yang terhubung. Selain menandatangani dan menginstal file IPA, Sideloadly juga memungkinkan Anda untuk i</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -311,7 +349,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">objdump (iOS)</h3>
-        <p class="item-description">objdump is a tool to inspect object files, executables and libraries. It can disassemble instructions or show symbol tables, headers and sections. There are implementations in GNU Binutils and in LLVM</p>
+        <p class="item-description i18n" data-id="objdump adalah alat untuk memeriksa object files, executables, dan libraries. Alat ini dapat melakukan disassemble instructions atau menampilkan symbol tables, headers, dan sections. Terdapat implementasi di GNU Binutils dan di LLVM." data-en="objdump is a tool to inspect object files, executables and libraries. It can disassemble instructions or show symbol tables, headers and sections. There are implementations in GNU Binutils and in LLVM">objdump adalah alat untuk memeriksa object files, executables, dan libraries. Alat ini dapat melakukan disassemble instructions atau menampilkan symbol tables, headers, dan sections. Terdapat implementasi di GNU Binutils dan di LLVM.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -329,7 +367,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">AppSync Unified</h3>
-        <p class="item-description">AppSync Unified disables various IPA signature verifications on jailbroken iOS devices, allowing you to install IPA files with missing or incorrect signatures. AppSync Unified does not require any con</p>
+        <p class="item-description i18n" data-id="AppSync Unified menonaktifkan berbagai verifikasi tanda tangan IPA pada perangkat iOS yang sudah di-jailbreak, sehingga memungkinkan Anda menginstal file IPA dengan tanda tangan yang hilang atau salah. AppSync Unified tidak memerlukan izin apa pun." data-en="AppSync Unified disables various IPA signature verifications on jailbroken iOS devices, allowing you to install IPA files with missing or incorrect signatures. AppSync Unified does not require any con">AppSync Unified menonaktifkan berbagai verifikasi tanda tangan IPA pada perangkat iOS yang sudah di-jailbreak, sehingga memungkinkan Anda menginstal file IPA dengan tanda tangan yang hilang atau salah. AppSync Unified tidak memerlukan izin apa pun.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -347,7 +385,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">PlistBuddy</h3>
-        <p class="item-description">PlistBuddy is available on macOS and allows you to print and modify .plist files. It is not on the default PATH, but it can be run via /usr/libexec/PlistBuddy. PlistBuddy uses a custom syntax to execu</p>
+        <p class="item-description i18n" data-id="PlistBuddy tersedia di macOS dan memungkinkan Anda untuk mencetak dan memodifikasi file .plist. PlistBuddy tidak berada di PATH default, tetapi dapat dijalankan melalui /usr/libexec/PlistBuddy. PlistBuddy menggunakan sintaks khusus untuk mengeksekusi" data-en="PlistBuddy is available on macOS and allows you to print and modify .plist files. It is not on the default PATH, but it can be run via /usr/libexec/PlistBuddy. PlistBuddy uses a custom syntax to execu">PlistBuddy tersedia di macOS dan memungkinkan Anda untuk mencetak dan memodifikasi file .plist. PlistBuddy tidak berada di PATH default, tetapi dapat dijalankan melalui /usr/libexec/PlistBuddy. PlistBuddy menggunakan sintaks khusus untuk mengeksekusi</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -365,7 +403,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">plistlib</h3>
-        <p class="item-description">The plistlib is part of the Python standard library and allows you to programmatically read, modify, and write .plist (Property List) files. It supports both XML and binary plist formats and provides </p>
+        <p class="item-description i18n" data-id="plistlib adalah bagian dari pustaka standar Python dan memungkinkan Anda untuk membaca, memodifikasi, dan menulis file .plist (Property List) secara programatis. Ini mendukung format plist XML dan biner serta menyediakan" data-en="The plistlib is part of the Python standard library and allows you to programmatically read, modify, and write .plist (Property List) files. It supports both XML and binary plist formats and provides">plistlib adalah bagian dari pustaka standar Python dan memungkinkan Anda untuk membaca, memodifikasi, dan menulis file .plist (Property List) secara programatis. Ini mendukung format plist XML dan biner serta menyediakan</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -383,7 +421,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">ipainstaller</h3>
-        <p class="item-description">ipainstaller allows you to install IPA files from an SSH session on a jailbroken iOS device.</p>
+        <p class="item-description i18n" data-id="ipainstaller memungkinkan Anda untuk menginstal file IPA dari sesi SSH pada perangkat iOS yang sudah jailbreak." data-en="ipainstaller allows you to install IPA files from an SSH session on a jailbroken iOS device.">ipainstaller memungkinkan Anda untuk menginstal file IPA dari sesi SSH pada perangkat iOS yang sudah jailbreak.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -404,14 +442,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
+        <p class="group-description i18n" data-id="Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle." data-en="Ensures the app uses cryptography according to industry best practices. Covers selection of strong algorithms, correct configuration, and key lifecycle management.">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
 
       <div class="item-card" data-id="" data-category="CRYPTO" data-platform="ios">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Frida-ios-dump</h3>
-        <p class="item-description">Frida-ios-dump is a Python script that helps you retrieve the decrypted version of an iOS app (IPA) from an iOS device. It supports both Python 2 and Python 3 and requires Frida running on your iOS de</p>
+        <p class="item-description i18n" data-id="Frida-ios-dump adalah skrip Python yang membantu Anda mengambil versi terdekripsi dari aplikasi iOS (IPA) dari perangkat iOS. Ini mendukung Python 2 dan Python 3 dan memerlukan Frida yang berjalan di perangkat iOS Anda." data-en="Frida-ios-dump is a Python script that helps you retrieve the decrypted version of an iOS app (IPA) from an iOS device. It supports both Python 2 and Python 3 and requires Frida running on your iOS de">Frida-ios-dump adalah skrip Python yang membantu Anda mengambil versi terdekripsi dari aplikasi iOS (IPA) dari perangkat iOS. Ini mendukung Python 2 dan Python 3 dan memerlukan Frida yang berjalan di perangkat iOS Anda.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -429,7 +467,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Keychain-Dumper</h3>
-        <p class="item-description">Keychain-dumper is an iOS tool to check which keychain items are available to an attacker once an iOS device has been jailbroken. In order to use the tool on modern versions of iOS, you need to follow</p>
+        <p class="item-description i18n" data-id="Keychain-dumper adalah alat iOS untuk memeriksa item keychain mana yang tersedia bagi penyerang setelah perangkat iOS jailbroken. Untuk menggunakan alat ini pada versi iOS modern, Anda perlu mengikuti" data-en="Keychain-dumper is an iOS tool to check which keychain items are available to an attacker once an iOS device has been jailbroken. In order to use the tool on modern versions of iOS, you need to follow">Keychain-dumper adalah alat iOS untuk memeriksa item keychain mana yang tersedia bagi penyerang setelah perangkat iOS jailbroken. Untuk menggunakan alat ini pada versi iOS modern, Anda perlu mengikuti</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -447,7 +485,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">security</h3>
-        <p class="item-description">security is a macOS command to administer Keychains, keys, certificates and the Security framework.</p>
+        <p class="item-description i18n" data-id="security adalah perintah macOS untuk mengelola Keychains, keys, certificates, dan Security framework." data-en="security is a macOS command to administer Keychains, keys, certificates and the Security framework.">security adalah perintah macOS untuk mengelola Keychains, keys, certificates, dan Security framework.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -465,7 +503,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">SwiftShield</h3>
-        <p class="item-description">SwiftShield is a tool that generates irreversible, encrypted names for your iOS project's objects (including your Pods and Storyboards). This raises the bar for reverse engineers and will produce less</p>
+        <p class="item-description i18n" data-id="SwiftShield adalah alat yang menghasilkan nama encrypted yang irreversible untuk objek proyek iOS Anda (termasuk Pods dan Storyboards Anda). Ini meningkatkan standar bagi reverse engineers dan akan menghasilkan lebih sedikit" data-en="SwiftShield is a tool that generates irreversible, encrypted names for your iOS project's objects (including your Pods and Storyboards). This raises the bar for reverse engineers and will produce less">SwiftShield adalah alat yang menghasilkan nama encrypted yang irreversible untuk objek proyek iOS Anda (termasuk Pods dan Storyboards Anda). Ini meningkatkan standar bagi reverse engineers dan akan menghasilkan lebih sedikit</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -486,14 +524,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+        <p class="group-description i18n" data-id="Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning." data-en="Ensures the app establishes secure and encrypted connections for all network communication. Covers TLS configuration and certificate/public key pinning.">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
 
       <div class="item-card" data-id="" data-category="NETWORK" data-platform="ios">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">iproxy</h3>
-        <p class="item-description">iproxy allows you to forward a port from a connected iOS device to a port on the host machine. This can be useful for interacting with jailbroken devices, as some jailbreaks do not expose the SSH port</p>
+        <p class="item-description i18n" data-id="iproxy memungkinkan Anda untuk meneruskan port dari perangkat iOS yang terhubung ke port pada mesin host. Ini dapat berguna untuk berinteraksi dengan perangkat jailbroken, karena beberapa jailbreak tidak mengekspos port SSH." data-en="iproxy allows you to forward a port from a connected iOS device to a port on the host machine. This can be useful for interacting with jailbroken devices, as some jailbreaks do not expose the SSH port">iproxy memungkinkan Anda untuk meneruskan port dari perangkat iOS yang terhubung ke port pada mesin host. Ini dapat berguna untuk berinteraksi dengan perangkat jailbroken, karena beberapa jailbreak tidak mengekspos port SSH.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -511,7 +549,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">SSL Kill Switch 3</h3>
-        <p class="item-description">SSL Kill Switch 3 is a jailbreak tweak to disable SSL certificate validation - including certificate pinning - within iOS and macOS Apps</p>
+        <p class="item-description i18n" data-id="SSL Kill Switch 3 adalah jailbreak tweak untuk menonaktifkan validasi sertifikat SSL - termasuk certificate pinning - di dalam aplikasi iOS dan macOS" data-en="SSL Kill Switch 3 is a jailbreak tweak to disable SSL certificate validation - including certificate pinning - within iOS and macOS Apps">SSL Kill Switch 3 adalah jailbreak tweak untuk menonaktifkan validasi sertifikat SSL - termasuk certificate pinning - di dalam aplikasi iOS dan macOS</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -532,14 +570,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+        <p class="group-description i18n" data-id="Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI." data-en="App interaction with the mobile platform must be secure. Covers IPC mechanisms, WebView configuration, and secure display of sensitive data in the UI.">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
 
       <div class="item-card" data-id="" data-category="PLATFORM" data-platform="ios">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">libimobiledevice suite</h3>
-        <p class="item-description">The libimobiledevice suite is cross-platform protocol library for interacting with iOS devices. The different libraries can be compiled into binaries for direct interaction with iOS devices from the c</p>
+        <p class="item-description i18n" data-id="Rangkaian libimobiledevice adalah pustaka protokol cross-platform untuk berinteraksi dengan perangkat iOS. Berbagai pustaka yang berbeda dapat dikompilasi menjadi biner untuk interaksi langsung dengan perangkat iOS dari c." data-en="The libimobiledevice suite is cross-platform protocol library for interacting with iOS devices. The different libraries can be compiled into binaries for direct interaction with iOS devices from the c">Rangkaian libimobiledevice adalah pustaka protokol cross-platform untuk berinteraksi dengan perangkat iOS. Berbagai pustaka yang berbeda dapat dikompilasi menjadi biner untuk interaksi langsung dengan perangkat iOS dari c.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -560,14 +598,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+        <p class="group-description i18n" data-id="Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation." data-en="Ensures code quality and exploit mitigation. Covers platform version requirements, app update enforcement, third-party component vulnerability management, and input validation.">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
 
       <div class="item-card" data-id="" data-category="CODE" data-platform="ios">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">ios-deploy</h3>
-        <p class="item-description">With ios-deploy you can install and debug iOS apps from the command line, without using Xcode. It can be installed via brew on macOS:</p>
+        <p class="item-description i18n" data-id="Dengan ios-deploy, Anda dapat menginstal dan men-debug aplikasi iOS dari baris perintah, tanpa menggunakan Xcode. Alat ini dapat diinstal melalui brew di macOS:" data-en="With ios-deploy you can install and debug iOS apps from the command line, without using Xcode. It can be installed via brew on macOS:">Dengan ios-deploy, Anda dapat menginstal dan men-debug aplikasi iOS dari baris perintah, tanpa menggunakan Xcode. Alat ini dapat diinstal melalui brew di macOS:</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -585,7 +623,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">lldb (iOS)</h3>
-        <p class="item-description">lldb is a debugger bundled with Apple's Xcode used for debugging iOS applications</p>
+        <p class="item-description i18n" data-id="lldb adalah debugger yang dibundel dengan Apple's Xcode yang digunakan untuk debugging aplikasi iOS." data-en="lldb is a debugger bundled with Apple's Xcode used for debugging iOS applications">lldb adalah debugger yang dibundel dengan Apple's Xcode yang digunakan untuk debugging aplikasi iOS.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -603,7 +641,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">optool</h3>
-        <p class="item-description">optool is a tool which interfaces with MachO binaries in order to insert/remove load commands, strip code signatures, resign, and remove aslr.</p>
+        <p class="item-description i18n" data-id="optool adalah alat yang berinteraksi dengan biner MachO untuk menyisipkan/menghapus load commands, menghapus code signatures, menandatangani ulang, dan menghapus aslr." data-en="optool is a tool which interfaces with MachO binaries in order to insert/remove load commands, strip code signatures, resign, and remove aslr.">optool adalah alat yang berinteraksi dengan biner MachO untuk menyisipkan/menghapus load commands, menghapus code signatures, menandatangani ulang, dan menghapus aslr.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -621,7 +659,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">simctl</h3>
-        <p class="item-description">simctl is an Xcode tool that allows you to interact with iOS simulators via the command line to e.g. manage simulators, launch apps, take screenshots or collect their logs.</p>
+        <p class="item-description i18n" data-id="simctl adalah alat Xcode yang memungkinkan Anda berinteraksi dengan simulator iOS melalui command line untuk misalnya mengelola simulator, meluncurkan aplikasi, mengambil screenshot, atau mengumpulkan log mereka." data-en="simctl is an Xcode tool that allows you to interact with iOS simulators via the command line to e.g. manage simulators, launch apps, take screenshots or collect their logs.">simctl adalah alat Xcode yang memungkinkan Anda berinteraksi dengan simulator iOS melalui command line untuk misalnya mengelola simulator, meluncurkan aplikasi, mengambil screenshot, atau mengumpulkan log mereka.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -639,7 +677,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">swift-demangle</h3>
-        <p class="item-description">swift-demangle is an Xcode tool that demangles Swift symbols. For more information run xcrun swift-demangle -help once installed.</p>
+        <p class="item-description i18n" data-id="swift-demangle adalah alat Xcode yang melakukan demangle pada simbol Swift. Untuk informasi lebih lanjut, jalankan xcrun swift-demangle -help setelah terinstal." data-en="swift-demangle is an Xcode tool that demangles Swift symbols. For more information run xcrun swift-demangle -help once installed.">swift-demangle adalah alat Xcode yang melakukan demangle pada simbol Swift. Untuk informasi lebih lanjut, jalankan xcrun swift-demangle -help setelah terinstal.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -657,7 +695,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Xcode</h3>
-        <p class="item-description">Xcode is an Integrated Development Environment (IDE) for macOS that contains a suite of tools for developing software for macOS, iOS, watchOS, and tvOS. You can download Xcode for free from the offici</p>
+        <p class="item-description i18n" data-id="Xcode adalah Integrated Development Environment (IDE) untuk macOS yang berisi seperangkat alat untuk mengembangkan perangkat lunak untuk macOS, iOS, watchOS, dan tvOS. Anda dapat mengunduh Xcode secara gratis dari situs resmi Apple." data-en="Xcode is an Integrated Development Environment (IDE) for macOS that contains a suite of tools for developing software for macOS, iOS, watchOS, and tvOS. You can download Xcode for free from the offici">Xcode adalah Integrated Development Environment (IDE) untuk macOS yang berisi seperangkat alat untuk mengembangkan perangkat lunak untuk macOS, iOS, watchOS, dan tvOS. Anda dapat mengunduh Xcode secara gratis dari situs resmi Apple.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -675,7 +713,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Xcode Command Line Tools</h3>
-        <p class="item-description">The Xcode Command Line Tools are bundled with @MASTG-TOOL-0070. After installing @MASTG-TOOL-0070, run xcode-select --install to install the Xcode Command Line Tools package. This will be handy during</p>
+        <p class="item-description i18n" data-id="Xcode Command Line Tools dibundel dengan @MASTG-TOOL-0070. Setelah menginstal @MASTG-TOOL-0070, jalankan xcode-select --install untuk menginstal paket Xcode Command Line Tools. Ini akan berguna selama" data-en="The Xcode Command Line Tools are bundled with @MASTG-TOOL-0070. After installing @MASTG-TOOL-0070, run xcode-select --install to install the Xcode Command Line Tools package. This will be handy during">Xcode Command Line Tools dibundel dengan @MASTG-TOOL-0070. Setelah menginstal @MASTG-TOOL-0070, jalankan xcode-select --install untuk menginstal paket Xcode Command Line Tools. Ini akan berguna selama</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -693,7 +731,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">xcrun</h3>
-        <p class="item-description">xcrun can be used invoke Xcode developer tools from the command-line, without having them in the path. For example you may want to use it to locate and run swift-demangle or simctl.</p>
+        <p class="item-description i18n" data-id="xcrun dapat digunakan untuk memanggil alat pengembang Xcode dari command-line, tanpa harus memilikinya di path. Sebagai contoh, Anda mungkin ingin menggunakannya untuk menemukan dan menjalankan swift-demangle atau simctl." data-en="xcrun can be used invoke Xcode developer tools from the command-line, without having them in the path. For example you may want to use it to locate and run swift-demangle or simctl.">xcrun dapat digunakan untuk memanggil alat pengembang Xcode dari command-line, tanpa harus memilikinya di path. Sebagai contoh, Anda mungkin ingin menggunakannya untuk menemukan dan menjalankan swift-demangle atau simctl.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -711,7 +749,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">codesign</h3>
-        <p class="item-description">The codesign tool is primarily used to create, verify, and display code signatures, and to query the dynamic status of signed code in the system. Although Xcode typically automates the process of sign</p>
+        <p class="item-description i18n" data-id="Alat codesign terutama digunakan untuk membuat, memverifikasi, dan menampilkan code signatures, serta untuk menanyakan status dinamis dari kode yang ditandatangani di dalam sistem. Meskipun Xcode biasanya mengotomatiskan proses sign" data-en="The codesign tool is primarily used to create, verify, and display code signatures, and to query the dynamic status of signed code in the system. Although Xcode typically automates the process of sign">Alat codesign terutama digunakan untuk membuat, memverifikasi, dan menampilkan code signatures, serta untuk menanyakan status dinamis dari kode yang ditandatangani di dalam sistem. Meskipun Xcode biasanya mengotomatiskan proses sign</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -732,14 +770,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+        <p class="group-description i18n" data-id="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks." data-en="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Enhances app resilience against reverse engineering and client-side attacks.">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
 
       <div class="item-card" data-id="" data-category="RESILIENCE" data-platform="ios">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Frida (iOS)</h3>
-        <p class="item-description">Frida supports interaction with the Objective-C runtime through the ObjC API. You'll be able to hook and call both Objective-C and native functions inside the process and its native libraries. Your Ja</p>
+        <p class="item-description i18n" data-id="Frida mendukung interaksi dengan runtime Objective-C melalui API ObjC. Anda akan dapat melakukan hook dan memanggil fungsi Objective-C maupun native di dalam proses dan library native-nya. Your Ja" data-en="Frida supports interaction with the Objective-C runtime through the ObjC API. You'll be able to hook and call both Objective-C and native functions inside the process and its native libraries. Your Ja">Frida mendukung interaksi dengan runtime Objective-C melalui API ObjC. Anda akan dapat melakukan hook dan memanggil fungsi Objective-C maupun native di dalam proses dan library native-nya. Your Ja</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -757,7 +795,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Grapefruit</h3>
-        <p class="item-description">Grapefruit is an iOS app assessment tool that is using the Frida server on the iOS device and is abstracting many penetration testing tasks into a Web UI. It can be installed via npm.</p>
+        <p class="item-description i18n" data-id="Grapefruit adalah iOS app assessment tool yang menggunakan server Frida pada perangkat iOS dan mengabstraksi banyak tugas penetration testing ke dalam Web UI. Alat ini dapat diinstal melalui npm." data-en="Grapefruit is an iOS app assessment tool that is using the Frida server on the iOS device and is abstracting many penetration testing tasks into a Web UI. It can be installed via npm.">Grapefruit adalah iOS app assessment tool yang menggunakan server Frida pada perangkat iOS dan mengabstraksi banyak tugas penetration testing ke dalam Web UI. Alat ini dapat diinstal melalui npm.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -775,7 +813,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Sileo</h3>
-        <p class="item-description">Sileo is a third-party app store available for both rooted and rootless jailbreaks on iOS 12+. It provides a graphical user interface for apt/dpkg and lets you install apps, binaries, and tweaks. Sile</p>
+        <p class="item-description i18n" data-id="Sileo adalah third-party app store yang tersedia untuk jailbreak rooted dan rootless di iOS 12+. Ini menyediakan graphical user interface untuk apt/dpkg dan memungkinkan Anda menginstal apps, binaries, dan tweaks." data-en="Sileo is a third-party app store available for both rooted and rootless jailbreaks on iOS 12+. It provides a graphical user interface for apt/dpkg and lets you install apps, binaries, and tweaks. Sile">Sileo adalah third-party app store yang tersedia untuk jailbreak rooted dan rootless di iOS 12+. Ini menyediakan graphical user interface untuk apt/dpkg dan memungkinkan Anda menginstal apps, binaries, dan tweaks.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -793,7 +831,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">radare2 (iOS)</h3>
-        <p class="item-description">Radare2 is a complete framework for reverse-engineering and analyzing binaries. The installation instructions can be found in the GitHub repository. To learn more on radare2 you may want to read the o</p>
+        <p class="item-description i18n" data-id="Radare2 adalah framework lengkap untuk reverse-engineering dan menganalisis binary. Petunjuk instalasi dapat ditemukan di repositori GitHub. Untuk mempelajari lebih lanjut tentang radare2, Anda mungkin ingin membaca o" data-en="Radare2 is a complete framework for reverse-engineering and analyzing binaries. The installation instructions can be found in the GitHub repository. To learn more on radare2 you may want to read the o">Radare2 adalah framework lengkap untuk reverse-engineering dan menganalisis binary. Petunjuk instalasi dapat ditemukan di repositori GitHub. Untuk mempelajari lebih lanjut tentang radare2, Anda mungkin ingin membaca o</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -811,7 +849,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">xpcspy</h3>
-        <p class="item-description">xpcspy is a Frida-based tool designed for bidirectional XPC message interception on iOS and macOS targets. It hooks into the XPC runtime to capture messages as they are sent and received, printing the</p>
+        <p class="item-description i18n" data-id="xpcspy adalah alat berbasis Frida yang dirancang untuk intersepsi pesan XPC dua arah pada target iOS dan macOS. Alat ini melakukan hook ke runtime XPC untuk menangkap pesan saat dikirim dan diterima, mencetak" data-en="xpcspy is a Frida-based tool designed for bidirectional XPC message interception on iOS and macOS targets. It hooks into the XPC runtime to capture messages as they are sent and received, printing the">xpcspy adalah alat berbasis Frida yang dirancang untuk intersepsi pesan XPC dua arah pada target iOS dan macOS. Alat ini melakukan hook ke runtime XPC untuk menangkap pesan saat dikirim dan diterima, mencetak</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -832,14 +870,14 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
+        <p class="group-description i18n" data-id="Tools dan techniques yang berlaku lintas kategori MASVS." data-en="Tools and techniques applicable across MASVS categories.">Tools dan techniques yang berlaku lintas kategori MASVS.</p>
 
       <div class="item-card" data-id="" data-category="GENERAL" data-platform="ios">
         <div class="item-header">
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">MobSF (iOS)</h3>
-        <p class="item-description">By running MobSF locally on a macOS host you'll benefit from a slightly better class-dump output.</p>
+        <p class="item-description i18n" data-id="Dengan menjalankan MobSF secara lokal di host macOS, Anda akan mendapatkan output class-dump yang sedikit lebih baik." data-en="By running MobSF locally on a macOS host you'll benefit from a slightly better class-dump output.">Dengan menjalankan MobSF secara lokal di host macOS, Anda akan mendapatkan output class-dump yang sedikit lebih baik.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -857,7 +895,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">nm (iOS)</h3>
-        <p class="item-description">nm is a tool that displays the name list (symbol table) of the given binary.</p>
+        <p class="item-description i18n" data-id="nm adalah alat yang menampilkan daftar nama (symbol table) dari binary yang diberikan." data-en="nm is a tool that displays the name list (symbol table) of the given binary.">nm adalah alat yang menampilkan daftar nama (symbol table) dari binary yang diberikan.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -875,7 +913,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">class-dump-z</h3>
-        <p class="item-description">class-dump-z is class-dump re-written from scratch in C++, avoiding the use of dynamic calls. Removing these unnecessary calls makes class-dump-z nearly 10 times faster than its predecessor.</p>
+        <p class="item-description i18n" data-id="class-dump-z adalah class-dump yang ditulis ulang dari awal dalam C++, menghindari penggunaan dynamic calls. Menghapus panggilan yang tidak perlu ini membuat class-dump-z hampir 10 kali lebih cepat daripada pendahulunya." data-en="class-dump-z is class-dump re-written from scratch in C++, avoiding the use of dynamic calls. Removing these unnecessary calls makes class-dump-z nearly 10 times faster than its predecessor.">class-dump-z adalah class-dump yang ditulis ulang dari awal dalam C++, menghindari penggunaan dynamic calls. Menghapus panggilan yang tidak perlu ini membuat class-dump-z hampir 10 kali lebih cepat daripada pendahulunya.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -893,7 +931,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Cycript</h3>
-        <p class="item-description">Cycript is a scripting language developed by Jay Freeman (aka Saurik). It injects a JavaScriptCore virtual machine into a running process. Using the Cycript interactive console, users can manipulate t</p>
+        <p class="item-description i18n" data-id="Cycript adalah bahasa skrip yang dikembangkan oleh Jay Freeman (alias Saurik). Ia menyuntikkan mesin virtual JavaScriptCore ke dalam proses yang sedang berjalan. Dengan menggunakan konsol interaktif Cycript, pengguna dapat memanipulasi t" data-en="Cycript is a scripting language developed by Jay Freeman (aka Saurik). It injects a JavaScriptCore virtual machine into a running process. Using the Cycript interactive console, users can manipulate t">Cycript adalah bahasa skrip yang dikembangkan oleh Jay Freeman (alias Saurik). Ia menyuntikkan mesin virtual JavaScriptCore ke dalam proses yang sedang berjalan. Dengan menggunakan konsol interaktif Cycript, pengguna dapat memanipulasi t</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -911,7 +949,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Cydia</h3>
-        <p class="item-description">Cydia is an alternative app store developed by Jay Freeman (aka &quot;saurik&quot;) for jailbroken devices. It provides a graphical user interface and a version of the Advanced Packaging Tool (APT). You can eas</p>
+        <p class="item-description i18n" data-id="Cydia adalah toko aplikasi alternatif yang dikembangkan oleh Jay Freeman (alias &quot;saurik&quot;) untuk perangkat jailbroken. Cydia menyediakan graphical user interface dan versi dari Advanced Packaging Tool (APT). Anda dapat dengan mudah..." data-en="Cydia is an alternative app store developed by Jay Freeman (aka &quot;saurik&quot;) for jailbroken devices. It provides a graphical user interface and a version of the Advanced Packaging Tool (APT). You can eas">Cydia adalah toko aplikasi alternatif yang dikembangkan oleh Jay Freeman (alias "saurik") untuk perangkat jailbroken. Cydia menyediakan graphical user interface dan versi dari Advanced Packaging Tool (APT). Anda dapat dengan mudah...</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -929,7 +967,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">dsdump</h3>
-        <p class="item-description">dsdump is a tool to dump Objective-C classes and Swift type descriptors (classes, structs, enums). It only supports Swift version 5 or higher and does not support ARM 32-bit binaries.</p>
+        <p class="item-description i18n" data-id="dsdump adalah alat untuk melakukan dump kelas Objective-C dan deskriptor tipe Swift (kelas, struct, enum). Alat ini hanya mendukung Swift versi 5 atau lebih tinggi dan tidak mendukung biner ARM 32-bit." data-en="dsdump is a tool to dump Objective-C classes and Swift type descriptors (classes, structs, enums). It only supports Swift version 5 or higher and does not support ARM 32-bit binaries.">dsdump adalah alat untuk melakukan dump kelas Objective-C dan deskriptor tipe Swift (kelas, struct, enum). Alat ini hanya mendukung Swift versi 5 atau lebih tinggi dan tidak mendukung biner ARM 32-bit.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -965,7 +1003,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">gdb</h3>
-        <p class="item-description">A tool to perform runtime analysis of iOS applications.</p>
+        <p class="item-description i18n" data-id="Alat untuk melakukan runtime analysis pada aplikasi iOS." data-en="A tool to perform runtime analysis of iOS applications.">Alat untuk melakukan runtime analysis pada aplikasi iOS.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -983,7 +1021,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Usbmuxd</h3>
-        <p class="item-description">usbmuxd is a socket daemon that monitors USB iPhone connections. You can use it to map the mobile device's localhost listening sockets to TCP ports on your host computer. This allows you to convenient</p>
+        <p class="item-description i18n" data-id="usbmuxd adalah sebuah socket daemon yang memonitor koneksi USB iPhone. Anda dapat menggunakannya untuk memetakan socket listening localhost perangkat seluler ke port TCP di komputer host Anda. Ini memungkinkan Anda untuk dengan nyaman." data-en="usbmuxd is a socket daemon that monitors USB iPhone connections. You can use it to map the mobile device's localhost listening sockets to TCP ports on your host computer. This allows you to convenient">usbmuxd adalah sebuah socket daemon yang memonitor koneksi USB iPhone. Anda dapat menggunakannya untuk memetakan socket listening localhost perangkat seluler ke port TCP di komputer host Anda. Ini memungkinkan Anda untuk dengan nyaman.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -1001,7 +1039,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">objection (iOS)</h3>
-        <p class="item-description">Objection offers several features specific to iOS. You can find the full list of features on the project's page, but here are a few interesting ones:</p>
+        <p class="item-description i18n" data-id="Objection menawarkan beberapa features khusus untuk iOS. Anda dapat menemukan daftar lengkap features di halaman proyek, tetapi berikut adalah beberapa yang menarik:" data-en="Objection offers several features specific to iOS. You can find the full list of features on the project's page, but here are a few interesting ones:">Objection menawarkan beberapa features khusus untuk iOS. Anda dapat menemukan daftar lengkap features di halaman proyek, tetapi berikut adalah beberapa yang menarik:</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -1019,7 +1057,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">ldid</h3>
-        <p class="item-description">ldid is a Link Identity Editor created by Saurik. It allows you to view and update the entitlements of a MachO binary.</p>
+        <p class="item-description i18n" data-id="ldid adalah Link Identity Editor yang dibuat oleh Saurik. Ini memungkinkan Anda untuk melihat dan memperbarui entitlements dari sebuah biner MachO." data-en="ldid is a Link Identity Editor created by Saurik. It allows you to view and update the entitlements of a MachO binary.">ldid adalah Link Identity Editor yang dibuat oleh Saurik. Ini memungkinkan Anda untuk melihat dan memperbarui entitlements dari sebuah biner MachO.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -1055,7 +1093,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">c++filt</h3>
-        <p class="item-description">c++filt is a demangling tool that converts mangled C++ symbols into human readable strings by calling c++filt &lt;symbol&gt;. See the man page for more information on its usage.</p>
+        <p class="item-description i18n" data-id="c++filt adalah alat demangling yang mengubah simbol C++ yang telah di-mangle menjadi human readable strings dengan memanggil c++filt <symbol>. Lihat man page untuk informasi lebih lanjut tentang penggunaannya." data-en="c++filt is a demangling tool that converts mangled C++ symbols into human readable strings by calling c++filt &lt;symbol&gt;. See the man page for more information on its usage.">c++filt adalah alat demangling yang mengubah simbol C++ yang telah di-mangle menjadi human readable strings dengan memanggil c++filt <symbol>. Lihat man page untuk informasi lebih lanjut tentang penggunaannya.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -1091,7 +1129,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">GlobalWebInspect</h3>
-        <p class="item-description">This tool may or may not work depending on your macOS / iOS combination.</p>
+        <p class="item-description i18n" data-id="Alat ini mungkin berfungsi atau tidak tergantung pada kombinasi macOS / iOS Anda." data-en="This tool may or may not work depending on your macOS / iOS combination.">Alat ini mungkin berfungsi atau tidak tergantung pada kombinasi macOS / iOS Anda.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -1109,7 +1147,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">ElleKit</h3>
-        <p class="item-description">ElleKit is a function-hooking framework used by the popular jailbreaks Dopamine and palera1n. It provides an API for both Substrate and libhooker.</p>
+        <p class="item-description i18n" data-id="ElleKit adalah sebuah framework function-hooking yang digunakan oleh jailbreak populer Dopamine dan palera1n. Framework ini menyediakan API untuk Substrate dan libhooker." data-en="ElleKit is a function-hooking framework used by the popular jailbreaks Dopamine and palera1n. It provides an API for both Substrate and libhooker.">ElleKit adalah sebuah framework function-hooking yang digunakan oleh jailbreak populer Dopamine dan palera1n. Framework ini menyediakan API untuk Substrate dan libhooker.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -1127,7 +1165,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">IOSSecuritySuite</h3>
-        <p class="item-description">IOSSecuritySuite is a library used to detect if a device is jailbroken.</p>
+        <p class="item-description i18n" data-id="IOSSecuritySuite adalah sebuah library yang digunakan untuk mendeteksi apakah suatu perangkat telah jailbroken." data-en="IOSSecuritySuite is a library used to detect if a device is jailbroken.">IOSSecuritySuite adalah sebuah library yang digunakan untuk mendeteksi apakah suatu perangkat telah jailbroken.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -1145,7 +1183,7 @@ body {
           <span class="item-id"></span>
         </div>
         <h3 class="item-title">Choicy</h3>
-        <p class="item-description">Choicy is an advanced tweak configurator for jailbroken iOS devices. It allows you to prevent injection of tweaks into specific applications, which can help with hiding the jailbroken nature of the de</p>
+        <p class="item-description i18n" data-id="Choicy adalah advanced tweak configurator untuk perangkat iOS yang jailbroken. Ini memungkinkan Anda untuk mencegah injection tweaks ke dalam aplikasi tertentu, yang dapat membantu menyembunyikan sifat jailbroken dari perangkat tersebut." data-en="Choicy is an advanced tweak configurator for jailbroken iOS devices. It allows you to prevent injection of tweaks into specific applications, which can help with hiding the jailbroken nature of the de">Choicy adalah advanced tweak configurator untuk perangkat iOS yang jailbroken. Ini memungkinkan Anda untuk mencegah injection tweaks ke dalam aplikasi tertentu, yang dapat membantu menyembunyikan sifat jailbroken dari perangkat tersebut.</p>
         <div class="item-badges">
           <span class="badge badge-ios">ios</span>
         </div>
@@ -1234,6 +1272,27 @@ filterBtns.forEach(b => b.addEventListener('click', () => {
   b.classList.add('active');
   applyFilters();
 }));
+
+
+  // Language toggle
+  (function() {
+    const savedLang = localStorage.getItem('owasp-mas-lang') || 'id';
+    function setLang(lang) {
+      localStorage.setItem('owasp-mas-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.querySelectorAll('.i18n').forEach(el => {
+        const text = el.dataset[lang];
+        if (text) el.textContent = text;
+      });
+      document.documentElement.lang = lang === 'id' ? 'id' : 'en';
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+    setLang(savedLang);
+  })();
 
 </script>
 </body>

@@ -101,13 +101,51 @@ body {
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.3rem;
+    z-index: 200;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-btn.active, .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
+  /* Topic pages with light header need dark variant */
+  body.topic-page .lang-switcher .lang-btn {
+    border-color: var(--owasp-dark);
+    color: var(--owasp-dark);
+  }
+  body.topic-page .lang-switcher .lang-btn.active,
+  body.topic-page .lang-switcher .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
 </style>
 </head>
-<body>
+<body class="topic-page">
   <header class="page-header">
     <h1>OWASP MASTG Tests — Android</h1>
     <p class="subtitle">Android · 114 tests · All profiles · Generated 2026-07-08 04:39 UTC</p>
   </header>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="id" aria-label="Bahasa Indonesia">ID</button>
+    <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+  </div>
   <main class="container">
     <div class="filter-bar">
       <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
@@ -131,7 +169,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+        <p class="group-description i18n" data-id="Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll." data-en="Ensures sensitive data stored locally is properly protected, whether in internal or public storage. Covers prevention of accidental data leakage via backups, logs, keyboard cache, etc.">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
 
       <div class="item-card" data-id="MASTG-TEST-0200" data-category="STORAGE" data-profiles="L1 L2" data-status="current" data-platform="android">
         <div class="item-header">
@@ -139,7 +177,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Files Written to External Storage</h3>
-        <p class="item-description">The goal of this test is to retrieve the files written to the external storage (@MASTG-KNOW-0042) and inspect them regardless of the APIs used to write them. It uses a simple approach based on file retrieval from the dev</p>
+        <p class="item-description i18n" data-id="Tujuan dari pengujian ini adalah untuk mengambil file yang ditulis ke external storage (@MASTG-KNOW-0042) dan memeriksanya terlepas dari API yang digunakan untuk menulisnya. Hal ini menggunakan pendekatan sederhana berdasarkan pengambilan file dari dev" data-en="The goal of this test is to retrieve the files written to the external storage (@MASTG-KNOW-0042) and inspect them regardless of the APIs used to write them. It uses a simple approach based on file retrieval from the dev">Tujuan dari pengujian ini adalah untuk mengambil file yang ditulis ke external storage (@MASTG-KNOW-0042) dan memeriksanya terlepas dari API yang digunakan untuk menulisnya. Hal ini menggunakan pendekatan sederhana berdasarkan pengambilan file dari dev</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -159,7 +197,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of APIs to Access External Storage</h3>
-        <p class="item-description">Android apps use a variety of APIs to access the external storage (@MASTG-KNOW-0042). Collecting a comprehensive list of these APIs can be challenging, especially if an app uses a third-party framework, loads code at run</p>
+        <p class="item-description i18n" data-id="Aplikasi Android menggunakan berbagai API untuk mengakses external storage (@MASTG-KNOW-0042). Mengumpulkan daftar lengkap API ini dapat menjadi tantangan, terutama jika sebuah aplikasi menggunakan framework pihak ketiga, memuat kode saat dijalankan" data-en="Android apps use a variety of APIs to access the external storage (@MASTG-KNOW-0042). Collecting a comprehensive list of these APIs can be challenging, especially if an app uses a third-party framework, loads code at run">Aplikasi Android menggunakan berbagai API untuk mengakses external storage (@MASTG-KNOW-0042). Mengumpulkan daftar lengkap API ini dapat menjadi tantangan, terutama jika sebuah aplikasi menggunakan framework pihak ketiga, memuat kode saat dijalankan</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -179,7 +217,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to APIs and Permissions for Accessing External Storage</h3>
-        <p class="item-description">This test uses static analysis to look for uses of APIs allowing an app to write to locations that are shared with other apps (@MASTG-TEST-0001) such as the External Storage APIs or the MediaStore API as well as the rele</p>
+        <p class="item-description i18n" data-id="Tes ini menggunakan analisis statis untuk mencari penggunaan API yang memungkinkan sebuah aplikasi menulis ke lokasi yang dibagikan dengan aplikasi lain (@MASTG-TEST-0001) seperti External Storage APIs atau MediaStore API serta rele" data-en="This test uses static analysis to look for uses of APIs allowing an app to write to locations that are shared with other apps (@MASTG-TEST-0001) such as the External Storage APIs or the MediaStore API as well as the rele">Tes ini menggunakan analisis statis untuk mencari penggunaan API yang memungkinkan sebuah aplikasi menulis ke lokasi yang dibagikan dengan aplikasi lain (@MASTG-TEST-0001) seperti External Storage APIs atau MediaStore API serta rele</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -199,7 +237,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Logging APIs</h3>
-        <p class="item-description">On Android platforms, logging APIs like Log, Logger, System.out.print, System.err.print, and java.lang.Throwable#printStackTrace can inadvertently lead to the leakage of sensitive information. Log messages are recorded i</p>
+        <p class="item-description i18n" data-id="Di platform Android, API logging seperti Log, Logger, System.out.print, System.err.print, dan java.lang.Throwable#printStackTrace dapat secara tidak sengaja menyebabkan kebocoran informasi sensitif. Pesan log dicatat i" data-en="On Android platforms, logging APIs like Log, Logger, System.out.print, System.err.print, and java.lang.Throwable#printStackTrace can inadvertently lead to the leakage of sensitive information. Log messages are recorded i">Di platform Android, API logging seperti Log, Logger, System.out.print, System.err.print, dan java.lang.Throwable#printStackTrace dapat secara tidak sengaja menyebabkan kebocoran informasi sensitif. Pesan log dicatat i</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span><span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -219,7 +257,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Storage of Unencrypted Data in the App Sandbox</h3>
-        <p class="item-description">The goal of this test is to retrieve the files written to the internal storage (@MASTG-KNOW-0041) and inspect them regardless of the APIs used to write them. It uses a simple approach based on file retrieval from the dev</p>
+        <p class="item-description i18n" data-id="Tujuan dari pengujian ini adalah untuk mengambil file yang ditulis ke internal storage (@MASTG-KNOW-0041) dan memeriksanya terlepas dari API yang digunakan untuk menulisnya. Ini menggunakan pendekatan sederhana berdasarkan pengambilan file dari dev" data-en="The goal of this test is to retrieve the files written to the internal storage (@MASTG-KNOW-0041) and inspect them regardless of the APIs used to write them. It uses a simple approach based on file retrieval from the dev">Tujuan dari pengujian ini adalah untuk mengambil file yang ditulis ke internal storage (@MASTG-KNOW-0041) dan memeriksanya terlepas dari API yang digunakan untuk menulisnya. Ini menggunakan pendekatan sederhana berdasarkan pengambilan file dari dev</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -239,7 +277,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Sensitive Data Not Excluded From Backup</h3>
-        <p class="item-description">This test verifies whether apps correctly instruct the system to exclude sensitive files from backups by performing a backup and restore of the app data and checking which files are restored.</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi apakah aplikasi menginstruksikan sistem dengan benar untuk mengecualikan file sensitif dari backup dengan melakukan backup dan restore data aplikasi serta memeriksa file mana yang di-restore." data-en="This test verifies whether apps correctly instruct the system to exclude sensitive files from backups by performing a backup and restore of the app data and checking which files are restored.">Tes ini memverifikasi apakah aplikasi menginstruksikan sistem dengan benar untuk mengecualikan file sensitif dari backup dengan melakukan backup dan restore data aplikasi serta memeriksa file mana yang di-restore.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span><span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -259,7 +297,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Logging APIs</h3>
-        <p class="item-description">This test verifies if an app uses logging APIs like android.util.Log, Log, Logger, System.out.print, System.err.print, and java.lang.Throwable#printStackTrace.</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi apakah suatu aplikasi menggunakan API logging seperti android.util.Log, Log, Logger, System.out.print, System.err.print, dan java.lang.Throwable#printStackTrace." data-en="This test verifies if an app uses logging APIs like android.util.Log, Log, Logger, System.out.print, System.err.print, and java.lang.Throwable#printStackTrace.">Tes ini memverifikasi apakah suatu aplikasi menggunakan API logging seperti android.util.Log, Log, Logger, System.out.print, System.err.print, dan java.lang.Throwable#printStackTrace.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span><span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -279,7 +317,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Backup Configurations Not Excluding Sensitive Data</h3>
-        <p class="item-description">This test verifies whether apps correctly instruct the system to exclude sensitive files from backups by analyzing the app's AndroidManifest.xml and backup rule configuration files.</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi apakah aplikasi menginstruksikan sistem dengan benar untuk mengecualikan file sensitif dari backup dengan menganalisis AndroidManifest.xml aplikasi dan file konfigurasi aturan backup." data-en="This test verifies whether apps correctly instruct the system to exclude sensitive files from backups by analyzing the app's AndroidManifest.xml and backup rule configuration files.">Tes ini memverifikasi apakah aplikasi menginstruksikan sistem dengan benar untuk mengecualikan file sensitif dari backup dengan menganalisis AndroidManifest.xml aplikasi dan file konfigurasi aturan backup.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span><span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -299,7 +337,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Storage of Unencrypted Data via the SharedPreferences API</h3>
-        <p class="item-description">In Android, applications can use the SharedPreferences API to store sensitive data without encryption, typically under the app's private data directory, such as /data/user/0/&lt;package-name&gt;/sharedprefs/ or /data/data/&lt;pac</p>
+        <p class="item-description i18n" data-id="Di Android, aplikasi dapat menggunakan API SharedPreferences untuk menyimpan data sensitif tanpa enkripsi, biasanya di bawah direktori data privat aplikasi, seperti /data/user/0/&lt;package-name&gt;/sharedprefs/ atau /data/data/&lt;pac" data-en="In Android, applications can use the SharedPreferences API to store sensitive data without encryption, typically under the app's private data directory, such as /data/user/0/&lt;package-name&gt;/sharedprefs/ or /data/data/&lt;pac">Di Android, aplikasi dapat menggunakan API SharedPreferences untuk menyimpan data sensitif tanpa enkripsi, biasanya di bawah direktori data privat aplikasi, seperti /data/user/0/&lt;package-name&gt;/sharedprefs/ atau /data/data/&lt;pac</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -319,7 +357,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">References to Sensitive Data Unencrypted via Android Room Database</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup referensi ke data sensitif yang disimpan tanpa enkripsi melalui Android Room Database." data-en="This test is a placeholder and has not been created yet. It will cover references to sensitive data stored unencrypted via Android Room Database.">Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup referensi ke data sensitif yang disimpan tanpa enkripsi melalui Android Room Database.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -339,7 +377,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">Sensitive Data Stored Unencrypted via DataStore</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup data sensitif yang disimpan tanpa enkripsi melalui DataStore." data-en="This test is a placeholder and has not been created yet. It will cover sensitive data stored unencrypted via DataStore.">Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup data sensitif yang disimpan tanpa enkripsi melalui DataStore.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -359,7 +397,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">References to Sensitive Data Stored Unencrypted via Android Room DB</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup referensi ke data sensitif yang disimpan tanpa enkripsi melalui Android Room DB." data-en="This test is a placeholder and has not been created yet. It will cover references to sensitive data stored unencrypted via Android Room DB.">Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup referensi ke data sensitif yang disimpan tanpa enkripsi melalui Android Room DB.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -381,7 +419,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
+        <p class="group-description i18n" data-id="Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle." data-en="Ensures the app uses cryptography according to industry best practices. Covers selection of strong algorithms, correct configuration, and key lifecycle management.">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
 
       <div class="item-card" data-id="MASTG-TEST-0204" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="android">
         <div class="item-header">
@@ -389,7 +427,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insecure Random API Usage</h3>
-        <p class="item-description">Android apps sometimes use an insecure pseudorandom number generator (PRNG), such as java.util.Random, which is a linear congruential generator and produces a predictable sequence for any given seed value. As a result, j</p>
+        <p class="item-description i18n" data-id="Aplikasi Android terkadang menggunakan pseudorandom number generator (PRNG) yang tidak aman, seperti java.util.Random, yang merupakan linear congruential generator dan menghasilkan urutan yang dapat diprediksi untuk nilai seed yang diberikan. Akibatnya, j" data-en="Android apps sometimes use an insecure pseudorandom number generator (PRNG), such as java.util.Random, which is a linear congruential generator and produces a predictable sequence for any given seed value. As a result, j">Aplikasi Android terkadang menggunakan pseudorandom number generator (PRNG) yang tidak aman, seperti java.util.Random, yang merupakan linear congruential generator dan menghasilkan urutan yang dapat diprediksi untuk nilai seed yang diberikan. Akibatnya, j</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -409,7 +447,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Non-random Sources Usage</h3>
-        <p class="item-description">Android applications sometimes use non-random sources to generate &quot;random&quot; values, leading to potential security vulnerabilities. Common practices include relying on the current time, such as Date().getTime(), or accessi</p>
+        <p class="item-description i18n" data-id="Aplikasi Android terkadang menggunakan sumber non-random untuk menghasilkan nilai &quot;random&quot;, yang menyebabkan potensi kerentanan keamanan. Praktik umum meliputi bergantung pada waktu saat ini, seperti Date().getTime(), atau accessi" data-en="Android applications sometimes use non-random sources to generate &quot;random&quot; values, leading to potential security vulnerabilities. Common practices include relying on the current time, such as Date().getTime(), or accessi">Aplikasi Android terkadang menggunakan sumber non-random untuk menghasilkan nilai "random", yang menyebabkan potensi kerentanan keamanan. Praktik umum meliputi bergantung pada waktu saat ini, seperti Date().getTime(), atau accessi</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -429,7 +467,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insufficient Key Sizes</h3>
-        <p class="item-description">In this test case, we will look for the use insufficient key sizes in Android apps. To do this, we need to focus on the cryptographic frameworks and libraries that are available in Android and the methods that are used t</p>
+        <p class="item-description i18n" data-id="Dalam test case ini, kita akan mencari penggunaan ukuran kunci yang tidak memadai di aplikasi Android. Untuk melakukannya, kita perlu fokus pada framework dan library kriptografi yang tersedia di Android dan metode yang digunakan t" data-en="In this test case, we will look for the use insufficient key sizes in Android apps. To do this, we need to focus on the cryptographic frameworks and libraries that are available in Android and the methods that are used t">Dalam test case ini, kita akan mencari penggunaan ukuran kunci yang tidak memadai di aplikasi Android. Untuk melakukannya, kita perlu fokus pada framework dan library kriptografi yang tersedia di Android dan metode yang digunakan t</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -449,7 +487,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Use of Hardcoded Cryptographic Keys in Code</h3>
-        <p class="item-description">In this test case, we will look for the use of hardcoded keys in Android applications. To do this, we need to focus on the cryptographic implementations of hardcoded keys. The Java Cryptography Architecture (JCA) provide</p>
+        <p class="item-description i18n" data-id="Dalam test case ini, kita akan mencari penggunaan hardcoded keys di aplikasi Android. Untuk melakukannya, kita perlu fokus pada implementasi kriptografi dari hardcoded keys. Java Cryptography Architecture (JCA) menyediakan" data-en="In this test case, we will look for the use of hardcoded keys in Android applications. To do this, we need to focus on the cryptographic implementations of hardcoded keys. The Java Cryptography Architecture (JCA) provide">Dalam test case ini, kita akan mencari penggunaan hardcoded keys di aplikasi Android. Untuk melakukannya, kita perlu fokus pada implementasi kriptografi dari hardcoded keys. Java Cryptography Architecture (JCA) menyediakan</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -469,7 +507,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Broken Symmetric Encryption Algorithms</h3>
-        <p class="item-description">To test for the use of broken encryption algorithms in Android apps, we need to focus on methods from cryptographic frameworks and libraries that are used to perform encryption and decryption operations.</p>
+        <p class="item-description i18n" data-id="Untuk menguji penggunaan algoritma enkripsi yang rusak pada aplikasi Android, kita perlu berfokus pada method dari framework dan library kriptografi yang digunakan untuk melakukan operasi enkripsi dan dekripsi." data-en="To test for the use of broken encryption algorithms in Android apps, we need to focus on methods from cryptographic frameworks and libraries that are used to perform encryption and decryption operations.">Untuk menguji penggunaan algoritma enkripsi yang rusak pada aplikasi Android, kita perlu berfokus pada method dari framework dan library kriptografi yang digunakan untuk melakukan operasi enkripsi dan dekripsi.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -489,7 +527,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Broken Symmetric Encryption Modes</h3>
-        <p class="item-description">To test for the use of broken encryption modes in Android apps, we should focus on methods in cryptographic frameworks and libraries used to configure and apply encryption modes.</p>
+        <p class="item-description i18n" data-id="Untuk menguji penggunaan broken encryption modes pada aplikasi Android, kita harus berfokus pada method dalam framework dan library kriptografi yang digunakan untuk mengonfigurasi dan menerapkan encryption modes." data-en="To test for the use of broken encryption modes in Android apps, we should focus on methods in cryptographic frameworks and libraries used to configure and apply encryption modes.">Untuk menguji penggunaan broken encryption modes pada aplikasi Android, kita harus berfokus pada method dalam framework dan library kriptografi yang digunakan untuk mengonfigurasi dan menerapkan encryption modes.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -509,7 +547,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Asymmetric Key Pairs Used For Multiple Purposes</h3>
-        <p class="item-description">According to section &quot;5.2 Key Usage&quot; of NIST SP 800-57 part 1 revision 5, cryptographic keys should be assigned a specific purpose and used only for that purpose (e.g., encryption, integrity authentication, key wrapping,</p>
+        <p class="item-description i18n" data-id="Menurut bagian &quot;5.2 Key Usage&quot; dari NIST SP 800-57 bagian 1 revisi 5, kunci kriptografi harus diberikan tujuan spesifik dan hanya digunakan untuk tujuan tersebut (misalnya, enkripsi, otentikasi integritas, key wrapping," data-en="According to section &quot;5.2 Key Usage&quot; of NIST SP 800-57 part 1 revision 5, cryptographic keys should be assigned a specific purpose and used only for that purpose (e.g., encryption, integrity authentication, key wrapping,">Menurut bagian &quot;5.2 Key Usage&quot; dari NIST SP 800-57 bagian 1 revisi 5, kunci kriptografi harus diberikan tujuan spesifik dan hanya digunakan untuk tujuan tersebut (misalnya, enkripsi, otentikasi integritas, key wrapping,</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -529,7 +567,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Asymmetric Key Pairs Used For Multiple Purposes</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0307, but it focuses on intercepting cryptographic operations rather than generating keys with multiple purposes.</p>
+        <p class="item-description i18n" data-id="Tes ini merupakan padanan dinamis dari @MASTG-TEST-0307, tetapi berfokus pada intersepsi operasi kriptografi alih-alih menghasilkan kunci dengan beberapa tujuan." data-en="This test is the dynamic counterpart to @MASTG-TEST-0307, but it focuses on intercepting cryptographic operations rather than generating keys with multiple purposes.">Tes ini merupakan padanan dinamis dari @MASTG-TEST-0307, tetapi berfokus pada intersepsi operasi kriptografi alih-alih menghasilkan kunci dengan beberapa tujuan.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -549,7 +587,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">References to Reused Initialization Vectors in Symmetric Encryption</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup referensi tentang reused initialization vectors dalam symmetric encryption." data-en="This test is a placeholder and has not been created yet. It will cover references to reused initialization vectors in symmetric encryption.">Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup referensi tentang reused initialization vectors dalam symmetric encryption.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -569,7 +607,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">Runtime Use of Reused Initialization Vectors in Symmetric Encryption</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup penggunaan runtime dari reused initialization vectors dalam enkripsi simetris." data-en="This test is a placeholder and has not been created yet. It will cover runtime use of reused initialization vectors in symmetric encryption.">Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup penggunaan runtime dari reused initialization vectors dalam enkripsi simetris.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -589,7 +627,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Explicit Security Provider in Cryptographic APIs</h3>
-        <p class="item-description">Android cryptography APIs based on the Java Cryptography Architecture (JCA) allow developers to specify a security provider when calling getInstance methods. However, explicitly specifying a provider can cause security i</p>
+        <p class="item-description i18n" data-id="API kriptografi Android yang didasarkan pada Java Cryptography Architecture (JCA) memungkinkan pengembang untuk menentukan security provider saat memanggil metode getInstance. Namun, secara eksplisit menentukan provider dapat menyebabkan security i" data-en="Android cryptography APIs based on the Java Cryptography Architecture (JCA) allow developers to specify a security provider when calling getInstance methods. However, explicitly specifying a provider can cause security i">API kriptografi Android yang didasarkan pada Java Cryptography Architecture (JCA) memungkinkan pengembang untuk menentukan security provider saat memanggil metode getInstance. Namun, secara eksplisit menentukan provider dapat menyebabkan security i</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -609,7 +647,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Broken Symmetric Encryption Modes</h3>
-        <p class="item-description">If the app configures cryptographic operations with broken encryption modes at runtime, sensitive data can be exposed to pattern leakage and other cryptographic weaknesses. This test checks whether the running app sets i</p>
+        <p class="item-description i18n" data-id="Jika aplikasi mengonfigurasi cryptographic operations dengan broken encryption modes pada runtime, sensitive data dapat terpapar pada pattern leakage dan cryptographic weaknesses lainnya. Tes ini memeriksa apakah running app menetapkan i" data-en="If the app configures cryptographic operations with broken encryption modes at runtime, sensitive data can be exposed to pattern leakage and other cryptographic weaknesses. This test checks whether the running app sets i">Jika aplikasi mengonfigurasi cryptographic operations dengan broken encryption modes pada runtime, sensitive data dapat terpapar pada pattern leakage dan cryptographic weaknesses lainnya. Tes ini memeriksa apakah running app menetapkan i</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -631,7 +669,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations.</p>
+        <p class="group-description i18n" data-id="Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations." data-en="Ensures the app implements authentication and authorization securely. Covers remote auth protocols, local authentication (biometrics, PIN), and additional authentication for sensitive operations.">Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations.</p>
 
       <div class="item-card" data-id="MASTG-TEST-0326" data-category="AUTH" data-profiles="L2" data-status="current" data-platform="android">
         <div class="item-header">
@@ -639,7 +677,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to APIs Allowing Fallback to Non-Biometric Authentication</h3>
-        <p class="item-description">This test checks if the app uses biometric authentication mechanisms (@MASTG-KNOW-0001) that allow fallback to device credentials (PIN, pattern, or password) for sensitive operations.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menggunakan biometric authentication mechanisms (@MASTG-KNOW-0001) yang memungkinkan fallback ke device credentials (PIN, pattern, atau password) untuk sensitive operations." data-en="This test checks if the app uses biometric authentication mechanisms (@MASTG-KNOW-0001) that allow fallback to device credentials (PIN, pattern, or password) for sensitive operations.">Tes ini memeriksa apakah aplikasi menggunakan biometric authentication mechanisms (@MASTG-KNOW-0001) yang memungkinkan fallback ke device credentials (PIN, pattern, atau password) untuk sensitive operations.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -659,7 +697,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to APIs for Event-Bound Biometric Authentication</h3>
-        <p class="item-description">This test checks if the app implements event-bound biometric authentication (@MASTG-KNOW-0001) to access sensitive resources (e.g., tokens, keys), where authentication success relies solely on a callback result rather th</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menerapkan autentikasi biometrik yang terikat peristiwa (@MASTG-KNOW-0001) untuk mengakses sumber daya sensitif (mis., tokens, keys), di mana keberhasilan autentikasi hanya bergantung pada hasil callback daripada th" data-en="This test checks if the app implements event-bound biometric authentication (@MASTG-KNOW-0001) to access sensitive resources (e.g., tokens, keys), where authentication success relies solely on a callback result rather th">Tes ini memeriksa apakah aplikasi menerapkan autentikasi biometrik yang terikat peristiwa (@MASTG-KNOW-0001) untuk mengakses sumber daya sensitif (mis., tokens, keys), di mana keberhasilan autentikasi hanya bergantung pada hasil callback daripada th</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -679,7 +717,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to APIs Detecting Biometric Enrollment Changes</h3>
-        <p class="item-description">This test checks whether the app fails to protect sensitive operations against unauthorized access following biometric enrollment changes (@MASTG-KNOW-0001). An attacker who obtains the device passcode could add a new fi</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi gagal melindungi operasi sensitif terhadap akses tidak sah setelah perubahan pendaftaran biometrik (@MASTG-KNOW-0001). Seorang penyerang yang mendapatkan kode sandi perangkat dapat menambahkan sidik jari baru" data-en="This test checks whether the app fails to protect sensitive operations against unauthorized access following biometric enrollment changes (@MASTG-KNOW-0001). An attacker who obtains the device passcode could add a new fi">Tes ini memeriksa apakah aplikasi gagal melindungi operasi sensitif terhadap akses tidak sah setelah perubahan pendaftaran biometrik (@MASTG-KNOW-0001). Seorang penyerang yang mendapatkan kode sandi perangkat dapat menambahkan sidik jari baru</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -699,7 +737,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to APIs Enforcing Authentication without Explicit User Action</h3>
-        <p class="item-description">This test checks if the app enforces biometric authentication (@MASTG-KNOW-0001) without requiring explicit user action. When using android.hardware.biometrics.BiometricPrompt API (or its Jetpack counterpart androidx.bio</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menerapkan biometric authentication (@MASTG-KNOW-0001) tanpa memerlukan tindakan eksplisit dari pengguna. Saat menggunakan android.hardware.biometrics.BiometricPrompt API (atau padanan Jetpack-nya androidx.bio" data-en="This test checks if the app enforces biometric authentication (@MASTG-KNOW-0001) without requiring explicit user action. When using android.hardware.biometrics.BiometricPrompt API (or its Jetpack counterpart androidx.bio">Tes ini memeriksa apakah aplikasi menerapkan biometric authentication (@MASTG-KNOW-0001) tanpa memerlukan tindakan eksplisit dari pengguna. Saat menggunakan android.hardware.biometrics.BiometricPrompt API (atau padanan Jetpack-nya androidx.bio</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -718,8 +756,8 @@ body {
           <span class="item-id">MASTG-TEST-0330</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">MASTG-TEST-0330</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to APIs for Keys used in Biometric Authentication with Extended Validity Duration</h3>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi mengonfigurasi cryptographic keys dengan extended validity duration yang memungkinkan keys tetap terbuka (unlocked) melampaui operasi langsung. Saat menggunakan biometric authentication dengan CryptoObject, authentication validity duration menentukan berapa lama sebuah key tetap dapat digunakan setelah successful authentication." data-en="This test checks if the app configures cryptographic keys with an extended validity duration that allows keys to remain unlocked beyond the immediate operation. When using biometric authentication with CryptoObject, the authentication validity duration determines how long a key remains usable after successful authentication.">Tes ini memeriksa apakah aplikasi mengonfigurasi cryptographic keys dengan extended validity duration yang memungkinkan keys tetap terbuka (unlocked) melampaui operasi langsung. Saat menggunakan biometric authentication dengan CryptoObject, authentication validity duration menentukan berapa lama sebuah key tetap dapat digunakan setelah successful authentication.</p>
         <div class="item-badges">
           
           <span class="badge badge-android">android</span>
@@ -741,7 +779,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+        <p class="group-description i18n" data-id="Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning." data-en="Ensures the app establishes secure and encrypted connections for all network communication. Covers TLS configuration and certificate/public key pinning.">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
 
       <div class="item-card" data-id="MASTG-TEST-0217" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="android">
         <div class="item-header">
@@ -749,7 +787,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insecure TLS Protocols Explicitly Allowed in Code</h3>
-        <p class="item-description">The Android Network Security Configuration does not provide direct control over specific TLS versions (unlike iOS), and starting with Android 10, TLS v1.3 is enabled by default for all TLS connections.</p>
+        <p class="item-description i18n" data-id="Konfigurasi Keamanan Jaringan Android tidak memberikan kontrol langsung atas versi TLS tertentu (tidak seperti iOS), dan mulai dari Android 10, TLS v1.3 diaktifkan secara default untuk semua koneksi TLS." data-en="The Android Network Security Configuration does not provide direct control over specific TLS versions (unlike iOS), and starting with Android 10, TLS v1.3 is enabled by default for all TLS connections.">Konfigurasi Keamanan Jaringan Android tidak memberikan kontrol langsung atas versi TLS tertentu (tidak seperti iOS), dan mulai dari Android 10, TLS v1.3 diaktifkan secara default untuk semua koneksi TLS.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -769,7 +807,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insecure TLS Protocols in Network Traffic</h3>
-        <p class="item-description">While static analysis can identify configurations that allow insecure TLS versions, it may not accurately reflect the actual protocol used during live communications. This is because TLS version negotiation occurs betwee</p>
+        <p class="item-description i18n" data-id="Meskipun static analysis dapat mengidentifikasi konfigurasi yang memungkinkan versi TLS yang tidak aman, hal tersebut mungkin tidak secara akurat mencerminkan protokol yang sebenarnya digunakan selama live communications. Hal ini karena negosiasi versi TLS terjadi antara" data-en="While static analysis can identify configurations that allow insecure TLS versions, it may not accurately reflect the actual protocol used during live communications. This is because TLS version negotiation occurs betwee">Meskipun static analysis dapat mengidentifikasi konfigurasi yang memungkinkan versi TLS yang tidak aman, hal tersebut mungkin tidak secara akurat mencerminkan protokol yang sebenarnya digunakan selama live communications. Hal ini karena negosiasi versi TLS terjadi antara</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -789,7 +827,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Hardcoded HTTP URLs</h3>
-        <p class="item-description">An Android app may have hardcoded HTTP URLs embedded in the app binary, library binaries, or other resources within the APK. These URLs may indicate potential locations where the app communicates with servers over an une</p>
+        <p class="item-description i18n" data-id="Aplikasi Android mungkin memiliki URL HTTP yang dikodekan secara keras (hardcoded) di dalam biner aplikasi, biner library, atau resources lain di dalam APK. URL tersebut dapat menunjukkan lokasi potensial di mana aplikasi berkomunikasi dengan server melalui une." data-en="An Android app may have hardcoded HTTP URLs embedded in the app binary, library binaries, or other resources within the APK. These URLs may indicate potential locations where the app communicates with servers over an une">Aplikasi Android mungkin memiliki URL HTTP yang dikodekan secara keras (hardcoded) di dalam biner aplikasi, biner library, atau resources lain di dalam APK. URL tersebut dapat menunjukkan lokasi potensial di mana aplikasi berkomunikasi dengan server melalui une.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -809,7 +847,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Missing Implementation of Server Hostname Verification with SSLSockets</h3>
-        <p class="item-description">This test checks whether an Android app uses SSLSocket without a HostnameVerifier, allowing connections to servers presenting certificates with wrong or invalid hostnames.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi Android menggunakan SSLSocket tanpa HostnameVerifier, yang memungkinkan koneksi ke server yang menyajikan sertifikat dengan hostname yang salah atau tidak valid." data-en="This test checks whether an Android app uses SSLSocket without a HostnameVerifier, allowing connections to servers presenting certificates with wrong or invalid hostnames.">Tes ini memeriksa apakah aplikasi Android menggunakan SSLSocket tanpa HostnameVerifier, yang memungkinkan koneksi ke server yang menyajikan sertifikat dengan hostname yang salah atau tidak valid.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -829,7 +867,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Android App Configurations Allowing Cleartext Traffic</h3>
-        <p class="item-description">Since Android 9 (API level 28) cleartext HTTP traffic is blocked by default (thanks to the default Network Security Configuration) but there are multiple ways in which an application can still send it:</p>
+        <p class="item-description i18n" data-id="Sejak Android 9 (API level 28), traffic HTTP cleartext diblokir secara default (berkat default Network Security Configuration), tetapi masih ada beberapa cara di mana aplikasi dapat mengirimkannya:" data-en="Since Android 9 (API level 28) cleartext HTTP traffic is blocked by default (thanks to the default Network Security Configuration) but there are multiple ways in which an application can still send it:">Sejak Android 9 (API level 28), traffic HTTP cleartext diblokir secara default (berkat default Network Security Configuration), tetapi masih ada beberapa cara di mana aplikasi dapat mengirimkannya:</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -849,7 +887,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Cleartext Traffic Observed on the Network</h3>
-        <p class="item-description">This test intercepts the app's incoming and outgoing network traffic, and checks for any cleartext communication.</p>
+        <p class="item-description i18n" data-id="Test ini mencegat incoming and outgoing network traffic dari app, dan memeriksa adanya cleartext communication." data-en="This test intercepts the app's incoming and outgoing network traffic, and checks for any cleartext communication.">Test ini mencegat incoming and outgoing network traffic dari app, dan memeriksa adanya cleartext communication.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -869,7 +907,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">Cross-Platform Framework Configurations Allowing Cleartext Traffic</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup cross-platform framework configurations yang mengizinkan cleartext traffic." data-en="This test is a placeholder and has not been created yet. It will cover cross-platform framework configurations allowing cleartext traffic.">Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup cross-platform framework configurations yang mengizinkan cleartext traffic.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -888,8 +926,8 @@ body {
           <span class="item-id">MASTG-TEST-0238</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">MASTG-TEST-0238</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Runtime Use of Network APIs Transmitting Cleartext Traffic</h3>
+        <p class="item-description i18n" data-id="Pengujian ini secara dinamis menganalisis perilaku jaringan aplikasi untuk mendeteksi apakah aplikasi tersebut mentransmisikan traffic cleartext menggunakan network API yang melewati default jaringan aman sistem." data-en="This test dynamically analyzes the app's network behavior to detect if it transmits cleartext traffic using network APIs that bypass the system's secure networking defaults.">Pengujian ini secara dinamis menganalisis perilaku jaringan aplikasi untuk mendeteksi apakah aplikasi tersebut mentransmisikan traffic cleartext menggunakan network API yang melewati default jaringan aman sistem.</p>
         <div class="item-badges">
           
           <span class="badge badge-android">android</span>
@@ -909,7 +947,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">Using low-level APIs (e.g. Socket) to set up a custom HTTP connection</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup penggunaan low-level APIs (misalnya Socket) untuk menyiapkan koneksi HTTP kustom." data-en="This test is a placeholder and has not been created yet. It will cover using low-level APIs (e.g. Socket) to set up a custom HTTP connection.">Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup penggunaan low-level APIs (misalnya Socket) untuk menyiapkan koneksi HTTP kustom.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -929,7 +967,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Missing Certificate Pinning in Network Security Configuration</h3>
-        <p class="item-description">Apps can configure certificate pinning using the Network Security Configuration. For each domain, one or multiple digests can be pinned.</p>
+        <p class="item-description i18n" data-id="Aplikasi dapat mengonfigurasi certificate pinning menggunakan Network Security Configuration. Untuk setiap domain, satu atau lebih digest dapat di-pinned." data-en="Apps can configure certificate pinning using the Network Security Configuration. For each domain, one or multiple digests can be pinned.">Aplikasi dapat mengonfigurasi certificate pinning menggunakan Network Security Configuration. Untuk setiap domain, satu atau lebih digest dapat di-pinned.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -949,7 +987,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Expired Certificate Pins in the Network Security Configuration</h3>
-        <p class="item-description">Apps can configure expiration dates for pinned certificates in the Network Security Configuration (NSC) (@MASTG-KNOW-0014) by using the expiration attribute. When a pin expires, the app no longer enforces certificate pin</p>
+        <p class="item-description i18n" data-id="Aplikasi dapat mengonfigurasi tanggal kedaluwarsa untuk pinned certificates di Network Security Configuration (NSC) (@MASTG-KNOW-0014) dengan menggunakan atribut expiration. Ketika sebuah pin kedaluwarsa, aplikasi tidak lagi memberlakukan certificate pin." data-en="Apps can configure expiration dates for pinned certificates in the Network Security Configuration (NSC) (@MASTG-KNOW-0014) by using the expiration attribute. When a pin expires, the app no longer enforces certificate pin">Aplikasi dapat mengonfigurasi tanggal kedaluwarsa untuk pinned certificates di Network Security Configuration (NSC) (@MASTG-KNOW-0014) dengan menggunakan atribut expiration. Ketika sebuah pin kedaluwarsa, aplikasi tidak lagi memberlakukan certificate pin.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -969,7 +1007,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Missing Certificate Pinning in Network Traffic</h3>
-        <p class="item-description">There are multiple ways an application can implement certificate pinning, including via the Android Network Security Config, custom TrustManager implementations, third-party libraries, and native code. Since some impleme</p>
+        <p class="item-description i18n" data-id="Ada beberapa cara aplikasi dapat mengimplementasikan certificate pinning, termasuk melalui Android Network Security Config, implementasi TrustManager custom, third-party libraries, dan native code. Karena beberapa impleme" data-en="There are multiple ways an application can implement certificate pinning, including via the Android Network Security Config, custom TrustManager implementations, third-party libraries, and native code. Since some impleme">Ada beberapa cara aplikasi dapat mengimplementasikan certificate pinning, termasuk melalui Android Network Security Config, implementasi TrustManager custom, third-party libraries, dan native code. Karena beberapa impleme</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -989,7 +1027,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Unsafe Custom Trust Evaluation</h3>
-        <p class="item-description">This test evaluates whether an Android app uses checkServerTrusted(...) in an unsafe manner as part of a custom TrustManager, causing any connection configured to use that TrustManager to skip certificate validation.</p>
+        <p class="item-description i18n" data-id="Tes ini mengevaluasi apakah aplikasi Android menggunakan checkServerTrusted(...) dengan cara yang tidak aman sebagai bagian dari custom TrustManager, yang menyebabkan koneksi apa pun yang dikonfigurasi untuk menggunakan TrustManager tersebut melewati validasi sertifikat." data-en="This test evaluates whether an Android app uses checkServerTrusted(...) in an unsafe manner as part of a custom TrustManager, causing any connection configured to use that TrustManager to skip certificate validation.">Tes ini mengevaluasi apakah aplikasi Android menggunakan checkServerTrusted(...) dengan cara yang tidak aman sebagai bagian dari custom TrustManager, yang menyebabkan koneksi apa pun yang dikonfigurasi untuk menggunakan TrustManager tersebut melewati validasi sertifikat.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1009,7 +1047,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Incorrect Implementation of Server Hostname Verification</h3>
-        <p class="item-description">This test evaluates whether an Android app implements a HostnameVerifier that uses verify(...)) in an unsafe manner, effectively turning off hostname validation for the affected connections.</p>
+        <p class="item-description i18n" data-id="Tes ini mengevaluasi apakah sebuah aplikasi Android mengimplementasikan HostnameVerifier yang menggunakan verify(...)) dengan cara yang tidak aman, secara efektif mematikan validasi hostname untuk koneksi yang terpengaruh." data-en="This test evaluates whether an Android app implements a HostnameVerifier that uses verify(...)) in an unsafe manner, effectively turning off hostname validation for the affected connections.">Tes ini mengevaluasi apakah sebuah aplikasi Android mengimplementasikan HostnameVerifier yang menggunakan verify(...)) dengan cara yang tidak aman, secara efektif mematikan validasi hostname untuk koneksi yang terpengaruh.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1029,7 +1067,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Incorrect SSL Error Handling in WebViews</h3>
-        <p class="item-description">This test evaluates whether an Android app has WebViews that ignore SSL/TLS certificate errors by overriding the onReceivedSslError(...) method without proper validation.</p>
+        <p class="item-description i18n" data-id="Tes ini mengevaluasi apakah aplikasi Android memiliki WebViews yang mengabaikan error sertifikat SSL/TLS dengan meng-override method onReceivedSslError(...) tanpa validasi yang tepat." data-en="This test evaluates whether an Android app has WebViews that ignore SSL/TLS certificate errors by overriding the onReceivedSslError(...) method without proper validation.">Tes ini mengevaluasi apakah aplikasi Android memiliki WebViews yang mengabaikan error sertifikat SSL/TLS dengan meng-override method onReceivedSslError(...) tanpa validasi yang tepat.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1049,7 +1087,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Outdated Android Version Allowing Trust in User-Provided CAs</h3>
-        <p class="item-description">This test evaluates whether an Android app implicitly trusts user-added CA certificates by default, which is the case for apps that can be installed to devices running API level 23 or lower.</p>
+        <p class="item-description i18n" data-id="Pengujian ini mengevaluasi apakah aplikasi Android secara implisit mempercayai sertifikat CA yang ditambahkan pengguna secara default, yang merupakan kasus untuk aplikasi yang dapat diinstal pada perangkat yang menjalankan API level 23 atau lebih rendah." data-en="This test evaluates whether an Android app implicitly trusts user-added CA certificates by default, which is the case for apps that can be installed to devices running API level 23 or lower.">Pengujian ini mengevaluasi apakah aplikasi Android secara implisit mempercayai sertifikat CA yang ditambahkan pengguna secara default, yang merupakan kasus untuk aplikasi yang dapat diinstal pada perangkat yang menjalankan API level 23 atau lebih rendah.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1069,7 +1107,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Network Security Configuration Allowing Trust in User-Provided CAs</h3>
-        <p class="item-description">This test evaluates whether an Android app explicitly trusts user-added CA certificates by including &lt;certificates src=&quot;user&quot;/&gt; in its Network Security Configuration which is defined android:networkSecurityConfig attribu</p>
+        <p class="item-description i18n" data-id="Tes ini mengevaluasi apakah aplikasi Android secara eksplisit mempercayai sertifikat CA yang ditambahkan pengguna dengan menyertakan <certificates src=&quot;user&quot;/> dalam Network Security Configuration yang didefinisikan pada atribut android:networkSecurityConfig." data-en="This test evaluates whether an Android app explicitly trusts user-added CA certificates by including &lt;certificates src=&quot;user&quot;/&gt; in its Network Security Configuration which is defined android:networkSecurityConfig attribu">Tes ini mengevaluasi apakah aplikasi Android secara eksplisit mempercayai sertifikat CA yang ditambahkan pengguna dengan menyertakan <certificates src="user"/> dalam Network Security Configuration yang didefinisikan pada atribut android:networkSecurityConfig.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1089,7 +1127,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">GMS Security Provider Not Updated</h3>
-        <p class="item-description">This test checks whether the Android app ensures the Security Provider is updated to mitigate SSL/TLS vulnerabilities. The provider should be updated using Google Play Services APIs, and the implementation should handle </p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi Android memastikan Security Provider diperbarui untuk mengurangi kerentanan SSL/TLS. Provider harus diperbarui menggunakan Google Play Services APIs, dan implementasi harus menangani" data-en="This test checks whether the Android app ensures the Security Provider is updated to mitigate SSL/TLS vulnerabilities. The provider should be updated using Google Play Services APIs, and the implementation should handle">Tes ini memeriksa apakah aplikasi Android memastikan Security Provider diperbarui untuk mengurangi kerentanan SSL/TLS. Provider harus diperbarui menggunakan Google Play Services APIs, dan implementasi harus menangani</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1111,7 +1149,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+        <p class="group-description i18n" data-id="Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI." data-en="App interaction with the mobile platform must be secure. Covers IPC mechanisms, WebView configuration, and secure display of sensitive data in the UI.">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
 
       <div class="item-card" data-id="MASTG-TEST-0250" data-category="PLATFORM" data-profiles="L1 L2" data-status="current" data-platform="android">
         <div class="item-header">
@@ -1119,7 +1157,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Content Provider Access in WebViews</h3>
-        <p class="item-description">This test checks for references to Content Provider access in WebViews, which is enabled by default and can be disabled using the setAllowContentAccess method in the WebSettings class. If improperly configured, this can </p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa referensi ke akses Content Provider di WebViews, yang diaktifkan secara default dan dapat dinonaktifkan menggunakan metode setAllowContentAccess di kelas WebSettings. Jika dikonfigurasi secara tidak tepat, hal ini dapat" data-en="This test checks for references to Content Provider access in WebViews, which is enabled by default and can be disabled using the setAllowContentAccess method in the WebSettings class. If improperly configured, this can">Tes ini memeriksa referensi ke akses Content Provider di WebViews, yang diaktifkan secara default dan dapat dinonaktifkan menggunakan metode setAllowContentAccess di kelas WebSettings. Jika dikonfigurasi secara tidak tepat, hal ini dapat</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1139,7 +1177,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Content Provider Access APIs in WebViews</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0250.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0250." data-en="This test is the dynamic counterpart to @MASTG-TEST-0250.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0250.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1159,7 +1197,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Local File Access in WebViews</h3>
-        <p class="item-description">This test checks for references to methods from the WebSettings class used by Android WebViews which enable loading content from various sources, including local files. If improperly configured, these methods can introdu</p>
+        <p class="item-description i18n" data-id="Pengujian ini memeriksa referensi ke metode dari kelas WebSettings yang digunakan oleh Android WebViews yang memungkinkan pemuatan konten dari berbagai sumber, termasuk file lokal. Jika dikonfigurasi secara tidak benar, metode-metode ini dapat menimbulkan" data-en="This test checks for references to methods from the WebSettings class used by Android WebViews which enable loading content from various sources, including local files. If improperly configured, these methods can introdu">Pengujian ini memeriksa referensi ke metode dari kelas WebSettings yang digunakan oleh Android WebViews yang memungkinkan pemuatan konten dari berbagai sumber, termasuk file lokal. Jika dikonfigurasi secara tidak benar, metode-metode ini dapat menimbulkan</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1179,7 +1217,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Local File Access APIs in WebViews</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0252.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0252." data-en="This test is the dynamic counterpart to @MASTG-TEST-0252.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0252.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1199,7 +1237,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Keyboard Caching Attributes in UI Elements</h3>
-        <p class="item-description">This test verifies that the app appropriately configures text input fields to prevent the keyboard from caching sensitive information, such as passwords or personal data.</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi bahwa aplikasi mengonfigurasi text input fields dengan tepat untuk mencegah keyboard menyimpan cache sensitive information, seperti password atau personal data." data-en="This test verifies that the app appropriately configures text input fields to prevent the keyboard from caching sensitive information, such as passwords or personal data.">Tes ini memverifikasi bahwa aplikasi mengonfigurasi text input fields dengan tepat untuk mencegah keyboard menyimpan cache sensitive information, seperti password atau personal data.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1219,7 +1257,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Verification of Sensitive Content Exposure in Screenshots During App Backgrounding</h3>
-        <p class="item-description">This test verifies that the app hides sensitive content from the screen when it moves to the background. This is important because Android captures a task screenshot of the app UI when it moves to the background. This sc</p>
+        <p class="item-description i18n" data-id="Pengujian ini memverifikasi bahwa aplikasi menyembunyikan konten sensitif dari layar saat aplikasi berpindah ke latar belakang. Hal ini penting karena Android mengambil tangkapan layar task dari UI aplikasi saat aplikasi berpindah ke latar belakang. Tangkapan layar ini" data-en="This test verifies that the app hides sensitive content from the screen when it moves to the background. This is important because Android captures a task screenshot of the app UI when it moves to the background. This sc">Pengujian ini memverifikasi bahwa aplikasi menyembunyikan konten sensitif dari layar saat aplikasi berpindah ke latar belakang. Hal ini penting karena Android mengambil tangkapan layar task dari UI aplikasi saat aplikasi berpindah ke latar belakang. Tangkapan layar ini</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1239,7 +1277,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Screen Capturing Prevention APIs</h3>
-        <p class="item-description">This test verifies whether an app references Android screen capture prevention APIs. On Android, developers can prevent screenshots and nonsecure display mirroring using FLAGSECURE. When set, Android blocks screenshots a</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi apakah sebuah aplikasi mereferensikan API pencegahan tangkapan layar Android. Di Android, pengembang dapat mencegah tangkapan layar dan mirroring tampilan yang tidak aman menggunakan FLAGSECURE. Ketika diatur, Android memblokir tangkapan layar a" data-en="This test verifies whether an app references Android screen capture prevention APIs. On Android, developers can prevent screenshots and nonsecure display mirroring using FLAGSECURE. When set, Android blocks screenshots a">Tes ini memverifikasi apakah sebuah aplikasi mereferensikan API pencegahan tangkapan layar Android. Di Android, pengembang dapat mencegah tangkapan layar dan mirroring tampilan yang tidak aman menggunakan FLAGSECURE. Ketika diatur, Android memblokir tangkapan layar a</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1259,7 +1297,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">`setRecentsScreenshotEnabled` Not Used to Prevent Screenshots When Backgrounded</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup setRecentsScreenshotEnabled yang tidak digunakan untuk mencegah screenshot saat aplikasi berada di latar belakang." data-en="This test is a placeholder and has not been created yet. It will cover setRecentsScreenshotEnabled not used to prevent screenshots when backgrounded.">Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup setRecentsScreenshotEnabled yang tidak digunakan untuk mencegah screenshot saat aplikasi berada di latar belakang.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1278,8 +1316,8 @@ body {
           <span class="item-id">MASTG-TEST-0293</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">MASTG-TEST-0293</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">setSecure Not Used to Prevent Screenshots in SurfaceViews</h3>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menggunakan setSecure pada SurfaceViews untuk mencegah tangkapan layar dan perekaman layar dari konten sensitif yang ditampilkan melalui SurfaceView." data-en="This test checks whether the app uses setSecure on SurfaceViews to prevent screenshots and screen recording of sensitive content displayed via SurfaceView.">Tes ini memeriksa apakah aplikasi menggunakan setSecure pada SurfaceViews untuk mencegah tangkapan layar dan perekaman layar dari konten sensitif yang ditampilkan melalui SurfaceView.</p>
         <div class="item-badges">
           
           <span class="badge badge-android">android</span>
@@ -1299,7 +1337,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">`SecureOn` Not Used to Prevent Screenshots in Compose Dialogs</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup SecureOn yang tidak digunakan untuk mencegah screenshots di Compose Dialogs." data-en="This test is a placeholder and has not been created yet. It will cover SecureOn not used to prevent screenshots in Compose Dialogs.">Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup SecureOn yang tidak digunakan untuk mencegah screenshots di Compose Dialogs.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1319,7 +1357,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Sensitive Data Exposed via Notifications</h3>
-        <p class="item-description">This test verifies that the app correctly handles notifications, ensuring that sensitive information, such as personally identifiable information (PII), one-time passwords (OTPs), or other sensitive data, like health or </p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi bahwa aplikasi menangani notifications dengan benar, memastikan bahwa informasi sensitif, seperti personally identifiable information (PII), one-time passwords (OTPs), atau data sensitif lainnya, seperti kesehatan atau" data-en="This test verifies that the app correctly handles notifications, ensuring that sensitive information, such as personally identifiable information (PII), one-time passwords (OTPs), or other sensitive data, like health or">Tes ini memverifikasi bahwa aplikasi menangani notifications dengan benar, memastikan bahwa informasi sensitif, seperti personally identifiable information (PII), one-time passwords (OTPs), atau data sensitif lainnya, seperti kesehatan atau</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1339,7 +1377,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">App Exposing User Authentication Data in Text Input Fields</h3>
-        <p class="item-description">This test verifies that the app handles user input correctly, ensuring that access codes (passwords or pins) and verification codes (OTPs) are not exposed in plain text within text input fields.</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi bahwa aplikasi menangani input pengguna dengan benar, memastikan bahwa access codes (passwords atau pins) dan verification codes (OTPs) tidak terekspos dalam bentuk teks biasa di dalam text input fields." data-en="This test verifies that the app handles user input correctly, ensuring that access codes (passwords or pins) and verification codes (OTPs) are not exposed in plain text within text input fields.">Tes ini memverifikasi bahwa aplikasi menangani input pengguna dengan benar, memastikan bahwa access codes (passwords atau pins) dan verification codes (OTPs) tidak terekspos dalam bentuk teks biasa di dalam text input fields.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1359,7 +1397,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">WebViews Not Cleaning Up Sensitive Data</h3>
-        <p class="item-description">This test verifies whether the app cleans up sensitive data used by WebViews. Apps can enable several specific storage areas in their WebViews and not clean them up properly, leading to sensitive data being stored on the</p>
+        <p class="item-description i18n" data-id="Pengujian ini memverifikasi apakah aplikasi membersihkan data sensitif yang digunakan oleh WebViews. Aplikasi dapat mengaktifkan beberapa area penyimpanan spesifik di WebViews mereka dan tidak membersihkannya dengan benar, yang menyebabkan data sensitif tersimpan di" data-en="This test verifies whether the app cleans up sensitive data used by WebViews. Apps can enable several specific storage areas in their WebViews and not clean them up properly, leading to sensitive data being stored on the">Pengujian ini memverifikasi apakah aplikasi membersihkan data sensitif yang digunakan oleh WebViews. Aplikasi dapat mengaktifkan beberapa area penyimpanan spesifik di WebViews mereka dan tidak membersihkannya dengan benar, yang menyebabkan data sensitif tersimpan di</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1379,7 +1417,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Native Code Exposed Through WebViews</h3>
-        <p class="item-description">This test verifies Android apps that use WebViews with legacy WebView-Native bridges do not expose native code to websites loaded inside the WebView.</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi bahwa aplikasi Android yang menggunakan WebView dengan jembatan WebView-Native lawas tidak mengekspos kode native ke situs web yang dimuat di dalam WebView." data-en="This test verifies Android apps that use WebViews with legacy WebView-Native bridges do not expose native code to websites loaded inside the WebView.">Tes ini memverifikasi bahwa aplikasi Android yang menggunakan WebView dengan jembatan WebView-Native lawas tidak mengekspos kode native ke situs web yang dimuat di dalam WebView.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1399,7 +1437,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Overlay Attack Protections</h3>
-        <p class="item-description">Overlay attacks (also known as tapjacking) allow malicious apps to place deceptive UI elements over a legitimate app's interface, potentially tricking users into performing unintended actions such as granting permissions</p>
+        <p class="item-description i18n" data-id="Serangan overlay (juga dikenal sebagai tapjacking) memungkinkan aplikasi berbahaya untuk menempatkan elemen UI yang menipu di atas antarmuka aplikasi yang sah, berpotensi menipu pengguna untuk melakukan tindakan yang tidak diinginkan seperti memberikan izin." data-en="Overlay attacks (also known as tapjacking) allow malicious apps to place deceptive UI elements over a legitimate app's interface, potentially tricking users into performing unintended actions such as granting permissions">Serangan overlay (juga dikenal sebagai tapjacking) memungkinkan aplikasi berbahaya untuk menempatkan elemen UI yang menipu di atas antarmuka aplikasi yang sah, berpotensi menipu pengguna untuk melakukan tindakan yang tidak diinginkan seperti memberikan izin.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1418,8 +1456,8 @@ body {
           <span class="item-id">MASTG-TEST-0355</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">MASTG-TEST-0355</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to Unauthorized Database Access through Content Providers</h3>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi mengekspos ContentProvider yang dapat diakses oleh aplikasi lain tanpa pemeriksaan permission yang tepat, yang berpotensi memungkinkan akses database yang tidak sah." data-en="This test checks whether the app exposes content providers that can be accessed by other apps without proper permission checks, potentially allowing unauthorized database access.">Tes ini memeriksa apakah aplikasi mengekspos ContentProvider yang dapat diakses oleh aplikasi lain tanpa pemeriksaan permission yang tepat, yang berpotensi memungkinkan akses database yang tidak sah.</p>
         <div class="item-badges">
           
           <span class="badge badge-android">android</span>
@@ -1439,7 +1477,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Verification of Unauthorized Database Access through Content Providers</h3>
-        <p class="item-description">If an app exports a content provider without requiring permissions, any app on the device can directly query its underlying database using ContentResolver or using the adb shell content command. Even when a permission is</p>
+        <p class="item-description i18n" data-id="Jika sebuah aplikasi mengekspor content provider tanpa memerlukan permissions, aplikasi mana pun di perangkat dapat langsung melakukan query ke database yang mendasarinya menggunakan ContentResolver atau menggunakan perintah adb shell content. Bahkan ketika sebuah permission" data-en="If an app exports a content provider without requiring permissions, any app on the device can directly query its underlying database using ContentResolver or using the adb shell content command. Even when a permission is">Jika sebuah aplikasi mengekspor content provider tanpa memerlukan permissions, aplikasi mana pun di perangkat dapat langsung melakukan query ke database yang mendasarinya menggunakan ContentResolver atau menggunakan perintah adb shell content. Bahkan ketika sebuah permission</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1459,7 +1497,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Oversharing of File-Based Content Providers</h3>
-        <p class="item-description">If the app exports an Android content provider without enforcing access restrictions, external callers may open private files through content:// URIs. This test checks whether exported providers expose sensitive stored d</p>
+        <p class="item-description i18n" data-id="Jika aplikasi mengekspor Android content provider tanpa menerapkan pembatasan akses, pemanggil eksternal dapat membuka file pribadi melalui URI content://. Pengujian ini memeriksa apakah provider yang diekspor mengekspos data sensitif yang tersimpan d" data-en="If the app exports an Android content provider without enforcing access restrictions, external callers may open private files through content:// URIs. This test checks whether exported providers expose sensitive stored d">Jika aplikasi mengekspor Android content provider tanpa menerapkan pembatasan akses, pemanggil eksternal dapat membuka file pribadi melalui URI content://. Pengujian ini memeriksa apakah provider yang diekspor mengekspos data sensitif yang tersimpan d</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1479,7 +1517,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Exported And Unprotected Activities That Expose Sensitive Functionality</h3>
-        <p class="item-description">If an exported activity does not define android:permission with a proper protection level and performs or grants access to sensitive functionality, another third-party app outside the intended trust boundary can start it</p>
+        <p class="item-description i18n" data-id="Jika sebuah activity yang diekspor tidak mendefinisikan android:permission dengan level proteksi yang tepat dan menjalankan atau memberikan akses ke fungsionalitas sensitif, aplikasi pihak ketiga lain di luar batas kepercayaan yang dimaksud dapat memulainya." data-en="If an exported activity does not define android:permission with a proper protection level and performs or grants access to sensitive functionality, another third-party app outside the intended trust boundary can start it">Jika sebuah activity yang diekspor tidak mendefinisikan android:permission dengan level proteksi yang tepat dan menjalankan atau memberikan akses ke fungsionalitas sensitif, aplikasi pihak ketiga lain di luar batas kepercayaan yang dimaksud dapat memulainya.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1499,7 +1537,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Exported And Unprotected Services That Expose Sensitive Functionality</h3>
-        <p class="item-description">If an exported service does not define android:permission with a proper protection level and performs or grants access to sensitive functionality, another third-party app outside the intended trust boundary can start or </p>
+        <p class="item-description i18n" data-id="Jika sebuah exported service tidak mendefinisikan android:permission dengan proper protection level dan melakukan atau memberikan akses ke sensitive functionality, aplikasi pihak ketiga lain di luar intended trust boundary dapat start atau" data-en="If an exported service does not define android:permission with a proper protection level and performs or grants access to sensitive functionality, another third-party app outside the intended trust boundary can start or">Jika sebuah exported service tidak mendefinisikan android:permission dengan proper protection level dan melakukan atau memberikan akses ke sensitive functionality, aplikasi pihak ketiga lain di luar intended trust boundary dapat start atau</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1519,7 +1557,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Exported And Unprotected Broadcast Receivers That Expose Sensitive Functionality</h3>
-        <p class="item-description">If an exported receiver does not define android:permission with a proper protection level and performs or grants access to sensitive functionality, another third-party app outside the intended trust boundary can send a b</p>
+        <p class="item-description i18n" data-id="Jika sebuah exported receiver tidak mendefinisikan android:permission dengan proper protection level dan melakukan atau memberikan akses ke sensitive functionality, third-party app lain di luar intended trust boundary dapat mengirimkan a b" data-en="If an exported receiver does not define android:permission with a proper protection level and performs or grants access to sensitive functionality, another third-party app outside the intended trust boundary can send a b">Jika sebuah exported receiver tidak mendefinisikan android:permission dengan proper protection level dan melakukan atau memberikan akses ke sensitive functionality, third-party app lain di luar intended trust boundary dapat mengirimkan a b</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1539,7 +1577,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Insecure PendingIntent Creation</h3>
-        <p class="item-description">This test checks for references to PendingIntent creation APIs to identify potentially insecure implementations. A PendingIntent wraps an Intent that will be executed later on behalf of the app's identity and permissions</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa referensi ke API pembuatan PendingIntent untuk mengidentifikasi implementasi yang berpotensi tidak aman. Sebuah PendingIntent membungkus Intent yang akan dieksekusi nanti atas nama identitas dan izin aplikasi." data-en="This test checks for references to PendingIntent creation APIs to identify potentially insecure implementations. A PendingIntent wraps an Intent that will be executed later on behalf of the app's identity and permissions">Tes ini memeriksa referensi ke API pembuatan PendingIntent untuk mengidentifikasi implementasi yang berpotensi tidak aman. Sebuah PendingIntent membungkus Intent yang akan dieksekusi nanti atas nama identitas dan izin aplikasi.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1559,7 +1597,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Use of Unverified App Links</h3>
-        <p class="item-description">Android App Links are http/https deep links that the OS verifies against a website's Digital Asset Links file before routing them to the app. An app opts into this verification by setting android:autoVerify=&quot;true&quot; on the</p>
+        <p class="item-description i18n" data-id="Android App Links adalah deep link http/https yang diverifikasi oleh OS terhadap file Digital Asset Links milik situs web sebelum diarahkan ke aplikasi. Sebuah aplikasi memilih untuk mengikuti verifikasi ini dengan menetapkan android:autoVerify=&quot;true&quot; pada" data-en="Android App Links are http/https deep links that the OS verifies against a website's Digital Asset Links file before routing them to the app. An app opts into this verification by setting android:autoVerify=&quot;true&quot; on the">Android App Links adalah deep link http/https yang diverifikasi oleh OS terhadap file Digital Asset Links milik situs web sebelum diarahkan ke aplikasi. Sebuah aplikasi memilih untuk mengikuti verifikasi ini dengan menetapkan android:autoVerify="true" pada</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1579,7 +1617,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Missing Input Validation in Custom URL Scheme Handlers</h3>
-        <p class="item-description">Apps register custom URL schemes by declaring an &lt;intent-filter&gt; in the AndroidManifest.xml with an &lt;action android:name=&quot;android.intent.action.VIEW&quot;&gt;, the android.intent.category.BROWSABLE category, and a &lt;data&gt; element</p>
+        <p class="item-description i18n" data-id="Aplikasi mendaftarkan URL schemes kustom dengan mendeklarasikan <intent-filter> di AndroidManifest.xml dengan <action android:name=&quot;android.intent.action.VIEW&quot;>, kategori android.intent.category.BROWSABLE, dan elemen <data>." data-en="Apps register custom URL schemes by declaring an &lt;intent-filter&gt; in the AndroidManifest.xml with an &lt;action android:name=&quot;android.intent.action.VIEW&quot;&gt;, the android.intent.category.BROWSABLE category, and a &lt;data&gt; element">Aplikasi mendaftarkan URL schemes kustom dengan mendeklarasikan <intent-filter> di AndroidManifest.xml dengan <action android:name="android.intent.action.VIEW">, kategori android.intent.category.BROWSABLE, dan elemen <data>.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1603,7 +1641,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+        <p class="group-description i18n" data-id="Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation." data-en="Ensures code quality and exploit mitigation. Covers platform version requirements, app update enforcement, third-party component vulnerability management, and input validation.">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
 
       <div class="item-card" data-id="MASTG-TEST-0222" data-category="CODE" data-profiles="L2" data-status="current" data-platform="android">
         <div class="item-header">
@@ -1611,7 +1649,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Position Independent Code (PIC) Not Enabled</h3>
-        <p class="item-description">This test case checks if the native libraries of the app are compiled without enabling Position Independent Code (PIC), a common mitigation technique against memory corruption attacks.</p>
+        <p class="item-description i18n" data-id="Kasus uji ini memeriksa apakah native libraries dari aplikasi dikompilasi tanpa mengaktifkan Position Independent Code (PIC), sebuah teknik mitigasi umum terhadap memory corruption attacks." data-en="This test case checks if the native libraries of the app are compiled without enabling Position Independent Code (PIC), a common mitigation technique against memory corruption attacks.">Kasus uji ini memeriksa apakah native libraries dari aplikasi dikompilasi tanpa mengaktifkan Position Independent Code (PIC), sebuah teknik mitigasi umum terhadap memory corruption attacks.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1631,7 +1669,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Stack Canaries Not Enabled</h3>
-        <p class="item-description">This test case checks if the native libraries of the app are compiled without common binary protection mechanisms (@MASTG-KNOW-0006) such as stack smashing protection, a mitigation technique against buffer overflow attac</p>
+        <p class="item-description i18n" data-id="Kasus uji ini memeriksa apakah pustaka native dari aplikasi dikompilasi tanpa mekanisme perlindungan biner umum (@MASTG-KNOW-0006) seperti stack smashing protection, sebuah teknik mitigasi terhadap serangan buffer overflow." data-en="This test case checks if the native libraries of the app are compiled without common binary protection mechanisms (@MASTG-KNOW-0006) such as stack smashing protection, a mitigation technique against buffer overflow attac">Kasus uji ini memeriksa apakah pustaka native dari aplikasi dikompilasi tanpa mekanisme perlindungan biner umum (@MASTG-KNOW-0006) seperti stack smashing protection, sebuah teknik mitigasi terhadap serangan buffer overflow.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1651,7 +1689,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Platform Version APIs</h3>
-        <p class="item-description">This test verifies whether an app is running on a recent version of the Android operating system.</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi apakah sebuah aplikasi berjalan pada versi terbaru dari sistem operasi Android." data-en="This test verifies whether an app is running on a recent version of the Android operating system.">Tes ini memverifikasi apakah sebuah aplikasi berjalan pada versi terbaru dari sistem operasi Android.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1671,7 +1709,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Identify Dependencies with Known Vulnerabilities in the Android Project</h3>
-        <p class="item-description">In this test case we will identify dependencies in Android Studio.</p>
+        <p class="item-description i18n" data-id="Dalam test case ini, kita akan mengidentifikasi dependencies di Android Studio." data-en="In this test case we will identify dependencies in Android Studio.">Dalam test case ini, kita akan mengidentifikasi dependencies di Android Studio.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1691,7 +1729,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Dependencies with Known Vulnerabilities in the App's SBOM</h3>
-        <p class="item-description">In this test case we are identifying dependencies with known vulnerabilities by relying on a Software Bill of Material (SBOM).</p>
+        <p class="item-description i18n" data-id="Dalam test case ini, kami mengidentifikasi dependencies yang memiliki known vulnerabilities dengan mengandalkan Software Bill of Material (SBOM)." data-en="In this test case we are identifying dependencies with known vulnerabilities by relying on a Software Bill of Material (SBOM).">Dalam test case ini, kami mengidentifikasi dependencies yang memiliki known vulnerabilities dengan mengandalkan Software Bill of Material (SBOM).</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1711,7 +1749,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Object Deserialization of Untrusted Data</h3>
-        <p class="item-description">Android apps can reconstruct objects from serialized data received through platform mechanisms such as Intent extras, Bundle values, IPC payloads, files, or network responses. If the app deserializes data from these sour</p>
+        <p class="item-description i18n" data-id="Aplikasi Android dapat merekonstruksi objek dari data yang telah diserialisasi yang diterima melalui mekanisme platform seperti Intent extras, Bundle values, IPC payloads, file, atau respons jaringan. Jika aplikasi melakukan deserialisasi data dari sumber-sumber ini" data-en="Android apps can reconstruct objects from serialized data received through platform mechanisms such as Intent extras, Bundle values, IPC payloads, files, or network responses. If the app deserializes data from these sour">Aplikasi Android dapat merekonstruksi objek dari data yang telah diserialisasi yang diterima melalui mekanisme platform seperti Intent extras, Bundle values, IPC payloads, file, atau respons jaringan. Jika aplikasi melakukan deserialisasi data dari sumber-sumber ini</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1731,7 +1769,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">SQL Injection in Content Providers</h3>
-        <p class="item-description">Android applications can share structured data via ContentProvider components. However, if these providers create SQL queries using untrusted input from URIs without adequate validation or parameterization, they risk bec</p>
+        <p class="item-description i18n" data-id="Aplikasi Android dapat berbagi data terstruktur melalui komponen ContentProvider. Namun, jika provider ini membuat query SQL menggunakan input yang tidak tepercaya dari URI tanpa validasi atau parameterisasi yang memadai, mereka berisiko bec" data-en="Android applications can share structured data via ContentProvider components. However, if these providers create SQL queries using untrusted input from URIs without adequate validation or parameterization, they risk bec">Aplikasi Android dapat berbagi data terstruktur melalui komponen ContentProvider. Namun, jika provider ini membuat query SQL menggunakan input yang tidak tepercaya dari URI tanpa validasi atau parameterisasi yang memadai, mereka berisiko bec</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1751,7 +1789,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Implicit Intents Used for Internal App Communication</h3>
-        <p class="item-description">An implicit intent is an Intent that does not name a concrete target component. Instead, it declares an action, and optionally data or categories, and Android resolves it to an installed component with a matching &lt;intent</p>
+        <p class="item-description i18n" data-id="Implicit intent adalah Intent yang tidak menyebutkan komponen target yang konkret. Sebaliknya, ia mendeklarasikan sebuah action, dan secara opsional data atau categories, dan Android menyelesaikannya ke komponen yang terinstal dengan <intent yang cocok." data-en="An implicit intent is an Intent that does not name a concrete target component. Instead, it declares an action, and optionally data or categories, and Android resolves it to an installed component with a matching &lt;intent">Implicit intent adalah Intent yang tidak menyebutkan komponen target yang konkret. Sebaliknya, ia mendeklarasikan sebuah action, dan secara opsional data atau categories, dan Android menyelesaikannya ke komponen yang terinstal dengan <intent yang cocok.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1771,7 +1809,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Implicit Intents Carrying Sensitive Extras</h3>
-        <p class="item-description">An implicit intent is an Intent that does not name a concrete target component. Instead, it declares an action, and optionally data or categories, and Android resolves it to an installed component with a matching &lt;intent</p>
+        <p class="item-description i18n" data-id="Implicit intent adalah Intent yang tidak menyebutkan komponen target yang konkret. Sebaliknya, ia mendeklarasikan sebuah action, dan secara opsional data atau categories, dan Android menyelesaikannya ke komponen yang terinstal dengan <intent yang cocok." data-en="An implicit intent is an Intent that does not name a concrete target component. Instead, it declares an action, and optionally data or categories, and Android resolves it to an installed component with a matching &lt;intent">Implicit intent adalah Intent yang tidak menyebutkan komponen target yang konkret. Sebaliknya, ia mendeklarasikan sebuah action, dan secara opsional data atau categories, dan Android menyelesaikannya ke komponen yang terinstal dengan <intent yang cocok.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1791,7 +1829,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Missing Validation of Data Returned from Implicit Intents</h3>
-        <p class="item-description">An implicit intent is an Intent that does not name a concrete target component. Instead, it declares an action, and optionally data or categories, and Android resolves it to an installed component with a matching &lt;intent</p>
+        <p class="item-description i18n" data-id="Implicit intent adalah Intent yang tidak menyebutkan komponen target yang konkret. Sebaliknya, ia mendeklarasikan sebuah action, dan secara opsional data atau categories, dan Android menyelesaikannya ke komponen yang terinstal dengan <intent yang cocok." data-en="An implicit intent is an Intent that does not name a concrete target component. Instead, it declares an action, and optionally data or categories, and Android resolves it to an installed component with a matching &lt;intent">Implicit intent adalah Intent yang tidak menyebutkan komponen target yang konkret. Sebaliknya, ia mendeklarasikan sebuah action, dan secara opsional data atau categories, dan Android menyelesaikannya ke komponen yang terinstal dengan <intent yang cocok.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1811,7 +1849,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Enforced Updating APIs</h3>
-        <p class="item-description">At runtime, Android apps implementing enforced updating typically either invoke the Google Play In-App Updates API (for example, AppUpdateManager) or perform a custom version check, for example by retrieving BuildConfig.</p>
+        <p class="item-description i18n" data-id="Pada runtime, aplikasi Android yang menerapkan enforced updating biasanya memanggil Google Play In-App Updates API (misalnya AppUpdateManager) atau melakukan pengecekan versi kustom, misalnya dengan mengambil BuildConfig." data-en="At runtime, Android apps implementing enforced updating typically either invoke the Google Play In-App Updates API (for example, AppUpdateManager) or perform a custom version check, for example by retrieving BuildConfig.">Pada runtime, aplikasi Android yang menerapkan enforced updating biasanya memanggil Google Play In-App Updates API (misalnya AppUpdateManager) atau melakukan pengecekan versi kustom, misalnya dengan mengambil BuildConfig.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1831,7 +1869,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Enforced Updating APIs</h3>
-        <p class="item-description">Android apps may fail to enforce updates when critical security patches or minimum version requirements are needed. For Google Play-distributed apps, enforced updating can be implemented using the Google Play In-App Upda</p>
+        <p class="item-description i18n" data-id="Aplikasi Android mungkin gagal menerapkan pembaruan ketika patch keamanan kritis atau persyaratan versi minimum diperlukan. Untuk aplikasi yang didistribusikan melalui Google Play, pembaruan paksa dapat diimplementasikan menggunakan Google Play In-App Updates." data-en="Android apps may fail to enforce updates when critical security patches or minimum version requirements are needed. For Google Play-distributed apps, enforced updating can be implemented using the Google Play In-App Upda">Aplikasi Android mungkin gagal menerapkan pembaruan ketika patch keamanan kritis atau persyaratan versi minimum diperlukan. Untuk aplikasi yang didistribusikan melalui Google Play, pembaruan paksa dapat diimplementasikan menggunakan Google Play In-App Updates.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1851,7 +1889,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to WebViewClient URL Loading Handlers</h3>
-        <p class="item-description">This test checks for references to WebViewClient URL interception methods that override the default page navigation behavior in WebViews. The default and safest behavior on Android is to let the default web browser open </p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa referensi ke metode intersepsi URL WebViewClient yang menggantikan perilaku navigasi halaman default di WebViews. Perilaku default dan teraman di Android adalah membiarkan default web browser terbuka." data-en="This test checks for references to WebViewClient URL interception methods that override the default page navigation behavior in WebViews. The default and safest behavior on Android is to let the default web browser open">Tes ini memeriksa referensi ke metode intersepsi URL WebViewClient yang menggantikan perilaku navigasi halaman default di WebViews. Perilaku default dan teraman di Android adalah membiarkan default web browser terbuka.</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1871,7 +1909,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">SafeBrowsing Disabled</h3>
-        <p class="item-description">This test checks whether the SafeBrowsing API is explicitly disabled, either in the AndroidManifest.xml or in the WebView code. Since Android 8.1 (API level 27), WebViews include SafeBrowsing by default, which warns user</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah SafeBrowsing API secara eksplisit dinonaktifkan, baik di AndroidManifest.xml atau di dalam kode WebView. Sejak Android 8.1 (API level 27), WebView menyertakan SafeBrowsing secara default, yang memperingatkan pengguna" data-en="This test checks whether the SafeBrowsing API is explicitly disabled, either in the AndroidManifest.xml or in the WebView code. Since Android 8.1 (API level 27), WebViews include SafeBrowsing by default, which warns user">Tes ini memeriksa apakah SafeBrowsing API secara eksplisit dinonaktifkan, baik di AndroidManifest.xml atau di dalam kode WebView. Sejak Android 8.1 (API level 27), WebView menyertakan SafeBrowsing secara default, yang memperingatkan pengguna</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1891,7 +1929,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of WebViewClient URL Loading Handlers</h3>
-        <p class="item-description">This test dynamically analyzes the runtime behavior of WebViewClient URL interception methods to understand how the app handles URL loading in WebViews. By hooking relevant methods at runtime, you can observe:</p>
+        <p class="item-description i18n" data-id="Tes ini secara dinamis menganalisis perilaku runtime dari WebViewClient URL interception methods untuk memahami bagaimana aplikasi menangani pemuatan URL di WebViews. Dengan melakukan hook pada methods yang relevan saat runtime, Anda dapat mengamati:" data-en="This test dynamically analyzes the runtime behavior of WebViewClient URL interception methods to understand how the app handles URL loading in WebViews. By hooking relevant methods at runtime, you can observe:">Tes ini secara dinamis menganalisis perilaku runtime dari WebViewClient URL interception methods untuk memahami bagaimana aplikasi menangani pemuatan URL di WebViews. Dengan melakukan hook pada methods yang relevan saat runtime, Anda dapat mengamati:</p>
         <div class="item-badges">
           <span class="badge badge-l1">L1</span><span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -1915,7 +1953,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+        <p class="group-description i18n" data-id="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks." data-en="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Enhances app resilience against reverse engineering and client-side attacks.">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
 
       <div class="item-card" data-id="MASTG-TEST-0224" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="android">
         <div class="item-header">
@@ -1923,7 +1961,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Usage of Insecure APK Signature Version</h3>
-        <p class="item-description">Not using newer APK signing schemes means that the app lacks the enhanced security provided by more robust, updated mechanisms.</p>
+        <p class="item-description i18n" data-id="Tidak menggunakan skema penandatanganan APK yang lebih baru berarti aplikasi tersebut kekurangan keamanan yang ditingkatkan yang disediakan oleh mekanisme yang lebih kuat dan diperbarui." data-en="Not using newer APK signing schemes means that the app lacks the enhanced security provided by more robust, updated mechanisms.">Tidak menggunakan skema penandatanganan APK yang lebih baru berarti aplikasi tersebut kekurangan keamanan yang ditingkatkan yang disediakan oleh mekanisme yang lebih kuat dan diperbarui.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -1943,7 +1981,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Usage of Insecure APK Signature Key Size</h3>
-        <p class="item-description">For Android apps, the cryptographic strength of the APK signature is essential for maintaining the app's integrity and authenticity. Using a signature key with insufficient length, such as an RSA key shorter than 2048 bi</p>
+        <p class="item-description i18n" data-id="Untuk aplikasi Android, kekuatan kriptografi dari APK signature sangat penting untuk menjaga integritas dan keaslian aplikasi. Menggunakan signature key dengan panjang yang tidak mencukupi, seperti RSA key yang lebih pendek dari 2048 bits" data-en="For Android apps, the cryptographic strength of the APK signature is essential for maintaining the app's integrity and authenticity. Using a signature key with insufficient length, such as an RSA key shorter than 2048 bi">Untuk aplikasi Android, kekuatan kriptografi dari APK signature sangat penting untuk menjaga integritas dan keaslian aplikasi. Menggunakan signature key dengan panjang yang tidak mencukupi, seperti RSA key yang lebih pendek dari 2048 bits</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -1963,7 +2001,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Debuggable Flag Enabled in the AndroidManifest</h3>
-        <p class="item-description">This test case checks if the app has the debuggable flag (android:debuggable) set to true in the AndroidManifest.xml. When this flag is enabled, it allows the app to be debugged enabling attackers to inspect the app's in</p>
+        <p class="item-description i18n" data-id="Kasus uji ini memeriksa apakah aplikasi memiliki flag debuggable (android:debuggable) yang disetel ke true di AndroidManifest.xml. Ketika flag ini diaktifkan, hal ini memungkinkan aplikasi untuk di-debug sehingga penyerang dapat memeriksa aplikasi tersebut di dalam" data-en="This test case checks if the app has the debuggable flag (android:debuggable) set to true in the AndroidManifest.xml. When this flag is enabled, it allows the app to be debugged enabling attackers to inspect the app's in">Kasus uji ini memeriksa apakah aplikasi memiliki flag debuggable (android:debuggable) yang disetel ke true di AndroidManifest.xml. Ketika flag ini diaktifkan, hal ini memungkinkan aplikasi untuk di-debug sehingga penyerang dapat memeriksa aplikasi tersebut di dalam</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -1983,7 +2021,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Debugging Enabled for WebViews</h3>
-        <p class="item-description">The WebView.setWebContentsDebuggingEnabled(true) API enables debugging for all WebViews in the application. This feature can be useful during development, but introduces significant security risks if left enabled in prod</p>
+        <p class="item-description i18n" data-id="API WebView.setWebContentsDebuggingEnabled(true) mengaktifkan debugging untuk semua WebView dalam aplikasi. Fitur ini dapat berguna selama development, tetapi menimbulkan risiko keamanan yang signifikan jika dibiarkan aktif di prod." data-en="The WebView.setWebContentsDebuggingEnabled(true) API enables debugging for all WebViews in the application. This feature can be useful during development, but introduces significant security risks if left enabled in prod">API WebView.setWebContentsDebuggingEnabled(true) mengaktifkan debugging untuk semua WebView dalam aplikasi. Fitur ini dapat berguna selama development, tetapi menimbulkan risiko keamanan yang signifikan jika dibiarkan aktif di prod.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2003,7 +2041,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to APIs for Detecting Secure Screen Lock</h3>
-        <p class="item-description">This test verifies whether an app is running on a device with a passcode set. Android apps can determine whether a secure screen lock (such as PIN, or password) is enabled by using platform-provided APIs. Specifically, a</p>
+        <p class="item-description i18n" data-id="Pengujian ini memverifikasi apakah sebuah aplikasi berjalan pada perangkat yang memiliki passcode yang diatur. Aplikasi Android dapat menentukan apakah secure screen lock (seperti PIN, atau password) diaktifkan dengan menggunakan platform-provided APIs. Secara spesifik, sebuah" data-en="This test verifies whether an app is running on a device with a passcode set. Android apps can determine whether a secure screen lock (such as PIN, or password) is enabled by using platform-provided APIs. Specifically, a">Pengujian ini memverifikasi apakah sebuah aplikasi berjalan pada perangkat yang memiliki passcode yang diatur. Aplikasi Android dapat menentukan apakah secure screen lock (seperti PIN, atau password) diaktifkan dengan menggunakan platform-provided APIs. Secara spesifik, sebuah</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -2023,7 +2061,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Secure Screen Lock Detection APIs</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0247.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0247." data-en="This test is the dynamic counterpart to @MASTG-TEST-0247.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0247.</p>
         <div class="item-badges">
           <span class="badge badge-l2">L2</span>
           <span class="badge badge-android">android</span>
@@ -2043,7 +2081,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Logging of StrictMode Violations</h3>
-        <p class="item-description">This test checks whether an app enables StrictMode in production. While useful for developers to log policy violations such as disk I/O or network operations in production apps, leaving StrictMode enabled can expose sens</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah sebuah aplikasi mengaktifkan StrictMode di production. Meskipun berguna bagi developer untuk mencatat pelanggaran kebijakan seperti disk I/O atau operasi jaringan di aplikasi production, membiarkan StrictMode tetap aktif dapat mengekspos sens" data-en="This test checks whether an app enables StrictMode in production. While useful for developers to log policy violations such as disk I/O or network operations in production apps, leaving StrictMode enabled can expose sens">Tes ini memeriksa apakah sebuah aplikasi mengaktifkan StrictMode di production. Meskipun berguna bagi developer untuk mencatat pelanggaran kebijakan seperti disk I/O atau operasi jaringan di aplikasi production, membiarkan StrictMode tetap aktif dapat mengekspos sens</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2063,7 +2101,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of StrictMode APIs</h3>
-        <p class="item-description">This test checks whether the app uses StrictMode by dynamically analyzing the app's behavior and placing relevant hooks to detect the use of StrictMode APIs, such as StrictMode.setVmPolicy and StrictMode.VmPolicy.Builder</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menggunakan StrictMode dengan menganalisis perilaku aplikasi secara dinamis dan menempatkan hooks yang relevan untuk mendeteksi penggunaan API StrictMode, seperti StrictMode.setVmPolicy dan StrictMode.VmPolicy.Builder." data-en="This test checks whether the app uses StrictMode by dynamically analyzing the app's behavior and placing relevant hooks to detect the use of StrictMode APIs, such as StrictMode.setVmPolicy and StrictMode.VmPolicy.Builder">Tes ini memeriksa apakah aplikasi menggunakan StrictMode dengan menganalisis perilaku aplikasi secara dinamis dan menempatkan hooks yang relevan untuk mendeteksi penggunaan API StrictMode, seperti StrictMode.setVmPolicy dan StrictMode.VmPolicy.Builder.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2083,7 +2121,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to StrictMode APIs</h3>
-        <p class="item-description">This test checks whether the app uses StrictMode. While useful for developers to log policy violations such as disk I/O or network operations during development, it can expose sensitive implementation details in the logs</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menggunakan StrictMode. Meskipun berguna bagi pengembang untuk mencatat policy violations seperti disk I/O atau network operations selama development, hal ini dapat mengekspos sensitive implementation details di dalam logs." data-en="This test checks whether the app uses StrictMode. While useful for developers to log policy violations such as disk I/O or network operations during development, it can expose sensitive implementation details in the logs">Tes ini memeriksa apakah aplikasi menggunakan StrictMode. Meskipun berguna bagi pengembang untuk mencatat policy violations seperti disk I/O atau network operations selama development, hal ini dapat mengekspos sensitive implementation details di dalam logs.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2103,7 +2141,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Debugging Symbols in Native Binaries</h3>
-        <p class="item-description">This test checks whether the app includes debugging symbols in its native binaries. Debugging symbols can provide valuable information during reverse engineering and vulnerability analysis by exposing sensitive implement</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menyertakan debugging symbols dalam native binaries-nya. Debugging symbols dapat memberikan informasi berharga selama reverse engineering dan analisis kerentanan dengan mengekspos sensitive implement." data-en="This test checks whether the app includes debugging symbols in its native binaries. Debugging symbols can provide valuable information during reverse engineering and vulnerability analysis by exposing sensitive implement">Tes ini memeriksa apakah aplikasi menyertakan debugging symbols dalam native binaries-nya. Debugging symbols dapat memberikan informasi berharga selama reverse engineering dan analisis kerentanan dengan mengekspos sensitive implement.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2123,7 +2161,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Root Detection Mechanisms</h3>
-        <p class="item-description">This test checks whether the app implements root detection by statically analyzing the app binary for common root detection patterns. These may include checks for files and artifacts typically associated with rooted devi</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menerapkan root detection dengan menganalisis secara statis biner aplikasi untuk pola root detection yang umum. Pola-pola ini dapat mencakup pemeriksaan file dan artefak yang biasanya terkait dengan rooted devices." data-en="This test checks whether the app implements root detection by statically analyzing the app binary for common root detection patterns. These may include checks for files and artifacts typically associated with rooted devi">Tes ini memeriksa apakah aplikasi menerapkan root detection dengan menganalisis secara statis biner aplikasi untuk pola root detection yang umum. Pola-pola ini dapat mencakup pemeriksaan file dan artefak yang biasanya terkait dengan rooted devices.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2143,7 +2181,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Root Detection Techniques</h3>
-        <p class="item-description">This test verifies whether an app implements runtime root detection by attempting to hook into common root detection mechanisms. These may include checks for files and artifacts typically associated with rooted devices, </p>
+        <p class="item-description i18n" data-id="Pengujian ini memverifikasi apakah aplikasi mengimplementasikan runtime root detection dengan mencoba melakukan hook ke mekanisme root detection yang umum. Hal ini dapat mencakup pemeriksaan terhadap file dan artefak yang biasanya terkait dengan perangkat yang telah di-root." data-en="This test verifies whether an app implements runtime root detection by attempting to hook into common root detection mechanisms. These may include checks for files and artifacts typically associated with rooted devices,">Pengujian ini memverifikasi apakah aplikasi mengimplementasikan runtime root detection dengan mencoba melakukan hook ke mekanisme root detection yang umum. Hal ini dapat mencakup pemeriksaan terhadap file dan artefak yang biasanya terkait dengan perangkat yang telah di-root.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2163,7 +2201,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Storage Integrity Check APIs</h3>
-        <p class="item-description">Android apps can protect the integrity and authenticity of data they store on the device (e.g., in SharedPreferences, files, or databases) by computing an HMAC or a digital signature over the data and verifying it before</p>
+        <p class="item-description i18n" data-id="Aplikasi Android dapat melindungi integritas dan keaslian data yang disimpan di perangkat (misalnya, di SharedPreferences, file, atau database) dengan menghitung HMAC atau digital signature atas data tersebut dan memverifikasinya sebelum" data-en="Android apps can protect the integrity and authenticity of data they store on the device (e.g., in SharedPreferences, files, or databases) by computing an HMAC or a digital signature over the data and verifying it before">Aplikasi Android dapat melindungi integritas dan keaslian data yang disimpan di perangkat (misalnya, di SharedPreferences, file, atau database) dengan menghitung HMAC atau digital signature atas data tersebut dan memverifikasinya sebelum</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2183,7 +2221,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Hook Detection Techniques</h3>
-        <p class="item-description">This test verifies whether the app detects and responds to instrumentation and hooking attempts at runtime. For example, if the app does not terminate immediately when the following methods are called:</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi apakah aplikasi mendeteksi dan merespons upaya instrumentation dan hooking pada runtime. Sebagai contoh, jika aplikasi tidak segera berhenti ketika metode berikut dipanggil:" data-en="This test verifies whether the app detects and responds to instrumentation and hooking attempts at runtime. For example, if the app does not terminate immediately when the following methods are called:">Tes ini memverifikasi apakah aplikasi mendeteksi dan merespons upaya instrumentation dan hooking pada runtime. Sebagai contoh, jika aplikasi tidak segera berhenti ketika metode berikut dipanggil:</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2203,7 +2241,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Emulator Detection Techniques</h3>
-        <p class="item-description">This test verifies whether an app implements runtime emulator detection by attempting to hook into common emulator detection mechanisms. These may include checks for build properties and artifacts typically associated wi</p>
+        <p class="item-description i18n" data-id="Pengujian ini memverifikasi apakah sebuah aplikasi menerapkan deteksi emulator runtime dengan mencoba melakukan hook ke mekanisme deteksi emulator yang umum. Mekanisme tersebut dapat mencakup pemeriksaan terhadap build properties dan artifacts yang biasanya terkait dengan" data-en="This test verifies whether an app implements runtime emulator detection by attempting to hook into common emulator detection mechanisms. These may include checks for build properties and artifacts typically associated wi">Pengujian ini memverifikasi apakah sebuah aplikasi menerapkan deteksi emulator runtime dengan mencoba melakukan hook ke mekanisme deteksi emulator yang umum. Mekanisme tersebut dapat mencakup pemeriksaan terhadap build properties dan artifacts yang biasanya terkait dengan</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2223,7 +2261,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Debugging Detection APIs</h3>
-        <p class="item-description">Apps can implement debugging detection at the Java/Kotlin level using APIs such as Debug.isDebuggerConnected()), or at the native level using mechanisms such as ptrace calls, TracerPid checks in /proc/self/status, or inl</p>
+        <p class="item-description i18n" data-id="Aplikasi dapat mengimplementasikan deteksi debugging di level Java/Kotlin menggunakan API seperti Debug.isDebuggerConnected()), atau di level native menggunakan mekanisme seperti panggilan ptrace, pemeriksaan TracerPid di /proc/self/status, atau inl" data-en="Apps can implement debugging detection at the Java/Kotlin level using APIs such as Debug.isDebuggerConnected()), or at the native level using mechanisms such as ptrace calls, TracerPid checks in /proc/self/status, or inl">Aplikasi dapat mengimplementasikan deteksi debugging di level Java/Kotlin menggunakan API seperti Debug.isDebuggerConnected()), atau di level native menggunakan mekanisme seperti panggilan ptrace, pemeriksaan TracerPid di /proc/self/status, atau inl</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2243,7 +2281,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Debugging Detection APIs</h3>
-        <p class="item-description">Even if an app references debugging detection APIs, those checks may not execute in security-relevant code paths at runtime. For example, they may only run in debug build variants, fire only once at startup, or be dead c</p>
+        <p class="item-description i18n" data-id="Meskipun sebuah aplikasi mereferensikan API deteksi debugging, pemeriksaan tersebut mungkin tidak dijalankan pada jalur kode yang relevan dengan keamanan saat runtime. Sebagai contoh, pemeriksaan tersebut mungkin hanya berjalan pada varian build debug, hanya dipicu sekali saat startup, atau menjadi dead code." data-en="Even if an app references debugging detection APIs, those checks may not execute in security-relevant code paths at runtime. For example, they may only run in debug build variants, fire only once at startup, or be dead c">Meskipun sebuah aplikasi mereferensikan API deteksi debugging, pemeriksaan tersebut mungkin tidak dijalankan pada jalur kode yang relevan dengan keamanan saat runtime. Sebagai contoh, pemeriksaan tersebut mungkin hanya berjalan pada varian build debug, hanya dipicu sekali saat startup, atau menjadi dead code.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2263,7 +2301,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insufficient Obfuscation of Security-Relevant Java/Kotlin Code</h3>
-        <p class="item-description">If security-relevant Java or Kotlin code is not sufficiently obfuscated, decompilation of the app's DEX bytecode can expose business logic, device attestation and environment checks, integrity checks, and other implement</p>
+        <p class="item-description i18n" data-id="Jika kode Java atau Kotlin yang relevan dengan keamanan tidak diobfuskan dengan cukup, dekompilasi dari bytecode DEX aplikasi dapat mengekspos logika bisnis, device attestation dan environment checks, integrity checks, dan implement lainnya." data-en="If security-relevant Java or Kotlin code is not sufficiently obfuscated, decompilation of the app's DEX bytecode can expose business logic, device attestation and environment checks, integrity checks, and other implement">Jika kode Java atau Kotlin yang relevan dengan keamanan tidak diobfuskan dengan cukup, dekompilasi dari bytecode DEX aplikasi dapat mengekspos logika bisnis, device attestation dan environment checks, integrity checks, dan implement lainnya.</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2283,7 +2321,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insufficient Obfuscation of Security-Relevant Native Code</h3>
-        <p class="item-description">If native libraries that implement security-relevant logic are not obfuscated, reverse engineering of packaged native code can expose business logic, device attestation and environment checks, integrity checks, and other</p>
+        <p class="item-description i18n" data-id="Jika native libraries yang mengimplementasikan security-relevant logic tidak di-obfuscate, reverse engineering dari packaged native code dapat mengekspos business logic, device attestation dan environment checks, integrity checks, dan lainnya" data-en="If native libraries that implement security-relevant logic are not obfuscated, reverse engineering of packaged native code can expose business logic, device attestation and environment checks, integrity checks, and other">Jika native libraries yang mengimplementasikan security-relevant logic tidak di-obfuscate, reverse engineering dari packaged native code dapat mengekspos business logic, device attestation dan environment checks, integrity checks, dan lainnya</p>
         <div class="item-badges">
           <span class="badge badge-r">R</span>
           <span class="badge badge-android">android</span>
@@ -2305,7 +2343,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Kontrol privacy yang melengkapi assessment komprehensif seperti DPIA (GDPR). Mencakup data minimization, user identification prevention, transparency, dan user control over data.</p>
+        <p class="group-description i18n" data-id="Kontrol privacy yang melengkapi assessment komprehensif seperti DPIA (GDPR). Mencakup data minimization, user identification prevention, transparency, dan user control over data." data-en="Privacy controls that complement comprehensive assessments like DPIA (GDPR). Covers data minimization, user identification prevention, transparency, and user control over data.">Kontrol privacy yang melengkapi assessment komprehensif seperti DPIA (GDPR). Mencakup data minimization, user identification prevention, transparency, dan user control over data.</p>
 
       <div class="item-card" data-id="MASTG-TEST-0206" data-category="PRIVACY" data-profiles="P" data-status="current" data-platform="android">
         <div class="item-header">
@@ -2313,7 +2351,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Undeclared PII in Network Traffic Capture</h3>
-        <p class="item-description">Attackers may capture network traffic from Android devices using an intercepting proxy, such as @MASTG-TOOL-0079, @MASTG-TOOL-0077, or @MASTG-TOOL-0097, to analyze the data being transmitted by the app. This works even i</p>
+        <p class="item-description i18n" data-id="Penyerang dapat menangkap lalu lintas jaringan dari perangkat Android menggunakan intercepting proxy, seperti @MASTG-TOOL-0079, @MASTG-TOOL-0077, atau @MASTG-TOOL-0097, untuk menganalisis data yang dikirimkan oleh aplikasi. Ini berfungsi bahkan i" data-en="Attackers may capture network traffic from Android devices using an intercepting proxy, such as @MASTG-TOOL-0079, @MASTG-TOOL-0077, or @MASTG-TOOL-0097, to analyze the data being transmitted by the app. This works even i">Penyerang dapat menangkap lalu lintas jaringan dari perangkat Android menggunakan intercepting proxy, seperti @MASTG-TOOL-0079, @MASTG-TOOL-0077, atau @MASTG-TOOL-0097, untuk menganalisis data yang dikirimkan oleh aplikasi. Ini berfungsi bahkan i</p>
         <div class="item-badges">
           <span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -2333,7 +2371,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Dangerous App Permissions</h3>
-        <p class="item-description">In Android apps, permissions are acquired through different methods to access information and system functionalities, including the camera, location, or storage. The necessary permissions are specified in the AndroidMani</p>
+        <p class="item-description i18n" data-id="Di aplikasi Android, permissions diperoleh melalui berbagai metode untuk mengakses informasi dan fungsionalitas sistem, termasuk kamera, lokasi, atau penyimpanan. Permissions yang diperlukan ditentukan dalam AndroidManifest.xml." data-en="In Android apps, permissions are acquired through different methods to access information and system functionalities, including the camera, location, or storage. The necessary permissions are specified in the AndroidMani">Di aplikasi Android, permissions diperoleh melalui berbagai metode untuk mengakses informasi dan fungsionalitas sistem, termasuk kamera, lokasi, atau penyimpanan. Permissions yang diperlukan ditentukan dalam AndroidManifest.xml.</p>
         <div class="item-badges">
           <span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -2353,7 +2391,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">Permission Requests Not Minimized</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup permission requests yang tidak diminimalkan." data-en="This test is a placeholder and has not been created yet. It will cover permission requests not minimized.">Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup permission requests yang tidak diminimalkan.</p>
         <div class="item-badges">
           <span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -2373,7 +2411,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">Missing Permission Rationale</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup missing permission rationale." data-en="This test is a placeholder and has not been created yet. It will cover missing permission rationale.">Tes ini adalah placeholder dan belum dibuat. Tes ini akan mencakup missing permission rationale.</p>
         <div class="item-badges">
           <span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -2393,7 +2431,7 @@ body {
           <span class="badge badge-placeholder">placeholder</span>
         </div>
         <h3 class="item-title">Not Resetting Unused Permissions</h3>
-        <p class="item-description"></p>
+        <p class="item-description i18n" data-id="Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup tidak melakukan reset pada permissions yang tidak digunakan." data-en="This test is a placeholder and has not been created yet. It will cover not resetting unused permissions.">Tes ini adalah placeholder dan belum dibuat. Ini akan mencakup tidak melakukan reset pada permissions yang tidak digunakan.</p>
         <div class="item-badges">
           <span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -2413,7 +2451,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to SDK APIs Known to Handle Sensitive User Data</h3>
-        <p class="item-description">This test verifies whether an app uses SDK (third-party library) APIs known to handle sensitive user data (e.g., as defined in Google Play's Data safety section or the relevant privacy regulations).</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi apakah sebuah aplikasi menggunakan API SDK (pustaka pihak ketiga) yang diketahui menangani data sensitif pengguna (misalnya, seperti yang didefinisikan di bagian Data safety Google Play atau peraturan privasi yang relevan)." data-en="This test verifies whether an app uses SDK (third-party library) APIs known to handle sensitive user data (e.g., as defined in Google Play's Data safety section or the relevant privacy regulations).">Tes ini memverifikasi apakah sebuah aplikasi menggunakan API SDK (pustaka pihak ketiga) yang diketahui menangani data sensitif pengguna (misalnya, seperti yang didefinisikan di bagian Data safety Google Play atau peraturan privasi yang relevan).</p>
         <div class="item-badges">
           <span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -2433,7 +2471,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of SDK APIs Known to Handle Sensitive User Data</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0318.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0318." data-en="This test is the dynamic counterpart to @MASTG-TEST-0318.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0318.</p>
         <div class="item-badges">
           <span class="badge badge-p">P</span>
           <span class="badge badge-android">android</span>
@@ -2533,6 +2571,27 @@ filterBtns.forEach(b => b.addEventListener('click', () => {
       applyFilters();
     }));
     
+
+  // Language toggle
+  (function() {
+    const savedLang = localStorage.getItem('owasp-mas-lang') || 'id';
+    function setLang(lang) {
+      localStorage.setItem('owasp-mas-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.querySelectorAll('.i18n').forEach(el => {
+        const text = el.dataset[lang];
+        if (text) el.textContent = text;
+      });
+      document.documentElement.lang = lang === 'id' ? 'id' : 'en';
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+    setLang(savedLang);
+  })();
+
 </script>
 </body>
 </html>

@@ -101,13 +101,51 @@ body {
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 768px) { body { padding: 12px; } .page-header h1 { font-size: 1.5rem; } .item-card { padding: 0.75rem 1rem; } .prompt-box pre { font-size: 0.8rem; } }
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.3rem;
+    z-index: 200;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-btn.active, .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
+  /* Topic pages with light header need dark variant */
+  body.topic-page .lang-switcher .lang-btn {
+    border-color: var(--owasp-dark);
+    color: var(--owasp-dark);
+  }
+  body.topic-page .lang-switcher .lang-btn.active,
+  body.topic-page .lang-switcher .lang-btn:hover {
+    background: var(--owasp-accent);
+    border-color: var(--owasp-accent);
+    color: #fff;
+  }
 </style>
 </head>
-<body>
+<body class="topic-page">
   <header class="page-header">
     <h1>OWASP MASTG Tests — iOS</h1>
     <p class="subtitle">iOS · 102 tests · All profiles · Generated 2026-07-08 03:41 UTC</p>
   </header>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="id" aria-label="Bahasa Indonesia">ID</button>
+    <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+  </div>
   <main class="container">
     <div class="filter-bar">
       <input type="text" class="search-input" placeholder="Search by ID, title, or keyword...">
@@ -131,7 +169,7 @@ body {
         <span class="group-toggle">▼</span>
       </button>
       <div class="group-content collapsed">
-        <p class="group-description">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
+        <p class="group-description i18n" data-id="Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll." data-en="Ensures sensitive data stored locally is properly protected, whether in internal or public storage. Covers prevention of accidental data leakage via backups, logs, keyboard cache, etc.">Memastikan data sensitif yang disimpan lokal terlindungi dengan benar, baik di storage internal maupun publik. Mencakup pencegahan kebocoran data tidak sengaja via backups, logs, keyboard cache, dll.</p>
 
       
       <div class="item-card" data-id="MASTG-TEST-0215" data-category="STORAGE" data-profiles="L1 L2 P" data-status="current" data-platform="ios">
@@ -139,8 +177,8 @@ body {
           <span class="item-id">MASTG-TEST-0215</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Sensitive\ Data\ Not\ Marked\ For\ Backup\ Exclusion</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Sensitive Data Not Marked For Backup Exclusion</h3>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi apakah aplikasi Anda menggunakan API `isExcludedFromBackup` untuk menginstruksikan sistem agar mengecualikan file sensitif dari backup. API ini [tidak menjamin pengecualian yang sebenarnya](https://developer.apple.com/documentation/foundation/optimizing_your_app_s_data_for_icloud_backup/#3928527). Acco" data-en="This test verifies whether your app uses the `isExcludedFromBackup` API to instruct the system to exclude sensitive files from backups. This API [does not guarantee the actual exclusion](https://developer.apple.com/documentation/foundation/optimizing_your_app_s_data_for_icloud_backup/#3928527). Acco">Tes ini memverifikasi apakah aplikasi Anda menggunakan API `isExcludedFromBackup` untuk menginstruksikan sistem agar mengecualikan file sensitif dari backup. API ini [tidak menjamin pengecualian yang sebenarnya](https://developer.apple.com/documentation/foundation/optimizing_your_app_s_data_for_icloud_backup/#3928527). Acco</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -158,8 +196,8 @@ body {
           <span class="item-id">MASTG-TEST-0296</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Sensitive\ Data\ Exposure\ in\ Logs</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Sensitive Data Exposure in Logs</h3>
+        <p class="item-description i18n" data-id="Tes ini adalah dynamic counterpart dari @MASTG-TEST-0297." data-en="This test is the dynamic counterpart to @MASTG-TEST-0297.">Tes ini adalah dynamic counterpart dari @MASTG-TEST-0297.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -177,8 +215,8 @@ body {
           <span class="item-id">MASTG-TEST-0297</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Sensitive\ Data\ Exposure\ Through\ Logging\ APIs</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Sensitive Data Exposure Through Logging APIs</h3>
+        <p class="item-description i18n" data-id="Pada platform iOS, logging APIs seperti `NSLog`, `NSAssert`, `NSCAssert`, `print`, dan `printf` secara tidak sengaja dapat menyebabkan kebocoran informasi sensitif. Pesan log dicatat di console, dan Anda dapat mengaksesnya dengan menggunakan @MASTG-TECH-0060. Meskipun aplikasi lain di perangkat tidak dapat membaca th" data-en="On the iOS platform, logging APIs like `NSLog`, `NSAssert`, `NSCAssert`, `print`, and `printf` can inadvertently lead to the leakage of sensitive information. Log messages are recorded in the console, and you can access them by using @MASTG-TECH-0060. Although other apps on the device cannot read th">Pada platform iOS, logging APIs seperti `NSLog`, `NSAssert`, `NSCAssert`, `print`, dan `printf` secara tidak sengaja dapat menyebabkan kebocoran informasi sensitif. Pesan log dicatat di console, dan Anda dapat mengaksesnya dengan menggunakan @MASTG-TECH-0060. Meskipun aplikasi lain di perangkat tidak dapat membaca th</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -196,8 +234,8 @@ body {
           <span class="item-id">MASTG-TEST-0298</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Runtime\ Monitoring\ of\ Files\ Eligible\ for\ Backup</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Runtime Monitoring of Files Eligible for Backup</h3>
+        <p class="item-description i18n" data-id="Pengujian ini mencatat setiap penggunaan API file system, seperti `open`, `fopen`, `NSFileManager`, atau `FileHandle` yang membuat atau menulis file ke data container aplikasi di `/var/mobile/Containers/Data/Application/$APP_ID` untuk mengidentifikasi file mana yang memenuhi syarat untuk backup." data-en="This test logs every file system API use, such as `open`, `fopen`, `NSFileManager`, or `FileHandle` that creates or writes files to the app's data container at `/var/mobile/Containers/Data/Application/$APP_ID` to identify which files are eligible for backup.">Pengujian ini mencatat setiap penggunaan API file system, seperti `open`, `fopen`, `NSFileManager`, atau `FileHandle` yang membuat atau menulis file ke data container aplikasi di `/var/mobile/Containers/Data/Application/$APP_ID` untuk mengidentifikasi file mana yang memenuhi syarat untuk backup.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span> <span class="badge badge-P">P</span>
           <span class="badge badge-ios">ios</span>
@@ -215,8 +253,8 @@ body {
           <span class="item-id">MASTG-TEST-0299</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Data\ Protection\ Classes\ for\ Files\ in\ Private\ Storage</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Data Protection Classes for Files in Private Storage</h3>
+        <p class="item-description i18n" data-id="Pengujian ini mengambil data protection classes dari file yang dibuat atau dimodifikasi di local storage app selama penggunaan app yang khas. Tujuannya adalah untuk memastikan bahwa file yang berisi sensitive data diberikan data protection classes yang sesuai untuk melindunginya saat device terkunci." data-en="This test retrieves the data protection classes of files created or modified in the app's local storage during typical app usage. The goal is to ensure that files containing sensitive data are assigned appropriate data protection classes to safeguard them when the device is locked.">Pengujian ini mengambil data protection classes dari file yang dibuat atau dimodifikasi di local storage app selama penggunaan app yang khas. Tujuannya adalah untuk memastikan bahwa file yang berisi sensitive data diberikan data protection classes yang sesuai untuk melindunginya saat device terkunci.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span>
           <span class="badge badge-ios">ios</span>
@@ -234,8 +272,8 @@ body {
           <span class="item-id">MASTG-TEST-0300</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ APIs\ for\ Storing\ Unencrypted\ Data\ in\ Private\ Storage</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to APIs for Storing Unencrypted Data in Private Storage</h3>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menulis data sensitif yang tidak terenkripsi ke penyimpanan pribadi. Fokusnya pada:" data-en="This test checks whether the app writes unencrypted sensitive data to private storage. It focuses on:">Tes ini memeriksa apakah aplikasi menulis data sensitif yang tidak terenkripsi ke penyimpanan pribadi. Fokusnya pada:</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -253,8 +291,8 @@ body {
           <span class="item-id">MASTG-TEST-0301</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Runtime\ Use\ of\ APIs\ for\ Storing\ Unencrypted\ Data\ in\ Private\ Storage</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Runtime Use of APIs for Storing Unencrypted Data in Private Storage</h3>
+        <p class="item-description i18n" data-id="Tes ini merupakan padanan dinamis dari @MASTG-TEST-0300 dan dirancang untuk digunakan bersama dengan @MASTG-TEST-0302." data-en="This test is the dynamic counterpart to @MASTG-TEST-0300 and is designed to be used together with @MASTG-TEST-0302.">Tes ini merupakan padanan dinamis dari @MASTG-TEST-0300 dan dirancang untuk digunakan bersama dengan @MASTG-TEST-0302.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -272,8 +310,8 @@ body {
           <span class="item-id">MASTG-TEST-0302</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Sensitive\ Data\ Unencrypted\ in\ Private\ Storage\ Files</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Sensitive Data Unencrypted in Private Storage Files</h3>
+        <p class="item-description i18n" data-id="Tes ini dirancang untuk melengkapi @MASTG-TEST-0301. Alih-alih memonitor API selama eksekusi, tes ini melakukan analisis diferensial terhadap penyimpanan privat aplikasi dengan membandingkan snapshot yang diambil sebelum dan setelah menjalankan aplikasi. Tes ini juga mendaftar item Keychain yang dibuat atau dimodifikasi selama sesi." data-en="This test is designed to complement @MASTG-TEST-0301. Instead of monitoring APIs during execution, it performs a differential analysis of the app's private storage by comparing snapshots taken before and after exercising the app. It also enumerates Keychain items created or modified during the sessi">Tes ini dirancang untuk melengkapi @MASTG-TEST-0301. Alih-alih memonitor API selama eksekusi, tes ini melakukan analisis diferensial terhadap penyimpanan privat aplikasi dengan membandingkan snapshot yang diambil sebelum dan setelah menjalankan aplikasi. Tes ini juga mendaftar item Keychain yang dibuat atau dimodifikasi selama sesi.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -291,8 +329,8 @@ body {
           <span class="item-id">MASTG-TEST-0303</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ APIs\ for\ Storing\ Unencrypted\ Data\ in\ Shared\ Storage</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to APIs for Storing Unencrypted Data in Shared Storage</h3>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menyimpan data sensitif tanpa enkripsi di lokasi sandbox iOS yang mungkin dapat diakses pengguna saat file sharing diaktifkan." data-en="This test checks whether the app stores sensitive data without encryption in iOS sandbox locations that may become user accessible when file sharing is enabled.">Tes ini memeriksa apakah aplikasi menyimpan data sensitif tanpa enkripsi di lokasi sandbox iOS yang mungkin dapat diakses pengguna saat file sharing diaktifkan.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -310,8 +348,8 @@ body {
           <span class="item-id">MASTG-TEST-0313</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ APIs\ for\ Preventing\ Keyboard\ Caching\ of\ Text\ Fields</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to APIs for Preventing Keyboard Caching of Text Fields</h3>
+        <p class="item-description i18n" data-id="Pengujian ini memverifikasi apakah aplikasi target mencegah informasi sensitif yang dimasukkan ke dalam kolom teks agar tidak di-cache oleh keyboard sistem. Pada iOS, keyboard dapat menyarankan teks yang sebelumnya dimasukkan saat mengetik di aplikasi mana pun di perangkat." data-en="This test verifies whether the target app prevents sensitive information entered into text fields from being cached by the system keyboard. On iOS, the keyboard may suggest previously entered text when typing in any app on the device.">Pengujian ini memverifikasi apakah aplikasi target mencegah informasi sensitif yang dimasukkan ke dalam kolom teks agar tidak di-cache oleh keyboard sistem. Pada iOS, keyboard dapat menyarankan teks yang sebelumnya dimasukkan saat mengetik di aplikasi mana pun di perangkat.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -329,8 +367,8 @@ body {
           <span class="item-id">MASTG-TEST-0314</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Runtime\ Monitoring\ of\ Text\ Fields\ Eligible\ for\ Keyboard\ Caching</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Runtime Monitoring of Text Fields Eligible for Keyboard Caching</h3>
+        <p class="item-description i18n" data-id="Tes ini melengkapi @MASTG-TEST-0313. Tes ini memonitor input teks dalam aplikasi saat runtime, misalnya [`UITextField`](https://developer.apple.com/documentation/uikit/uitextfield), [`UITextView`](https://developer.apple.com/documentation/uikit/uitextview) atau [`UISearchBar`](https://developer.apple.com/d" data-en="This test complements @MASTG-TEST-0313. It monitors text inputs in the app at runtime, for example [`UITextField`](https://developer.apple.com/documentation/uikit/uitextfield), [`UITextView`](https://developer.apple.com/documentation/uikit/uitextview) or [`UISearchBar`](https://developer.apple.com/d">Tes ini melengkapi @MASTG-TEST-0313. Tes ini memonitor input teks dalam aplikasi saat runtime, misalnya [`UITextField`](https://developer.apple.com/documentation/uikit/uitextfield), [`UITextView`](https://developer.apple.com/documentation/uikit/uitextview) atau [`UISearchBar`](https://developer.apple.com/d</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -348,8 +386,8 @@ body {
           <span class="item-id">MASTG-TEST-0388</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ Sensitive\ Data\ Stored\ Unprotected\ in\ Shared\ App\ Group\ Containers</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to Sensitive Data Stored Unprotected in Shared App Group Containers</h3>
+        <p class="item-description i18n" data-id="Aplikasi iOS dan [ekstensi aplikasi](https://developer.apple.com/app-extensions/) dapat berbagi data melalui kontainer [App Group](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_application-groups) (lihat @MASTG-KNOW-0082). Setiap anggota App Group memiliki akses yang sama." data-en="An iOS app and its [app extensions](https://developer.apple.com/app-extensions/) can share data through an [App Group](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_application-groups) container (see @MASTG-KNOW-0082). Every member of the App Group has equ">Aplikasi iOS dan [ekstensi aplikasi](https://developer.apple.com/app-extensions/) dapat berbagi data melalui kontainer [App Group](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_application-groups) (lihat @MASTG-KNOW-0082). Setiap anggota App Group memiliki akses yang sama.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -362,13 +400,25 @@ body {
           </div>
         </div>
       </div>
+      </div>
+    </section>
+
+    <section class="group" data-category="CRYPTO">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-CRYPTO</span>
+        <span class="group-meta">8 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description i18n" data-id="Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle." data-en="Ensures the app uses cryptography according to industry best practices. Covers selection of strong algorithms, correct configuration, and key lifecycle management.">Memastikan app menggunakan cryptography sesuai best practices industri. Mencakup pemilihan algoritma yang kuat, konfigurasi yang benar, dan manajemen key lifecycle.</p>
+
       <div class="item-card" data-id="MASTG-TEST-0209" data-category="CRYPTO" data-profiles="L1 L2" data-status="current" data-platform="ios">
         <div class="item-header">
           <span class="item-id">MASTG-TEST-0209</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Insufficient\ Key\ Sizes</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Insufficient Key Sizes</h3>
+        <p class="item-description i18n" data-id="Dalam test case ini, kita akan mencari penggunaan ukuran kunci yang tidak memadai di aplikasi iOS. Untuk melakukannya, kita perlu fokus pada API dari framework dan library kriptografi yang tersedia di iOS serta metode yang digunakan untuk menghasilkan cryptographic keys." data-en="In this test case, we will look for the use insufficient key sizes in iOS apps. To do this, we need to focus on APIs from cryptographic frameworks and libraries that are available in iOS and the methods that are used to generate cryptographic keys.">Dalam test case ini, kita akan mencari penggunaan ukuran kunci yang tidak memadai di aplikasi iOS. Untuk melakukannya, kita perlu fokus pada API dari framework dan library kriptografi yang tersedia di iOS serta metode yang digunakan untuk menghasilkan cryptographic keys.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -386,8 +436,8 @@ body {
           <span class="item-id">MASTG-TEST-0210</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Broken\ Symmetric\ Encryption\ Algorithms</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Broken Symmetric Encryption Algorithms</h3>
+        <p class="item-description i18n" data-id="Untuk menguji penggunaan algoritma enkripsi yang rusak di aplikasi iOS, kita perlu fokus pada API dari framework dan library kriptografi yang digunakan untuk melakukan operasi enkripsi dan dekripsi." data-en="To test for the use of broken encryption algorithms in iOS apps, we need to focus on APIs from cryptographic frameworks and libraries that are used to perform encryption and decryption operations.">Untuk menguji penggunaan algoritma enkripsi yang rusak di aplikasi iOS, kita perlu fokus pada API dari framework dan library kriptografi yang digunakan untuk melakukan operasi enkripsi dan dekripsi.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -405,8 +455,8 @@ body {
           <span class="item-id">MASTG-TEST-0211</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Broken\ Hashing\ Algorithms</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Broken Hashing Algorithms</h3>
+        <p class="item-description i18n" data-id="Untuk menguji penggunaan broken hashing algorithms di iOS apps, kita perlu fokus pada APIs dari cryptographic frameworks dan libraries yang digunakan untuk melakukan hashing operations." data-en="To test for the use of broken hashing algorithms in iOS apps, we need to focus on APIs from cryptographic frameworks and libraries that are used to perform hashing operations.">Untuk menguji penggunaan broken hashing algorithms di iOS apps, kita perlu fokus pada APIs dari cryptographic frameworks dan libraries yang digunakan untuk melakukan hashing operations.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -424,8 +474,8 @@ body {
           <span class="item-id">MASTG-TEST-0213</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Use\ of\ Hardcoded\ Cryptographic\ Keys\ in\ Code</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Use of Hardcoded Cryptographic Keys in Code</h3>
+        <p class="item-description i18n" data-id="Dalam test case ini, kita akan memeriksa iOS applications untuk keberadaan hardcoded cryptographic keys. Hardcoded keys biasanya dapat ditemukan dalam calls ke cryptographic functions atau disimpan sebagai constants atau variables di dalam code. Di iOS, cryptographic keys sering digunakan dalam frameworks berikut:" data-en="In this test case, we will examine iOS applications for the presence of hardcoded cryptographic keys. Hardcoded keys can be typically found in calls to cryptographic functions or stored as constants or variables within the code. In iOS, cryptographic keys are often used in the following frameworks:">Dalam test case ini, kita akan memeriksa iOS applications untuk keberadaan hardcoded cryptographic keys. Hardcoded keys biasanya dapat ditemukan dalam calls ke cryptographic functions atau disimpan sebagai constants atau variables di dalam code. Di iOS, cryptographic keys sering digunakan dalam frameworks berikut:</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -443,8 +493,8 @@ body {
           <span class="item-id">MASTG-TEST-0214</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Hardcoded\ Cryptographic\ Keys\ in\ Files</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Hardcoded Cryptographic Keys in Files</h3>
+        <p class="item-description i18n" data-id="Kunci kriptografi dapat berupa file yang disematkan seperti file konfigurasi atau file kunci, file sertifikat, atau file sumber daya lain yang dibundel dengan aplikasi, sehingga dapat diakses oleh siapa pun yang dapat mengekstrak sumber daya aplikasi. Kasus di dunia nyata meliputi penyimpanan API keys, SSL/TLS private keys, atau encryption key." data-en="Cryptographic keys may be embedded files such as configuration files or key files, certificate files, or other resource files bundled with the app, making them accessible to anyone who can extract the app's resources. Real-world cases include storing API keys, SSL/TLS private keys, or encryption key">Kunci kriptografi dapat berupa file yang disematkan seperti file konfigurasi atau file kunci, file sertifikat, atau file sumber daya lain yang dibundel dengan aplikasi, sehingga dapat diakses oleh siapa pun yang dapat mengekstrak sumber daya aplikasi. Kasus di dunia nyata meliputi penyimpanan API keys, SSL/TLS private keys, atau encryption key.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -463,7 +513,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insecure Random API Usage</h3>
-        <p class="item-description">The output should contain a list of locations where insecure random APIs are used, including the function names and code locations where they are called.</p>
+        <p class="item-description i18n" data-id="Output harus berisi daftar lokasi di mana insecure random APIs digunakan, termasuk nama fungsi dan lokasi kode di mana API tersebut dipanggil." data-en="The output should contain a list of locations where insecure random APIs are used, including the function names and code locations where they are called.">Output harus berisi daftar lokasi di mana insecure random APIs digunakan, termasuk nama fungsi dan lokasi kode di mana API tersebut dipanggil.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -482,7 +532,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Broken Symmetric Encryption Modes</h3>
-        <p class="item-description">This test focuses on broken symmetric encryption modes such as [ECB (Electronic Codebook)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB)).</p>
+        <p class="item-description i18n" data-id="Tes ini berfokus pada broken symmetric encryption modes seperti [ECB (Electronic Codebook)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB))." data-en="This test focuses on broken symmetric encryption modes such as [ECB (Electronic Codebook)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB)).">Tes ini berfokus pada broken symmetric encryption modes seperti [ECB (Electronic Codebook)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB)).</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -501,7 +551,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Insecure Random APIs</h3>
-        <p class="item-description">The output should contain runtime calls to insecure random APIs, including function names and backtraces.</p>
+        <p class="item-description i18n" data-id="Output harus berisi runtime calls ke insecure random APIs, termasuk function names dan backtraces." data-en="The output should contain runtime calls to insecure random APIs, including function names and backtraces.">Output harus berisi runtime calls ke insecure random APIs, termasuk function names dan backtraces.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -514,13 +564,25 @@ body {
           </div>
         </div>
       </div>
+      </div>
+    </section>
+
+    <section class="group" data-category="AUTH">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-AUTH</span>
+        <span class="group-meta">6 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description i18n" data-id="Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations." data-en="Ensures the app implements authentication and authorization securely. Covers remote auth protocols, local authentication (biometrics, PIN), and additional authentication for sensitive operations.">Memastikan app mengimplementasikan authentication dan authorization secara aman. Mencakup protokol remote auth, local authentication (biometrics, PIN), dan additional authentication untuk sensitive operations.</p>
+
       <div class="item-card" data-id="MASTG-TEST-0266" data-category="AUTH" data-profiles="L2" data-status="current" data-platform="ios">
         <div class="item-header">
           <span class="item-id">MASTG-TEST-0266</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ APIs\ for\ Event\-Bound\ Biometric\ Authentication</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to APIs for Event-Bound Biometric Authentication</h3>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi mengakses sumber daya sensitif (mis., tokens, keys) yang seharusnya dilindungi oleh otentikasi pengguna dengan **hanya** mengandalkan LocalAuthentication API untuk kontrol akses, alih-alih menggunakan Keychain API dan memerlukan user presence." data-en="This test checks if the app insecurely accesses sensitive resources (e.g., tokens, keys) that should be protected by user authentication relying **solely** on the LocalAuthentication API for access control instead of using the Keychain API and requiring user presence.">Tes ini memeriksa apakah aplikasi mengakses sumber daya sensitif (mis., tokens, keys) yang seharusnya dilindungi oleh otentikasi pengguna dengan **hanya** mengandalkan LocalAuthentication API untuk kontrol akses, alih-alih menggunakan Keychain API dan memerlukan user presence.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -539,7 +601,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use Of Event-Bound Biometric Authentication</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0266.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah dynamic counterpart dari @MASTG-TEST-0266." data-en="This test is the dynamic counterpart to @MASTG-TEST-0266.">Tes ini adalah dynamic counterpart dari @MASTG-TEST-0266.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -557,8 +619,8 @@ body {
           <span class="item-id">MASTG-TEST-0268</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ APIs\ Allowing\ Fallback\ to\ Non\-Biometric\ Authentication</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to APIs Allowing Fallback to Non-Biometric Authentication</h3>
+        <p class="item-description i18n" data-id="Tes ini adalah dynamic counterpart dari @MASTG-TEST-0266." data-en="This test is the dynamic counterpart to @MASTG-TEST-0266.">Tes ini adalah dynamic counterpart dari @MASTG-TEST-0266.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -577,7 +639,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use Of APIs Allowing Fallback to Non-Biometric Authentication</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0268.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0268." data-en="This test is the dynamic counterpart to @MASTG-TEST-0268.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0268.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -596,7 +658,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to APIs Detecting Biometric Enrollment Changes</h3>
-        <p class="item-description">This test checks whether the app fails to protect sensitive operations against unauthorized access following biometric enrollment changes. An attacker who obtains the device passcode could add a new fingerprint or facial representation via system settings and use it to authenticate in the app.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi gagal melindungi sensitive operations terhadap unauthorized access setelah biometric enrollment changes. Seorang attacker yang mendapatkan device passcode dapat menambahkan fingerprint atau facial representation baru melalui system settings dan menggunakannya untuk authenticate di aplikasi." data-en="This test checks whether the app fails to protect sensitive operations against unauthorized access following biometric enrollment changes. An attacker who obtains the device passcode could add a new fingerprint or facial representation via system settings and use it to authenticate in the app.">Tes ini memeriksa apakah aplikasi gagal melindungi sensitive operations terhadap unauthorized access setelah biometric enrollment changes. Seorang attacker yang mendapatkan device passcode dapat menambahkan fingerprint atau facial representation baru melalui system settings dan menggunakannya untuk authenticate di aplikasi.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -615,7 +677,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use Of APIs Detecting Biometric Enrollment Changes</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0270.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0270." data-en="This test is the dynamic counterpart to @MASTG-TEST-0270.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0270.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -628,13 +690,25 @@ body {
           </div>
         </div>
       </div>
+      </div>
+    </section>
+
+    <section class="group" data-category="NETWORK">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-NETWORK</span>
+        <span class="group-meta">11 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description i18n" data-id="Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning." data-en="Ensures the app establishes secure and encrypted connections for all network communication. Covers TLS configuration and certificate/public key pinning.">Memastikan app membuat koneksi yang aman dan terenkripsi untuk semua network communication. Mencakup TLS configuration dan certificate/public key pinning.</p>
+
       <div class="item-card" data-id="MASTG-TEST-0321" data-category="NETWORK" data-profiles="L1 L2" data-status="current" data-platform="ios">
         <div class="item-header">
           <span class="item-id">MASTG-TEST-0321</span>
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Hardcoded HTTP URLs</h3>
-        <p class="item-description">An iOS app may have hardcoded HTTP URLs embedded in the app binary, library binaries, or other resources within the IPA. These URLs may indicate potential locations where the app communicates with servers over an unencrypted connection.</p>
+        <p class="item-description i18n" data-id="Aplikasi iOS mungkin memiliki URL HTTP yang di-hardcode dalam biner aplikasi, biner library, atau sumber daya lain di dalam IPA. URL tersebut dapat menunjukkan lokasi potensial di mana aplikasi berkomunikasi dengan server melalui koneksi yang tidak terenkripsi." data-en="An iOS app may have hardcoded HTTP URLs embedded in the app binary, library binaries, or other resources within the IPA. These URLs may indicate potential locations where the app communicates with servers over an unencrypted connection.">Aplikasi iOS mungkin memiliki URL HTTP yang di-hardcode dalam biner aplikasi, biner library, atau sumber daya lain di dalam IPA. URL tersebut dapat menunjukkan lokasi potensial di mana aplikasi berkomunikasi dengan server melalui koneksi yang tidak terenkripsi.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -653,7 +727,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">App Transport Security Configurations Allowing Cleartext Traffic</h3>
-        <p class="item-description">The following configurations allow cleartext traffic:</p>
+        <p class="item-description i18n" data-id="Konfigurasi berikut mengizinkan cleartext traffic:" data-en="The following configurations allow cleartext traffic:">Konfigurasi berikut mengizinkan cleartext traffic:</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -671,8 +745,8 @@ body {
           <span class="item-id">MASTG-TEST-0323</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Uses\ of\ Low\-Level\ Networking\ APIs\ for\ Cleartext\ Traffic</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Uses of Low-Level Networking APIs for Cleartext Traffic</h3>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menggunakan mekanisme autentikasi yang bergantung pada passcode pengguna alih-alih biometrics atau memungkinkan fallback ke passcode perangkat ketika biometric authentication gagal. Secara spesifik, tes ini memeriksa penggunaan [`SecAccessControlCreateWithFlags`](https://developer.apple.com/documentation" data-en="This test checks if the app uses authentication mechanisms that rely on the user's passcode instead of biometrics or allow fallback to device passcode when biometric authentication fails. Specifically, it checks for use of [`SecAccessControlCreateWithFlags`](https://developer.apple.com/documentation">Tes ini memeriksa apakah aplikasi menggunakan mekanisme autentikasi yang bergantung pada passcode pengguna alih-alih biometrics atau memungkinkan fallback ke passcode perangkat ketika biometric authentication gagal. Secara spesifik, tes ini memeriksa penggunaan [`SecAccessControlCreateWithFlags`](https://developer.apple.com/documentation</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -691,7 +765,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Weak ATS TLS Policy Exceptions in Info.plist</h3>
-        <p class="item-description">Apps can weaken ATS TLS enforcement through `NSAppTransportSecurity` exceptions in `Info.plist`. In particular:</p>
+        <p class="item-description i18n" data-id="Aplikasi dapat melemahkan penegakan ATS TLS melalui pengecualian `NSAppTransportSecurity` di `Info.plist`. Secara khusus:" data-en="Apps can weaken ATS TLS enforcement through `NSAppTransportSecurity` exceptions in `Info.plist`. In particular:">Aplikasi dapat melemahkan penegakan ATS TLS melalui pengecualian `NSAppTransportSecurity` di `Info.plist`. Secara khusus:</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -709,8 +783,8 @@ body {
           <span class="item-id">MASTG-TEST-0343</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">URLSession\ TLS\ Protocol\ Configuration</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">URLSession TLS Protocol Configuration</h3>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0268." data-en="This test is the dynamic counterpart to @MASTG-TEST-0268.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0268.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -729,7 +803,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Network.framework TLS Protocol Configuration</h3>
-        <p class="item-description">For more information on iOS network APIs and when ATS applies, see @MASTG-KNOW-0071 and @MASTG-KNOW-0073.</p>
+        <p class="item-description i18n" data-id="Untuk informasi lebih lanjut tentang iOS network APIs dan kapan ATS berlaku, lihat @MASTG-KNOW-0071 dan @MASTG-KNOW-0073." data-en="For more information on iOS network APIs and when ATS applies, see @MASTG-KNOW-0071 and @MASTG-KNOW-0073.">Untuk informasi lebih lanjut tentang iOS network APIs dan kapan ATS berlaku, lihat @MASTG-KNOW-0071 dan @MASTG-KNOW-0073.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -747,8 +821,8 @@ body {
           <span class="item-id">MASTG-TEST-0345</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Embedded\ or\ Third\-party\ TLS\ Stack\ Configuration</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Embedded or Third-party TLS Stack Configuration</h3>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi gagal melindungi sensitive operations terhadap unauthorized access setelah biometric enrollment changes. Seorang attacker yang mendapatkan device passcode dapat menambahkan fingerprint atau facial representation baru melalui system settings dan menggunakannya untuk authenticate di aplikasi." data-en="This test checks whether the app fails to protect sensitive operations against unauthorized access following biometric enrollment changes. An attacker who obtains the device passcode could add a new fingerprint or facial representation via system settings and use it to authenticate in the app.">Tes ini memeriksa apakah aplikasi gagal melindungi sensitive operations terhadap unauthorized access setelah biometric enrollment changes. Seorang attacker yang mendapatkan device passcode dapat menambahkan fingerprint atau facial representation baru melalui system settings dan menggunakannya untuk authenticate di aplikasi.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -767,7 +841,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insecure TLS Protocols in Network Traffic</h3>
-        <p class="item-description">By capturing and analyzing real network traffic, you can observe the TLS version actually negotiated and in use. This approach provides an accurate view of the protocol's security, accounting for the server's configuration, which may enforce or limit specific TLS versions.</p>
+        <p class="item-description i18n" data-id="Dengan menangkap dan menganalisis lalu lintas jaringan nyata, Anda dapat mengamati versi TLS yang benar-benar dinegosiasikan dan digunakan. Pendekatan ini memberikan gambaran yang akurat tentang keamanan protokol, dengan mempertimbangkan konfigurasi server, yang mungkin memberlakukan atau membatasi versi TLS tertentu." data-en="By capturing and analyzing real network traffic, you can observe the TLS version actually negotiated and in use. This approach provides an accurate view of the protocol's security, accounting for the server's configuration, which may enforce or limit specific TLS versions.">Dengan menangkap dan menganalisis lalu lintas jaringan nyata, Anda dapat mengamati versi TLS yang benar-benar dinegosiasikan dan digunakan. Pendekatan ini memberikan gambaran yang akurat tentang keamanan protokol, dengan mempertimbangkan konfigurasi server, yang mungkin memberlakukan atau membatasi versi TLS tertentu.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -786,7 +860,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Missing Certificate Pinning in ATS</h3>
-        <p class="item-description">The test case fails if the app uses URL Loading System connections to relevant first-party domains, but the app's `Info.plist` does not contain an `NSAppTransportSecurity` dictionary with a `NSPinnedDomains` key, or if `NSPinnedDomains` is defined but does not include entries for those domains.</p>
+        <p class="item-description i18n" data-id="Test case gagal jika aplikasi menggunakan koneksi URL Loading System ke domain first-party yang relevan, tetapi `Info.plist` aplikasi tidak mengandung dictionary `NSAppTransportSecurity` dengan key `NSPinnedDomains`, atau jika `NSPinnedDomains` didefinisikan tetapi tidak menyertakan entri untuk domain-domain tersebut." data-en="The test case fails if the app uses URL Loading System connections to relevant first-party domains, but the app's `Info.plist` does not contain an `NSAppTransportSecurity` dictionary with a `NSPinnedDomains` key, or if `NSPinnedDomains` is defined but does not include entries for those domains.">Test case gagal jika aplikasi menggunakan koneksi URL Loading System ke domain first-party yang relevan, tetapi `Info.plist` aplikasi tidak mengandung dictionary `NSAppTransportSecurity` dengan key `NSPinnedDomains`, atau jika `NSPinnedDomains` didefinisikan tetapi tidak menyertakan entri untuk domain-domain tersebut.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -805,7 +879,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to URLSessionDelegate Bypassing Certificate Validation</h3>
-        <p class="item-description">This test checks whether the app implements `URLSessionDelegate` in a way that accepts server certificates without calling `SecTrustEvaluateWithError`.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi mengimplementasikan `URLSessionDelegate` dengan cara yang menerima sertifikat server tanpa memanggil `SecTrustEvaluateWithError`." data-en="This test checks whether the app implements `URLSessionDelegate` in a way that accepts server certificates without calling `SecTrustEvaluateWithError`.">Tes ini memeriksa apakah aplikasi mengimplementasikan `URLSessionDelegate` dengan cara yang menerima sertifikat server tanpa memanggil `SecTrustEvaluateWithError`.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -824,7 +898,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to WKNavigationDelegate Bypassing Certificate Validation</h3>
-        <p class="item-description">This test checks whether the app implements `WKNavigationDelegate` in a way that accepts server certificates without calling `SecTrustEvaluateWithError`.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi mengimplementasikan `WKNavigationDelegate` dengan cara yang menerima server certificates tanpa memanggil `SecTrustEvaluateWithError`." data-en="This test checks whether the app implements `WKNavigationDelegate` in a way that accepts server certificates without calling `SecTrustEvaluateWithError`.">Tes ini memeriksa apakah aplikasi mengimplementasikan `WKNavigationDelegate` dengan cara yang menerima server certificates tanpa memanggil `SecTrustEvaluateWithError`.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -837,13 +911,25 @@ body {
           </div>
         </div>
       </div>
+      </div>
+    </section>
+
+    <section class="group" data-category="PLATFORM">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-PLATFORM</span>
+        <span class="group-meta">23 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description i18n" data-id="Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI." data-en="App interaction with the mobile platform must be secure. Covers IPC mechanisms, WebView configuration, and secure display of sensitive data in the UI.">Interaksi app dengan platform mobile harus aman. Mencakup IPC mechanisms, WebView configuration, dan secure display of sensitive data di UI.</p>
+
       <div class="item-card" data-id="MASTG-TEST-0276" data-category="PLATFORM" data-profiles="L2" data-status="current" data-platform="ios">
         <div class="item-header">
           <span class="item-id">MASTG-TEST-0276</span>
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Use of the iOS General Pasteboard</h3>
-        <p class="item-description">This test checks whether the app uses the systemwide general @MASTG-KNOW-0083, which is persistent across device restarts and app uninstalls and is accessible by all foreground apps and, in some cases, other devices. Placing sensitive data here may pose a privacy risk.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menggunakan systemwide general @MASTG-KNOW-0083, yang persisten di seluruh restart perangkat dan penghapusan instalasi aplikasi dan dapat diakses oleh semua aplikasi foreground dan, dalam beberapa kasus, perangkat lain. Menempatkan data sensitif di sini dapat menimbulkan risiko privasi." data-en="This test checks whether the app uses the systemwide general @MASTG-KNOW-0083, which is persistent across device restarts and app uninstalls and is accessible by all foreground apps and, in some cases, other devices. Placing sensitive data here may pose a privacy risk.">Tes ini memeriksa apakah aplikasi menggunakan systemwide general @MASTG-KNOW-0083, yang persisten di seluruh restart perangkat dan penghapusan instalasi aplikasi dan dapat diakses oleh semua aplikasi foreground dan, dalam beberapa kasus, perangkat lain. Menempatkan data sensitif di sini dapat menimbulkan risiko privasi.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -862,7 +948,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Sensitive Data in the iOS General Pasteboard at Runtime</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0276.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah dynamic counterpart dari @MASTG-TEST-0276." data-en="This test is the dynamic counterpart to @MASTG-TEST-0276.">Tes ini adalah dynamic counterpart dari @MASTG-TEST-0276.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -881,7 +967,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Pasteboard Contents Not Cleared After Use</h3>
-        <p class="item-description">This test checks if the app clears the contents of the general @MASTG-KNOW-0083 when it moves to the background or terminates. If sensitive data is left in the pasteboard, it can be accessed by other apps, leading to potential data leaks.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi membersihkan konten dari general @MASTG-KNOW-0083 saat aplikasi berpindah ke latar belakang atau berhenti. Jika data sensitif tertinggal di pasteboard, data tersebut dapat diakses oleh aplikasi lain, yang berpotensi menyebabkan kebocoran data." data-en="This test checks if the app clears the contents of the general @MASTG-KNOW-0083 when it moves to the background or terminates. If sensitive data is left in the pasteboard, it can be accessed by other apps, leading to potential data leaks.">Tes ini memeriksa apakah aplikasi membersihkan konten dari general @MASTG-KNOW-0083 saat aplikasi berpindah ke latar belakang atau berhenti. Jika data sensitif tertinggal di pasteboard, data tersebut dapat diakses oleh aplikasi lain, yang berpotensi menyebabkan kebocoran data.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -900,7 +986,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Pasteboard Contents Not Expiring</h3>
-        <p class="item-description">The output should contain a list of locations where relevant APIs are used.</p>
+        <p class="item-description i18n" data-id="Output harus berisi daftar lokasi di mana API yang relevan digunakan." data-en="The output should contain a list of locations where relevant APIs are used.">Output harus berisi daftar lokasi di mana API yang relevan digunakan.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -919,7 +1005,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Pasteboard Contents Not Restricted to Local Device</h3>
-        <p class="item-description">The output should contain a list of locations where relevant APIs are used.</p>
+        <p class="item-description i18n" data-id="Output harus berisi daftar lokasi di mana API yang relevan digunakan." data-en="The output should contain a list of locations where relevant APIs are used.">Output harus berisi daftar lokasi di mana API yang relevan digunakan.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -938,7 +1024,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Verification of Sensitive Content Exposure in Screenshots During App Backgrounding</h3>
-        <p class="item-description">The output should include a collection of snapshots cached when the app entered the background state.</p>
+        <p class="item-description i18n" data-id="Output harus mencakup kumpulan snapshot cached saat aplikasi memasuki background state." data-en="The output should include a collection of snapshots cached when the app entered the background state.">Output harus mencakup kumpulan snapshot cached saat aplikasi memasuki background state.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -957,7 +1043,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Use of Deprecated WebView APIs</h3>
-        <p class="item-description">The output should contain a list of locations where `UIWebView`s are used.</p>
+        <p class="item-description i18n" data-id="Output harus berisi daftar lokasi di mana `UIWebView` digunakan." data-en="The output should contain a list of locations where `UIWebView`s are used.">Output harus berisi daftar lokasi di mana `UIWebView` digunakan.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -975,8 +1061,8 @@ body {
           <span class="item-id">MASTG-TEST-0332</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Attacker\-Controlled\ URI\ in\ WebViews</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Attacker-Controlled URI in WebViews</h3>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0270." data-en="This test is the dynamic counterpart to @MASTG-TEST-0270.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0270.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -995,7 +1081,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Overly Broad File Read Access in WebViews</h3>
-        <p class="item-description">This test checks whether the app uses `loadFileURL(_:allowingReadAccessTo:)` with an overly broad `readAccessURL`. If attacker-controlled input influences the loaded file URL and the read access scope is too broad, the WebView may gain access to sensitive files within the app container.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi menggunakan `loadFileURL(_:allowingReadAccessTo:)` dengan `readAccessURL` yang terlalu luas. Jika input yang dikendalikan penyerang memengaruhi URL file yang dimuat dan cakupan akses baca terlalu luas, WebView dapat memperoleh akses ke file sensitif di dalam kontainer aplikasi." data-en="This test checks whether the app uses `loadFileURL(_:allowingReadAccessTo:)` with an overly broad `readAccessURL`. If attacker-controlled input influences the loaded file URL and the read access scope is too broad, the WebView may gain access to sensitive files within the app container.">Tes ini memeriksa apakah aplikasi menggunakan `loadFileURL(_:allowingReadAccessTo:)` dengan `readAccessURL` yang terlalu luas. Jika input yang dikendalikan penyerang memengaruhi URL file yang dimuat dan cakupan akses baca terlalu luas, WebView dapat memperoleh akses ke file sensitif di dalam kontainer aplikasi.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1014,7 +1100,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">WebView File Origin Access Relaxed by Configuration</h3>
-        <p class="item-description">The output should identify locations in the binary where the app references or enables the relevant configuration values.</p>
+        <p class="item-description i18n" data-id="Output harus mengidentifikasi lokasi di dalam binary di mana app mereferensikan atau mengaktifkan configuration values." data-en="The output should identify locations in the binary where the app references or enables the relevant configuration values.">Output harus mengidentifikasi lokasi di dalam binary di mana app mereferensikan atau mengaktifkan configuration values.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1033,7 +1119,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Setting of Relaxed WebView File Origin Policies</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0335.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah dynamic counterpart dari @MASTG-TEST-0335." data-en="This test is the dynamic counterpart to @MASTG-TEST-0335.">Tes ini adalah dynamic counterpart dari @MASTG-TEST-0335.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1051,8 +1137,8 @@ body {
           <span class="item-id">MASTG-TEST-0346</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ APIs\ Hiding\ Sensitive\ Data\ in\ Text\ Input\ Fields</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to APIs Hiding Sensitive Data in Text Input Fields</h3>
+        <p class="item-description i18n" data-id="App Transport Security (ATS) hanya berlaku untuk koneksi yang dibuat melalui [URL Loading System](https://developer.apple.com/documentation/foundation/url_loading_system) (biasanya `URLSession`). API jaringan tingkat rendah sepenuhnya melewati ATS, yang berarti mereka dapat membuat koneksi HTTP cleartext tanpa memandang" data-en="App Transport Security (ATS) only applies to connections made via the [URL Loading System](https://developer.apple.com/documentation/foundation/url_loading_system) (typically `URLSession`). Lower-level networking APIs bypass ATS entirely, meaning they can establish cleartext HTTP connections regardl">App Transport Security (ATS) hanya berlaku untuk koneksi yang dibuat melalui [URL Loading System](https://developer.apple.com/documentation/foundation/url_loading_system) (biasanya `URLSession`). API jaringan tingkat rendah sepenuhnya melewati ATS, yang berarti mereka dapat membuat koneksi HTTP cleartext tanpa memandang</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1071,7 +1157,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of APIs Hiding Sensitive Data in Text Input Fields</h3>
-        <p class="item-description">This test complements @MASTG-TEST-0346. It monitors text input fields in the app at runtime to check if the app masks the text entry when the user enters sensitive data.</p>
+        <p class="item-description i18n" data-id="Tes ini melengkapi @MASTG-TEST-0346. Tes ini memonitor kolom input teks di dalam aplikasi saat runtime untuk memeriksa apakah aplikasi menyembunyikan teks yang dimasukkan ketika pengguna memasukkan data sensitif." data-en="This test complements @MASTG-TEST-0346. It monitors text input fields in the app at runtime to check if the app masks the text entry when the user enters sensitive data.">Tes ini melengkapi @MASTG-TEST-0346. Tes ini memonitor kolom input teks di dalam aplikasi saat runtime untuk memeriksa apakah aplikasi menyembunyikan teks yang dimasukkan ketika pengguna memasukkan data sensitif.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1090,7 +1176,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Missing Input Validation in Custom URL Scheme Handlers</h3>
-        <p class="item-description">Since any app on the device can open a custom URL scheme, an attacker could craft URLs with malicious parameters and send them to the app by following @MASTG-TECH-0169. For example:</p>
+        <p class="item-description i18n" data-id="Karena aplikasi apa pun di perangkat dapat membuka custom URL scheme, penyerang dapat membuat URL dengan parameter berbahaya dan mengirimkannya ke aplikasi dengan mengikuti @MASTG-TECH-0169. Contohnya:" data-en="Since any app on the device can open a custom URL scheme, an attacker could craft URLs with malicious parameters and send them to the app by following @MASTG-TECH-0169. For example:">Karena aplikasi apa pun di perangkat dapat membuka custom URL scheme, penyerang dapat membuat URL dengan parameter berbahaya dan mengirimkannya ke aplikasi dengan mengikuti @MASTG-TECH-0169. Contohnya:</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1108,8 +1194,8 @@ body {
           <span class="item-id">MASTG-TEST-0371</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Missing\ Source\ Validation\ in\ Custom\ URL\ Scheme\ Handlers</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Missing Source Validation in Custom URL Scheme Handlers</h3>
+        <p class="item-description i18n" data-id="`URLSessionConfiguration` memungkinkan aplikasi untuk menyesuaikan perilaku TLS untuk setiap instance `URLSession`. Properti [`tlsMinimumSupportedProtocolVersion`](https://developer.apple.com/documentation/foundation/urlsessionconfiguration/tlsminimumsupportedprotocolversion) (atau yang sudah tidak digunakan lagi [`tlsMinimumS" data-en="`URLSessionConfiguration` allows apps to customize TLS behavior for individual `URLSession` instances. The [`tlsMinimumSupportedProtocolVersion`](https://developer.apple.com/documentation/foundation/urlsessionconfiguration/tlsminimumsupportedprotocolversion) property (or the deprecated [`tlsMinimumS">`URLSessionConfiguration` memungkinkan aplikasi untuk menyesuaikan perilaku TLS untuk setiap instance `URLSession`. Properti [`tlsMinimumSupportedProtocolVersion`](https://developer.apple.com/documentation/foundation/urlsessionconfiguration/tlsminimumsupportedprotocolversion) (atau yang sudah tidak digunakan lagi [`tlsMinimumS</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1128,7 +1214,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Native Bridge APIs in WebViews</h3>
-        <p class="item-description">This test checks whether the app registers native bridge handlers that expose sensitive functionality or data to JavaScript in a `WKWebView`.</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi mendaftarkan native bridge handlers yang mengekspos fungsionalitas atau data sensitif ke JavaScript di dalam `WKWebView`." data-en="This test checks whether the app registers native bridge handlers that expose sensitive functionality or data to JavaScript in a `WKWebView`.">Tes ini memeriksa apakah aplikasi mendaftarkan native bridge handlers yang mengekspos fungsionalitas atau data sensitif ke JavaScript di dalam `WKWebView`.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1146,8 +1232,8 @@ body {
           <span class="item-id">MASTG-TEST-0377</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ `evaluateJavaScript`\ Used\ as\ Bridge\ Reply\ in\ `WKScriptMessageHandler`</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to `evaluateJavaScript` Used as Bridge Reply in `WKScriptMessageHandler`</h3>
+        <p class="item-description i18n" data-id="Beberapa aplikasi menyematkan tumpukan jaringan yang mengelola TLS secara independen dari URL Loading System yang diberlakukan oleh ATS milik Apple. Contohnya termasuk OpenSSL, BoringSSL, mbedTLS, curl, dan gRPC. Karena ATS tidak berlaku untuk pustaka-pustaka ini, setiap konfigurasi TLS yang lemah di dalamnya tidak dilindungi oleh ATS atau pengaturan `URLSession`." data-en="Some apps embed networking stacks that manage TLS independently from Apple's ATS-enforced URL Loading System. Examples include OpenSSL, BoringSSL, mbedTLS, curl, and gRPC. Since ATS doesn't apply to these libraries, any weak TLS configuration in them is not protected by ATS or `URLSession` settings.">Beberapa aplikasi menyematkan tumpukan jaringan yang mengelola TLS secara independen dari URL Loading System yang diberlakukan oleh ATS milik Apple. Contohnya termasuk OpenSSL, BoringSSL, mbedTLS, curl, dan gRPC. Karena ATS tidak berlaku untuk pustaka-pustaka ini, setiap konfigurasi TLS yang lemah di dalamnya tidak dilindungi oleh ATS atau pengaturan `URLSession`.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1166,7 +1252,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Password Fields in WebView-Loaded HTML</h3>
-        <p class="item-description">When an iOS app renders HTML containing `<input type="password">` elements inside a `WKWebView`, any JavaScript running on the page, including injected XSS payloads and third-party scripts loaded by the page, can read the typed value via `element.value`.</p>
+        <p class="item-description i18n" data-id="Ketika aplikasi iOS merender HTML yang mengandung elemen `<input type=&quot;password&quot;>` di dalam `WKWebView`, JavaScript apa pun yang berjalan di halaman tersebut, termasuk payload XSS yang disuntikkan dan skrip pihak ketiga yang dimuat oleh halaman, dapat membaca nilai yang diketik melalui `element.value`." data-en="When an iOS app renders HTML containing `<input type=&quot;password&quot;>` elements inside a `WKWebView`, any JavaScript running on the page, including injected XSS payloads and third-party scripts loaded by the page, can read the typed value via `element.value`.">Ketika aplikasi iOS merender HTML yang mengandung elemen `<input type="password">` di dalam `WKWebView`, JavaScript apa pun yang berjalan di halaman tersebut, termasuk payload XSS yang disuntikkan dan skrip pihak ketiga yang dimuat oleh halaman, dapat membaca nilai yang diketik melalui `element.value`.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1185,7 +1271,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to `evaluateJavaScript` Without Content World Isolation</h3>
-        <p class="item-description">The content-world-aware variant [`evaluateJavaScript(_:in:in:completionHandler:)`](https://developer.apple.com/documentation/webkit/wkwebview/evaluatejavascript(_:in:in:completionhandler:)) runs the script in an isolated world with an independent prototype chain that page JavaScript cannot modify.</p>
+        <p class="item-description i18n" data-id="Varian content-world-aware [`evaluateJavaScript(_:in:in:completionHandler:)`](https://developer.apple.com/documentation/webkit/wkwebview/evaluatejavascript(_:in:in:completionhandler:)) menjalankan skrip di dalam isolated world dengan prototype chain independen yang tidak dapat dimodifikasi oleh JavaScript halaman." data-en="The content-world-aware variant [`evaluateJavaScript(_:in:in:completionHandler:)`](https://developer.apple.com/documentation/webkit/wkwebview/evaluatejavascript(_:in:in:completionhandler:)) runs the script in an isolated world with an independent prototype chain that page JavaScript cannot modify.">Varian content-world-aware [`evaluateJavaScript(_:in:in:completionHandler:)`](https://developer.apple.com/documentation/webkit/wkwebview/evaluatejavascript(_:in:in:completionhandler:)) menjalankan skrip di dalam isolated world dengan prototype chain independen yang tidak dapat dimodifikasi oleh JavaScript halaman.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1203,8 +1289,8 @@ body {
           <span class="item-id">MASTG-TEST-0380</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ `evaluateJavaScript`\ Writing\ Sensitive\ Data\ into\ WebView\ DOM</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to `evaluateJavaScript` Writing Sensitive Data into WebView DOM</h3>
+        <p class="item-description i18n" data-id="Aplikasi iOS dapat memuat konten secara dinamis ke dalam [`WKWebView`](https://developer.apple.com/documentation/webkit/wkwebview) menggunakan berbagai metode URL load. Metode-metode ini dapat merender konten web jarak jauh maupun file yang disimpan secara lokal." data-en="iOS apps can dynamically load content into a [`WKWebView`](https://developer.apple.com/documentation/webkit/wkwebview) using various URL load methods. These methods can render both remote web content and locally stored files.">Aplikasi iOS dapat memuat konten secara dinamis ke dalam [`WKWebView`](https://developer.apple.com/documentation/webkit/wkwebview) menggunakan berbagai metode URL load. Metode-metode ini dapat merender konten web jarak jauh maupun file yang disimpan secara lokal.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1222,8 +1308,8 @@ body {
           <span class="item-id">MASTG-TEST-0389</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ the\ App\-Wide\ Restriction\ of\ Custom\ Keyboards</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to the App-Wide Restriction of Custom Keyboards</h3>
+        <p class="item-description i18n" data-id="Jika aplikasi tidak menyembunyikan bidang input teks yang berisi data sensitif, data tersebut dapat terlihat oleh orang di sekitar (shoulder surfing) atau tertangkap dalam screenshots dan screen recordings. Menandai bidang sebagai secure juga menjaganya tetap di system keyboard: iOS tidak menawarkan installed third-party (custom) keyboards." data-en="If the app does not mask text input fields that contain sensitive data, such data may be visible to bystanders (shoulder surfing) or captured in screenshots and screen recordings. Marking a field as secure also keeps it on the system keyboard: iOS does not offer installed third-party (custom) keyboa">Jika aplikasi tidak menyembunyikan bidang input teks yang berisi data sensitif, data tersebut dapat terlihat oleh orang di sekitar (shoulder surfing) atau tertangkap dalam screenshots dan screen recordings. Menandai bidang sebagai secure juga menjaganya tetap di system keyboard: iOS tidak menawarkan installed third-party (custom) keyboards.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1241,8 +1327,8 @@ body {
           <span class="item-id">MASTG-TEST-0390</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Full\ Access\ Requested\ by\ a\ Custom\ Keyboard\ Extension</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Full Access Requested by a Custom Keyboard Extension</h3>
+        <p class="item-description i18n" data-id="Penangan skema URL kustom yang melakukan operasi sensitif keamanan harus memvalidasi aplikasi sumber sebelum bertindak berdasarkan permintaan yang masuk (@MASTK-KNOW-0079). Properti [`sourceApplication`](https://developer.apple.com/documentation/uikit/uiscene/connectionoptions/sourceapplication) menyediakan" data-en="Custom URL scheme handlers that perform security-sensitive operations should validate the source application before acting on incoming requests (@MASTG-KNOW-0079). The [`sourceApplication`](https://developer.apple.com/documentation/uikit/uiscene/connectionoptions/sourceapplication) property provides">Penangan skema URL kustom yang melakukan operasi sensitif keamanan harus memvalidasi aplikasi sumber sebelum bertindak berdasarkan permintaan yang masuk (@MASTK-KNOW-0079). Properti [`sourceApplication`](https://developer.apple.com/documentation/uikit/uiscene/connectionoptions/sourceapplication) menyediakan</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1260,8 +1346,8 @@ body {
           <span class="item-id">MASTG-TEST-0395</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Missing\ Input\ Validation\ in\ Universal\ Link\ Handlers</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Missing Input Validation in Universal Link Handlers</h3>
+        <p class="item-description i18n" data-id="Ketika `WKScriptMessageHandler` menerima pesan dari JavaScript dan perlu mengembalikan data, pola umum adalah memanggil [`evaluateJavaScript:completionHandler:`](https://developer.apple.com/documentation/webkit/wkwebview/evaluatejavascript(_:completionhandler:)) untuk memanggil callback JavaScript seperti" data-en="When a `WKScriptMessageHandler` receives a message from JavaScript and needs to return data, a common pattern is to call [`evaluateJavaScript:completionHandler:`](https://developer.apple.com/documentation/webkit/wkwebview/evaluatejavascript(_:completionhandler:)) to invoke a JavaScript callback such">Ketika `WKScriptMessageHandler` menerima pesan dari JavaScript dan perlu mengembalikan data, pola umum adalah memanggil [`evaluateJavaScript:completionHandler:`](https://developer.apple.com/documentation/webkit/wkwebview/evaluatejavascript(_:completionhandler:)) untuk memanggil callback JavaScript seperti</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1274,13 +1360,25 @@ body {
           </div>
         </div>
       </div>
+      </div>
+    </section>
+
+    <section class="group" data-category="CODE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-CODE</span>
+        <span class="group-meta">8 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description i18n" data-id="Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation." data-en="Ensures code quality and exploit mitigation. Covers platform version requirements, app update enforcement, third-party component vulnerability management, and input validation.">Memastikan kualitas kode dan exploit mitigation. Mencakup platform version requirements, app update enforcement, third-party component vulnerability management, dan input validation.</p>
+
       <div class="item-card" data-id="MASTG-TEST-0228" data-category="CODE" data-profiles="L2" data-status="current" data-platform="ios">
         <div class="item-header">
           <span class="item-id">MASTG-TEST-0228</span>
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Position Independent Code (PIC) not Enabled</h3>
-        <p class="item-description">In the context Mach-O file format of iOS applications:</p>
+        <p class="item-description i18n" data-id="Dalam konteks format file Mach-O dari aplikasi iOS:" data-en="In the context Mach-O file format of iOS applications:">Dalam konteks format file Mach-O dari aplikasi iOS:</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1299,7 +1397,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Stack Canaries Not enabled</h3>
-        <p class="item-description">This test case checks if the native libraries of the app are compiled without common binary protection mechanisms (@MASTG-KNOW-0061) such as stack smashing protection, a mitigation technique against buffer overflow attacks.</p>
+        <p class="item-description i18n" data-id="Test case ini memeriksa apakah native libraries dari aplikasi dikompilasi tanpa binary protection mechanisms umum (@MASTG-KNOW-0061) seperti stack smashing protection, sebuah mitigation technique terhadap buffer overflow attacks." data-en="This test case checks if the native libraries of the app are compiled without common binary protection mechanisms (@MASTG-KNOW-0061) such as stack smashing protection, a mitigation technique against buffer overflow attacks.">Test case ini memeriksa apakah native libraries dari aplikasi dikompilasi tanpa binary protection mechanisms umum (@MASTG-KNOW-0061) seperti stack smashing protection, sebuah mitigation technique terhadap buffer overflow attacks.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1318,7 +1416,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Automatic Reference Counting (ARC) not enabled</h3>
-        <p class="item-description">When ARC is enabled, binaries will include symbols such as `objc_autorelease` or `objc_retainAutorelease`.</p>
+        <p class="item-description i18n" data-id="Ketika ARC diaktifkan, biner akan menyertakan simbol seperti `objc_autorelease` atau `objc_retainAutorelease`." data-en="When ARC is enabled, binaries will include symbols such as `objc_autorelease` or `objc_retainAutorelease`.">Ketika ARC diaktifkan, biner akan menyertakan simbol seperti `objc_autorelease` atau `objc_retainAutorelease`.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1337,7 +1435,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Identify Dependencies with Known Vulnerabilities by Scanning Dependency Managers Artifacts</h3>
-        <p class="item-description">In this test case we are identifying dependencies with known vulnerabilities in iOS. Dependencies are integrated through dependency managers, and there might be one or more of them being used. We therefore need all of the relevant artifacts created by them to analyse them with a SCA scanning tool.</p>
+        <p class="item-description i18n" data-id="Dalam kasus uji ini kami mengidentifikasi dependensi dengan kerentanan yang diketahui di iOS. Dependensi diintegrasikan melalui dependency managers, dan mungkin ada satu atau lebih dari mereka yang digunakan. Oleh karena itu kami membutuhkan semua artifact relevan yang dibuat oleh mereka untuk menganalisisnya dengan SCA scanning tool." data-en="In this test case we are identifying dependencies with known vulnerabilities in iOS. Dependencies are integrated through dependency managers, and there might be one or more of them being used. We therefore need all of the relevant artifacts created by them to analyse them with a SCA scanning tool.">Dalam kasus uji ini kami mengidentifikasi dependensi dengan kerentanan yang diketahui di iOS. Dependensi diintegrasikan melalui dependency managers, dan mungkin ada satu atau lebih dari mereka yang digunakan. Oleh karena itu kami membutuhkan semua artifact relevan yang dibuat oleh mereka untuk menganalisisnya dengan SCA scanning tool.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1356,7 +1454,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Dependencies with Known Vulnerabilities in the App's SBOM</h3>
-        <p class="item-description">This test case checks for dependencies with known vulnerabilities in iOS applications by using a Software Bill of Materials (SBOM). The SBOM should be in CycloneDX format, which is a standard for describing the components and dependencies of software.</p>
+        <p class="item-description i18n" data-id="Kasus uji ini memeriksa dependensi dengan kerentanan yang diketahui dalam aplikasi iOS dengan menggunakan Software Bill of Materials (SBOM). SBOM harus dalam format CycloneDX, yang merupakan standar untuk mendeskripsikan komponen dan dependensi perangkat lunak." data-en="This test case checks for dependencies with known vulnerabilities in iOS applications by using a Software Bill of Materials (SBOM). The SBOM should be in CycloneDX format, which is a standard for describing the components and dependencies of software.">Kasus uji ini memeriksa dependensi dengan kerentanan yang diketahui dalam aplikasi iOS dengan menggunakan Software Bill of Materials (SBOM). SBOM harus dalam format CycloneDX, yang merupakan standar untuk mendeskripsikan komponen dan dependensi perangkat lunak.</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1375,7 +1473,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Enforced Updating APIs</h3>
-        <p class="item-description">This test checks whether the app contains code that implements update enforcement, either through App Store lookup or through a custom version-based gating mechanism (@MASTG-KNOW-0074).</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi mengandung kode yang menerapkan update enforcement, baik melalui App Store lookup atau melalui custom version-based gating mechanism (@MASTG-KNOW-0074)." data-en="This test checks whether the app contains code that implements update enforcement, either through App Store lookup or through a custom version-based gating mechanism (@MASTG-KNOW-0074).">Tes ini memeriksa apakah aplikasi mengandung kode yang menerapkan update enforcement, baik melalui App Store lookup atau melalui custom version-based gating mechanism (@MASTG-KNOW-0074).</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1394,7 +1492,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Enforced Updating APIs</h3>
-        <p class="item-description">This test checks whether the app triggers the expected update enforcement behavior at runtime by capturing version-related network traffic where applicable and hooking update-related API calls (@MASTG-KNOW-0074).</p>
+        <p class="item-description i18n" data-id="Tes ini memeriksa apakah aplikasi memicu perilaku penegakan pembaruan yang diharapkan pada runtime dengan menangkap network traffic terkait versi jika memungkinkan dan melakukan hooking pada API calls terkait pembaruan (@MASTG-KNOW-0074)." data-en="This test checks whether the app triggers the expected update enforcement behavior at runtime by capturing version-related network traffic where applicable and hooking update-related API calls (@MASTG-KNOW-0074).">Tes ini memeriksa apakah aplikasi memicu perilaku penegakan pembaruan yang diharapkan pada runtime dengan menangkap network traffic terkait versi jika memungkinkan dan melakukan hooking pada API calls terkait pembaruan (@MASTG-KNOW-0074).</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1412,8 +1510,8 @@ body {
           <span class="item-id">MASTG-TEST-0386</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ Object\ Deserialization\ of\ Untrusted\ Data</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to Object Deserialization of Untrusted Data</h3>
+        <p class="item-description i18n" data-id="Ketika aplikasi `WKWebView` perlu menampilkan informasi sensitif (seperti one-time password, saldo akun, atau payment detail), pola umum yang digunakan adalah menyuntikkan data tersebut langsung ke dalam DOM menggunakan [`evaluateJavaScript:completionHandler:`](https://developer.apple.com/documentation/webkit/wkwebview/ev" data-en="When a `WKWebView` app needs to display sensitive information (such as a one-time password, account balance, or payment detail), a common pattern is to inject that data directly into the DOM using [`evaluateJavaScript:completionHandler:`](https://developer.apple.com/documentation/webkit/wkwebview/ev">Ketika aplikasi `WKWebView` perlu menampilkan informasi sensitif (seperti one-time password, saldo akun, atau payment detail), pola umum yang digunakan adalah menyuntikkan data tersebut langsung ke dalam DOM menggunakan [`evaluateJavaScript:completionHandler:`](https://developer.apple.com/documentation/webkit/wkwebview/ev</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1426,13 +1524,25 @@ body {
           </div>
         </div>
       </div>
+      </div>
+    </section>
+
+    <section class="group" data-category="RESILIENCE">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-RESILIENCE</span>
+        <span class="group-meta">15 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description i18n" data-id="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks." data-en="Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Enhances app resilience against reverse engineering and client-side attacks.">Defense-in-depth measures: code obfuscation, anti-debugging, anti-tampering, root/emulator detection. Meningkatkan resilience app terhadap reverse engineering dan client-side attacks.</p>
+
       <div class="item-card" data-id="MASTG-TEST-0219" data-category="RESILIENCE" data-profiles="R" data-status="current" data-platform="ios">
         <div class="item-header">
           <span class="item-id">MASTG-TEST-0219</span>
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Testing for Debugging Symbols</h3>
-        <p class="item-description">This test case checks for [debugging symbols](https://mas.owasp.org/MASWE/MASVS-RESILIENCE/MASWE-0093/) in all binaries contained in the app.</p>
+        <p class="item-description i18n" data-id="Kasus uji ini memeriksa [debugging symbols](https://mas.owasp.org/MASWE/MASVS-RESILIENCE/MASWE-0093/) di semua binaries yang terdapat dalam app." data-en="This test case checks for [debugging symbols](https://mas.owasp.org/MASWE/MASVS-RESILIENCE/MASWE-0093/) in all binaries contained in the app.">Kasus uji ini memeriksa [debugging symbols](https://mas.owasp.org/MASWE/MASVS-RESILIENCE/MASWE-0093/) di semua binaries yang terdapat dalam app.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1451,7 +1561,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Usage of Outdated Code Signature Format</h3>
-        <p class="item-description">The output should contain the version of the code signature format.</p>
+        <p class="item-description i18n" data-id="Output harus berisi version dari format code signature." data-en="The output should contain the version of the code signature format.">Output harus berisi version dari format code signature.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1470,7 +1580,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Jailbreak Detection in Code</h3>
-        <p class="item-description">The output should include any instances of common jailbreak detection checks in the app binary.</p>
+        <p class="item-description i18n" data-id="Output harus mencakup setiap instance dari jailbreak detection checks yang umum dalam app binary." data-en="The output should include any instances of common jailbreak detection checks in the app binary.">Output harus mencakup setiap instance dari jailbreak detection checks yang umum dalam app binary.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1489,7 +1599,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Jailbreak Detection Techniques</h3>
-        <p class="item-description">The output should include any instances of common jailbreak detection checks in the app binary and the results of the automated jailbreak detection bypass commands.</p>
+        <p class="item-description i18n" data-id="Output harus mencakup setiap instance dari common jailbreak detection checks di dalam app binary dan hasil dari automated jailbreak detection bypass commands." data-en="The output should include any instances of common jailbreak detection checks in the app binary and the results of the automated jailbreak detection bypass commands.">Output harus mencakup setiap instance dari common jailbreak detection checks di dalam app binary dan hasil dari automated jailbreak detection bypass commands.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1508,7 +1618,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Secure Screen Lock Detection APIs</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0248.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0248." data-en="This test is the dynamic counterpart to @MASTG-TEST-0248.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0248.</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1527,7 +1637,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to APIs for Detecting Secure Screen Lock</h3>
-        <p class="item-description">This test verifies that an app is running on a device with a secure [screen lock (e.g. a passcode)](https://support.apple.com/en-us/guide/iphone/iph14a867ae/ios).</p>
+        <p class="item-description i18n" data-id="Tes ini memverifikasi bahwa aplikasi berjalan pada perangkat dengan [screen lock yang aman (misalnya passcode)](https://support.apple.com/en-us/guide/iphone/iph14a867ae/ios)." data-en="This test verifies that an app is running on a device with a secure [screen lock (e.g. a passcode)](https://support.apple.com/en-us/guide/iphone/iph14a867ae/ios).">Tes ini memverifikasi bahwa aplikasi berjalan pada perangkat dengan [screen lock yang aman (misalnya passcode)](https://support.apple.com/en-us/guide/iphone/iph14a867ae/ios).</p>
         <div class="item-badges">
           <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1546,7 +1656,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Debuggable Entitlement Enabled in the entitlements.plist</h3>
-        <p class="item-description">The test evaluates whether an iOS application is configured to allow debugging. If an app is debuggable, attackers can leverage debugging tools (see @MASTG-TECH-0084) to analyse the runtime behaviour of the app, and potentially compromise sensitive data or functionality.</p>
+        <p class="item-description i18n" data-id="Pengujian ini mengevaluasi apakah aplikasi iOS dikonfigurasi untuk mengizinkan debugging. Jika aplikasi bersifat debuggable, penyerang dapat memanfaatkan alat debugging (lihat @MASTG-TECH-0084) untuk menganalisis perilaku runtime aplikasi, dan berpotensi membahayakan data atau fungsionalitas sensitif." data-en="The test evaluates whether an iOS application is configured to allow debugging. If an app is debuggable, attackers can leverage debugging tools (see @MASTG-TECH-0084) to analyse the runtime behaviour of the app, and potentially compromise sensitive data or functionality.">Pengujian ini mengevaluasi apakah aplikasi iOS dikonfigurasi untuk mengizinkan debugging. Jika aplikasi bersifat debuggable, penyerang dapat memanfaatkan alat debugging (lihat @MASTG-TECH-0084) untuk menganalisis perilaku runtime aplikasi, dan berpotensi membahayakan data atau fungsionalitas sensitif.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1565,7 +1675,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Hook Detection Techniques</h3>
-        <p class="item-description">This test verifies whether the app detects and responds to instrumentation and hooking attempts at runtime. For example, if the app does not terminate immediately when the following APIs or functions are hooked:</p>
+        <p class="item-description i18n" data-id="Pengujian ini memverifikasi apakah aplikasi mendeteksi dan merespons upaya instrumentation dan hooking pada runtime. Contohnya, jika aplikasi tidak langsung berhenti ketika API atau fungsi berikut di-hook:" data-en="This test verifies whether the app detects and responds to instrumentation and hooking attempts at runtime. For example, if the app does not terminate immediately when the following APIs or functions are hooked:">Pengujian ini memverifikasi apakah aplikasi mendeteksi dan merespons upaya instrumentation dan hooking pada runtime. Contohnya, jika aplikasi tidak langsung berhenti ketika API atau fungsi berikut di-hook:</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1584,7 +1694,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Implementation Details Exposure Through Logging APIs</h3>
-        <p class="item-description">Common logging APIs on iOS include `NSLog`, `print`, `dump`, `debugPrint`, and `os_log`. If debug-level logging remains enabled in production builds, or if logged error messages are overly detailed, they can reveal implementation details that increase the app's attack surface.</p>
+        <p class="item-description i18n" data-id="API logging yang umum di iOS termasuk `NSLog`, `print`, `dump`, `debugPrint`, dan `os_log`. Jika logging level debug tetap diaktifkan di production builds, atau jika pesan error yang dicatat terlalu detail, hal tersebut dapat mengungkap detail implementasi yang meningkatkan attack surface aplikasi." data-en="Common logging APIs on iOS include `NSLog`, `print`, `dump`, `debugPrint`, and `os_log`. If debug-level logging remains enabled in production builds, or if logged error messages are overly detailed, they can reveal implementation details that increase the app's attack surface.">API logging yang umum di iOS termasuk `NSLog`, `print`, `dump`, `debugPrint`, dan `os_log`. Jika logging level debug tetap diaktifkan di production builds, atau jika pesan error yang dicatat terlalu detail, hal tersebut dapat mengungkap detail implementasi yang meningkatkan attack surface aplikasi.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1603,7 +1713,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Implementation Details Exposure in Logs</h3>
-        <p class="item-description">This test is the dynamic counterpart to @MASTG-TEST-0358.</p>
+        <p class="item-description i18n" data-id="Tes ini adalah padanan dinamis dari @MASTG-TEST-0358." data-en="This test is the dynamic counterpart to @MASTG-TEST-0358.">Tes ini adalah padanan dinamis dari @MASTG-TEST-0358.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1622,7 +1732,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Virtual Device Detection Techniques</h3>
-        <p class="item-description">This test verifies if the app implements checks to detect the presence of an iOS virtual device (like @MASTG-TOOL-0108) by attempting to hook into common virtual device detection mechanisms.</p>
+        <p class="item-description i18n" data-id="Pengujian ini memverifikasi apakah aplikasi menerapkan pemeriksaan untuk mendeteksi keberadaan perangkat virtual iOS (seperti @MASTG-TOOL-0108) dengan mencoba melakukan hook ke mekanisme deteksi perangkat virtual yang umum." data-en="This test verifies if the app implements checks to detect the presence of an iOS virtual device (like @MASTG-TOOL-0108) by attempting to hook into common virtual device detection mechanisms.">Pengujian ini memverifikasi apakah aplikasi menerapkan pemeriksaan untuk mendeteksi keberadaan perangkat virtual iOS (seperti @MASTG-TOOL-0108) dengan mencoba melakukan hook ke mekanisme deteksi perangkat virtual yang umum.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1640,8 +1750,8 @@ body {
           <span class="item-id">MASTG-TEST-0387</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">References\ to\ Storage\ Integrity\ Check\ APIs</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">References to Storage Integrity Check APIs</h3>
+        <p class="item-description i18n" data-id="iOS memungkinkan pengguna memasang keyboard kustom, yang merupakan ekstensi aplikasi yang menggantikan keyboard sistem di semua aplikasi (lihat @MASTG-KNOW-0141). Setelah diberikan &quot;Full Access&quot;, keyboard kustom dapat mentransmisikan apa yang diketik pengguna dari perangkat. Aplikasi yang mengumpulkan input sensitif, seperti PIN perbankan atau a o" data-en="iOS lets users install custom keyboards, which are app extensions that replace the system keyboard across all apps (see @MASTG-KNOW-0141). Once granted &quot;Full Access&quot;, a custom keyboard can transmit what the user types off the device. An app that collects sensitive input, such as a banking PIN or a o">iOS memungkinkan pengguna memasang keyboard kustom, yang merupakan ekstensi aplikasi yang menggantikan keyboard sistem di semua aplikasi (lihat @MASTG-KNOW-0141). Setelah diberikan "Full Access", keyboard kustom dapat mentransmisikan apa yang diketik pengguna dari perangkat. Aplikasi yang mengumpulkan input sensitif, seperti PIN perbankan atau a o</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1660,7 +1770,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Insufficient Obfuscation of Security-Relevant Native Code</h3>
-        <p class="item-description">Refer to @MASTG-KNOW-0089 for common iOS obfuscation mechanisms and indicators to look for.</p>
+        <p class="item-description i18n" data-id="Lihat @MASTG-KNOW-0089 untuk mekanisme obfuscation iOS yang umum dan indicators yang perlu dicari." data-en="Refer to @MASTG-KNOW-0089 for common iOS obfuscation mechanisms and indicators to look for.">Lihat @MASTG-KNOW-0089 untuk mekanisme obfuscation iOS yang umum dan indicators yang perlu dicari.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1679,7 +1789,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">References to Debugging Detection APIs</h3>
-        <p class="item-description">See @MASTG-KNOW-0085 for more information on iOS debugging detection techniques and specific APIs and artifacts to look for.</p>
+        <p class="item-description i18n" data-id="Lihat @MASTG-KNOW-0085 untuk informasi lebih lanjut tentang teknik deteksi debugging iOS dan API serta artefak spesifik yang perlu dicari." data-en="See @MASTG-KNOW-0085 for more information on iOS debugging detection techniques and specific APIs and artifacts to look for.">Lihat @MASTG-KNOW-0085 untuk informasi lebih lanjut tentang teknik deteksi debugging iOS dan API serta artefak spesifik yang perlu dicari.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1698,7 +1808,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Runtime Use of Debugging Detection APIs</h3>
-        <p class="item-description">See @MASTG-KNOW-0085 for more information on iOS debugging detection techniques and specific APIs and artifacts to look for.</p>
+        <p class="item-description i18n" data-id="Lihat @MASTG-KNOW-0085 untuk informasi lebih lanjut tentang teknik deteksi debugging iOS dan API serta artefak spesifik yang perlu dicari." data-en="See @MASTG-KNOW-0085 for more information on iOS debugging detection techniques and specific APIs and artifacts to look for.">Lihat @MASTG-KNOW-0085 untuk informasi lebih lanjut tentang teknik deteksi debugging iOS dan API serta artefak spesifik yang perlu dicari.</p>
         <div class="item-badges">
           <span class="badge badge-R">R</span>
           <span class="badge badge-ios">ios</span>
@@ -1711,13 +1821,25 @@ body {
           </div>
         </div>
       </div>
+      </div>
+    </section>
+
+    <section class="group" data-category="PRIVACY">
+      <button class="group-header" aria-expanded="false">
+        <span class="group-title">MASVS-PRIVACY</span>
+        <span class="group-meta">5 items</span>
+        <span class="group-toggle">▼</span>
+      </button>
+      <div class="group-content collapsed">
+        <p class="group-description i18n" data-id="Kontrol privacy yang melengkapi assessment komprehensif seperti DPIA (GDPR). Mencakup data minimization, user identification prevention, transparency, dan user control over data." data-en="Privacy controls that complement comprehensive assessments like DPIA (GDPR). Covers data minimization, user identification prevention, transparency, and user control over data.">Kontrol privacy yang melengkapi assessment komprehensif seperti DPIA (GDPR). Mencakup data minimization, user identification prevention, transparency, dan user control over data.</p>
+
       <div class="item-card" data-id="MASTG-TEST-0281" data-category="PRIVACY" data-profiles="P" data-status="current" data-platform="ios">
         <div class="item-header">
           <span class="item-id">MASTG-TEST-0281</span>
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Undeclared Known Tracking Domains</h3>
-        <p class="item-description">These references can be used to match hardcoded or dynamically accessed domains within your app and verify whether appropriate declarations exist in the Privacy Manifest.</p>
+        <p class="item-description i18n" data-id="Referensi ini dapat digunakan untuk mencocokkan hardcoded atau dynamically accessed domains dalam app Anda dan memverifikasi apakah deklarasi yang sesuai ada di Privacy Manifest." data-en="These references can be used to match hardcoded or dynamically accessed domains within your app and verify whether appropriate declarations exist in the Privacy Manifest.">Referensi ini dapat digunakan untuk mencocokkan hardcoded atau dynamically accessed domains dalam app Anda dan memverifikasi apakah deklarasi yang sesuai ada di Privacy Manifest.</p>
         <div class="item-badges">
           <span class="badge badge-P">P</span>
           <span class="badge badge-ios">ios</span>
@@ -1736,7 +1858,7 @@ body {
           <span class="badge badge-current">current</span>
         </div>
         <h3 class="item-title">Purpose String Accuracy for Reachable Protected Resource Access</h3>
-        <p class="item-description">Usage description keys and runtime APIs are separate parts of the iOS permission model. Usage description keys provide the explanation in `Info.plist`, while framework APIs request, check, or access the protected resource.</p>
+        <p class="item-description i18n" data-id="Usage description keys dan runtime APIs adalah bagian terpisah dari iOS permission model. Usage description keys menyediakan penjelasan di `Info.plist`, sedangkan framework APIs meminta, memeriksa, atau mengakses protected resource." data-en="Usage description keys and runtime APIs are separate parts of the iOS permission model. Usage description keys provide the explanation in `Info.plist`, while framework APIs request, check, or access the protected resource.">Usage description keys dan runtime APIs adalah bagian terpisah dari iOS permission model. Usage description keys menyediakan penjelasan di `Info.plist`, sedangkan framework APIs meminta, memeriksa, atau mengakses protected resource.</p>
         <div class="item-badges">
           <span class="badge badge-P">P</span>
           <span class="badge badge-ios">ios</span>
@@ -1754,8 +1876,8 @@ body {
           <span class="item-id">MASTG-TEST-0361</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Runtime\ Use\ of\ Protected\ Resource\ APIs\ Without\ Accurate\ Purpose\ Strings</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Runtime Use of Protected Resource APIs Without Accurate Purpose Strings</h3>
+        <p class="item-description i18n" data-id="[custom keyboard](https://developer.apple.com/documentation/uikit/creating-a-custom-keyboard) adalah ekstensi aplikasi yang menggantikan keyboard sistem di seluruh aplikasi pada perangkat (lihat @MASTG-KNOW-0141). Secara default, keyboard berjalan tanpa &quot;Full Access&quot;, yang mencegahnya untuk membuat permintaan jaringan atau mencapai" data-en="A [custom keyboard](https://developer.apple.com/documentation/uikit/creating-a-custom-keyboard) is an app extension that replaces the system keyboard across all apps on the device (see @MASTG-KNOW-0141). By default it runs without &quot;Full Access&quot;, which keeps it from making network requests or reachin">[custom keyboard](https://developer.apple.com/documentation/uikit/creating-a-custom-keyboard) adalah ekstensi aplikasi yang menggantikan keyboard sistem di seluruh aplikasi pada perangkat (lihat @MASTG-KNOW-0141). Secara default, keyboard berjalan tanpa "Full Access", yang mencegahnya untuk membuat permintaan jaringan atau mencapai</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1773,8 +1895,8 @@ body {
           <span class="item-id">MASTG-TEST-0362</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Entitlements\ for\ Unjustified\ Capability\ Exposure</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Entitlements for Unjustified Capability Exposure</h3>
+        <p class="item-description i18n" data-id="Aplikasi yang mendukung universal links harus validate dan sanitize path dan parameter query dari URL yang masuk sebelum menggunakannya dalam operasi yang sensitif terhadap keamanan (@MASTG-KNOW-0080). iOS memverifikasi **domain** link terhadap file Apple App Site Association dari situs web pada saat install time, tetapi tidak" data-en="Apps that support universal links must validate and sanitize the path and query parameters of the incoming URL before using them in security-sensitive operations (@MASTG-KNOW-0080). iOS verifies the link's **domain** against the website's Apple App Site Association file at install time, but it does">Aplikasi yang mendukung universal links harus validate dan sanitize path dan parameter query dari URL yang masuk sebelum menggunakannya dalam operasi yang sensitif terhadap keamanan (@MASTG-KNOW-0080). iOS memverifikasi **domain** link terhadap file Apple App Site Association dari situs web pada saat install time, tetapi tidak</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1792,8 +1914,8 @@ body {
           <span class="item-id">MASTG-TEST-0363</span>
           <span class="badge badge-current">current</span>
         </div>
-        <h3 class="item-title">Runtime\ Use\ of\ Entitlement\-Backed\ APIs\ for\ Unjustified\ Capability\ Exposure</h3>
-        <p class="item-description"></p>
+        <h3 class="item-title">Runtime Use of Entitlement-Backed APIs for Unjustified Capability Exposure</h3>
+        <p class="item-description i18n" data-id="Aplikasi iOS dapat merekonstruksi objek dari data serial yang diterima melalui file, payload IPC, respons jaringan, data pasteboard, ekstensi aplikasi, atau data arsip yang disimpan secara lokal. Jika penyerang dapat memengaruhi data ini dan aplikasi mendekodekannya tanpa membatasi kelas yang diharapkan, aplikasi dapat menerima" data-en="iOS apps can reconstruct objects from serialized data received through files, IPC payloads, network responses, pasteboard data, app extensions, or archived data stored locally. If an attacker can influence this data and the app decodes it without restricting the expected classes, the app may accept">Aplikasi iOS dapat merekonstruksi objek dari data serial yang diterima melalui file, payload IPC, respons jaringan, data pasteboard, ekstensi aplikasi, atau data arsip yang disimpan secara lokal. Jika penyerang dapat memengaruhi data ini dan aplikasi mendekodekannya tanpa membatasi kelas yang diharapkan, aplikasi dapat menerima</p>
         <div class="item-badges">
           <span class="badge badge-L1">L1</span> <span class="badge badge-L2">L2</span>
           <span class="badge badge-ios">ios</span>
@@ -1808,7 +1930,10 @@ body {
       </div>
 
     </section>
-  </main>
+        </div>
+    </section>
+
+</main>
   <footer class="page-footer">
     <p>Source: <a href="https://mas.owasp.org/MASTG">https://mas.owasp.org/MASTG</a> · OWASP MASTG</p>
     <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
@@ -1893,6 +2018,27 @@ filterBtns.forEach(b => b.addEventListener('click', () => {
       applyFilters();
     }));
     
+
+  // Language toggle
+  (function() {
+    const savedLang = localStorage.getItem('owasp-mas-lang') || 'id';
+    function setLang(lang) {
+      localStorage.setItem('owasp-mas-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.querySelectorAll('.i18n').forEach(el => {
+        const text = el.dataset[lang];
+        if (text) el.textContent = text;
+      });
+      document.documentElement.lang = lang === 'id' ? 'id' : 'en';
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+    setLang(savedLang);
+  })();
+
 </script>
 </body>
 </html>
