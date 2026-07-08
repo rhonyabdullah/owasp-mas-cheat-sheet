@@ -154,6 +154,16 @@
   .footer a { color: var(--owasp-blue); text-decoration: none; }
   @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  .page-footer {
+    background: var(--owasp-dark);
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    padding: 2rem 1.5rem;
+    font-size: 0.85rem;
+  }
+  .page-footer a { color: var(--owasp-accent); text-decoration: none; }
+  .page-footer .disclaimer { opacity: 0.7; margin-top: 0.5rem; }
 </style>
 </head>
 <body>
@@ -882,11 +892,10 @@
       </div>
     </div>
   </div>
-
-  <div class="footer">
-    <p>Source: OWASP MASWE (github.com/OWASP/maswe) · mas.owasp.org/MASWE · MASTG v2.0.0 (Jul 2026)</p>
-    <p><a href="https://github.com/OWASP/maswe" target="_blank">GitHub: OWASP/maswe</a> · <a href="https://mas.owasp.org/MASWE" target="_blank">mas.owasp.org/MASWE</a></p>
-  </div>
+  <footer class="page-footer">
+    <p>Source: <a href="https://github.com/OWASP/maswe">https://github.com/OWASP/maswe</a> · OWASP MASWE</p>
+    <p class="disclaimer">This is an unofficial reference. Always consult the official OWASP documentation for authoritative guidance.</p>
+  </footer>
 </div>
 
 <script>
