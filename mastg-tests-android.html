@@ -30,9 +30,23 @@ body {
 .page-header { text-align: center; margin-bottom: 2rem; animation: fadeInDown 0.6s ease-out; }
 .page-header h1 { font-size: 2rem; color: var(--owasp-dark); margin-bottom: 0.5rem; }
 .page-header .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
-.filter-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+.filter-bar {
+    position: sticky;
+    top: 0;
+    background: var(--bg-page);
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+    z-index: 100;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .filter-bar .search-input { width: 100%; padding: 0.75rem 1rem; font-size: 0.95rem; border: 1px solid var(--border-subtle); border-radius: 8px; margin-bottom: 0.75rem; background: var(--bg-card); color: var(--text-primary); }
 .search-input { flex: 1; min-width: 260px; padding: 0.6rem 1rem; border: 1px solid var(--border-subtle); border-radius: 6px; font-size: 0.95rem; background: var(--bg-card); }
-.filter-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
 .filter-btn { padding: 0.4rem 0.9rem; border: 1px solid var(--border-subtle); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
 .filter-btn:hover { border-color: var(--owasp-blue); }
 .filter-btn.active { background: var(--owasp-blue); color: #fff; border-color: var(--owasp-blue); }
